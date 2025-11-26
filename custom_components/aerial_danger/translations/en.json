@@ -1,0 +1,23 @@
+{
+  "title": "Aerial Danger",
+  "config": {
+    "step": {
+      "user": {
+        "description": "Set up Aerial Danger.",
+        "data": {
+          "name": "Name"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "Only one Aerial Danger integration can be configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Aerial Danger options"
+      }
+    }
+  }
+}

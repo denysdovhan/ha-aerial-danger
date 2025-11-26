@@ -1,0 +1,23 @@
+{
+  "title": "Aerial Danger",
+  "config": {
+    "step": {
+      "user": {
+        "description": "Налаштуйте Aerial Danger.",
+        "data": {
+          "name": "Назва"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "Можна налаштувати лише одну інтеграцію Aerial Danger."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Параметри Aerial Danger"
+      }
+    }
+  }
+}

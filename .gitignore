@@ -1,0 +1,25 @@
+# artifacts
+__pycache__
+.pytest*
+*.egg-info
+*/build/*
+*/dist/*
+node_modules
+.venv
+.cache
+
+# misc
+.coverage
+.vscode/settings.json
+coverage.xml
+.ruff_cache
+.cache
+.uv-cache
+
+# macOS
+.DS_Store
+
+# Home Assistant configuration
+config/*
+!config/configuration.yaml
+.idea

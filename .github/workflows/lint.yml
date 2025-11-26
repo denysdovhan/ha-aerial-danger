@@ -1,0 +1,37 @@
+name: Lint
+
+on:
+  push:
+    paths:
+      - "**.py"
+      - pyproject.toml
+      - uv.lock
+  pull_request:
+    paths:
+      - "**.py"
+      - pyproject.toml
+      - uv.lock
+
+jobs:
+  python:
+    name: Python
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout Repo
+        uses: actions/checkout@v6
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.x"
+
+      - name: 📦 Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: 📦 Install dependencies
+        run: uv sync --locked --all-extras --dev
+
+      - name: ⚙️ Lint
+        run: uv run pre-commit run --all-files

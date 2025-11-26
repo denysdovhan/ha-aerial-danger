@@ -1,0 +1,11 @@
+{
+  "domain": "aerial_danger",
+  "name": "Aerial Danger",
+  "codeowners": ["@denysdovhan"],
+  "config_flow": true,
+  "documentation": "https://github.com/denysdovhan/ha-aerial-danger",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/denysdovhan/ha-aerial-danger",
+  "requirements": [],
+  "version": "0.0.0-unreleased"
+}

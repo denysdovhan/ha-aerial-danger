@@ -1,0 +1,37 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout Repo
+        uses: actions/checkout@v6
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.x"
+
+      - name: 🏷️ Bump manifest version
+        run: python scripts/bump_version ${{ github.ref_name }}
+
+      - name: 📦 Create zip package
+        working-directory: custom_components/lun_misto_air
+        run: zip -r lun-misto-air.zip .
+
+      - name: 📤  Upload zip to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: custom_components/lun_misto_air/lun-misto-air.zip
+          asset_name: lun-misto-air.zip
+          tag: ${{ github.ref }}
+          overwrite: true

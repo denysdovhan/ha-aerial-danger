@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+scripts/bootstrap
+
+echo "==> Project is now ready to go!"
