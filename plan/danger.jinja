@@ -1,0 +1,155 @@
+{% set AREA_PLACEHOLDER = '{area}' %}
+{% set DELIMITER = '|||' %}
+{% set REPORT_LENGTH = 50 %}
+
+{# Map danger strings to specific areas #}
+{% macro map_areas(strings, areas) %}
+  {% set result = namespace(list=[]) %}
+  {% for s in strings %}
+    {% if AREA_PLACEHOLDER in s %}
+      {% for area in areas %}
+        {% set value = s.replace(AREA_PLACEHOLDER, area) %}
+        {% if value not in result.list %}
+          {% set result.list = result.list + [ value ] %}
+        {% endif %}
+      {% endfor %}
+    {% else %}
+      {% set result.list = result.list + [ s ] %}
+    {% endif %}
+  {% endfor %}
+  {{ result.list | join(DELIMITER) }}
+{% endmacro %}
+
+{# Check if any keywords are included in the message #}
+{# {% macro includes_any(keywords, message) %}
+  {{ keywords.split(DELIMITER) | select('in', message) | list | count > 0 }}
+{% endmacro %} #}
+{% macro includes_any(keywords, message) %}
+  {# Split the combined string into list of keywords #}
+  {% set list = keywords.split(DELIMITER) %}
+  {% set found = namespace(result=false) %}
+  {% for keyword in list %}
+    {% if message is search(keyword, ignorecase=True) %}
+      {% set found.result = true %}
+    {% endif %}
+  {% endfor %}
+  {{ found.result }}
+{% endmacro %}
+
+{# Define city areas for missiles #}
+{% set city = [
+  '\\bки(ї|є)в(а|у|ом|е|і)?\\b'
+] %}
+
+{# Define city areas for drones #}
+{% set neighborhood = [
+  '\\bнив(ки|ками|ок)\\b',
+  '\\bсвятошин(а|у|ом|і)?\\b',
+  '\\bантонов',
+  '\\bакадем',
+  'берковець',
+  'cирець',
+  'cирця',
+  '\\bшулявк(а|и)\\b',
+  'галаган'
+] %}
+
+{# Keywords for generic danger #}
+{% set generic_danger = [
+  '(буде|бути) гучно',
+  'в укриття',
+  'перебувайте в укритті',
+  'будьте обережними',
+  'курс(ом)? на',
+  '{area} увага!',
+  'дві стіни',
+  '2 стіни',
+  'від вікон',
+  'вглиб будівель!',
+] %}
+
+{# Keywords for danger in city area #}
+{% set missile_danger = [
+  '🔴🚀',
+  '🟡🚀',
+  '🔴❗️',
+  'балістик',
+  'балістика на {area}',
+  'наближення балістики',
+  'вихід балістики',
+  'вихід бр',
+  'cпуск балістики',
+  'кинджал',
+  'швидкісна ціль',
+  'швидкісна повітряна ціль',
+  'кр на',
+  'кр повз',
+  'кр від',
+  'кр {area}',
+  'група кр',
+  'групи кр',
+  'кр через',
+  'підліт кр',
+  'групи ракет',
+  'крилаті ракети',
+  'крилатих ракет',
+  'крилата ракета',
+  'ракета заходить',
+  'ракети заходять',
+  'ракети на {area}',
+  'ракета на {area}',
+  '{area} ракета',
+  'ракета {area}',
+  'заходить ракета',
+  '{area} ціль!',
+  '{area} цілі!',
+  'ціль на {area}',
+  'ціль швидка на {area}',
+  'спуск {area}',
+  'спуск на {area}',
+  '{area} спуск!',
+] %}
+{# Keywords for danger in neighborhood area #}
+{% set drone_danger = [
+  '🟡🛵',
+  'заліт',
+  'бпла',
+  '{area}!',
+  '{area} рух!',
+  'маневри',
+  'шахед на {area}',
+  '\\d+х {area}'
+] %}
+
+{% macro drone_attack(message) %}
+  {% set message = message | lower %}
+  {% set drone_keywords = map_areas(drone_danger + generic_danger, neighborhood) %}
+  {% set areas_keywords = neighborhood | join(DELIMITER) %}
+  {% set drone_attack = includes_any(drone_keywords, message) | bool %}
+  {% set in_area = includes_any(areas_keywords, message) | bool %}
+  {{ drone_attack and in_area }}
+{% endmacro %}
+
+{% macro missile_attack(message) %}
+  {% set message = message | lower %}
+  {% set missile_keywords = map_areas(missile_danger + generic_danger, city + neighborhood) %}
+  {% set areas_keywords = (city + neighborhood) | join(DELIMITER) %}
+  {% set missile_attack = includes_any(missile_keywords, message) | bool %}
+  {% set in_area = includes_any(areas_keywords, message) | bool %}
+  {{ missile_attack and in_area }}
+{% endmacro %}
+
+{% macro in_danger(message) %}
+  {% set message = message | lower %}
+  {% set not_report = message | length < REPORT_LENGTH %}
+  {% set drone_attack = drone_attack(message) | bool %}
+  {% set missile_attack = missile_attack(message) | bool %}
+  {{ not_report and (drone_attack or missile_attack) }}
+{% endmacro %}
+
+{# Testing below #}
+{# {% set message = "2х нивки" %} #}
+
+{# drone: {{ drone_attack(message) | trim }} #}
+{# missile: {{ missile_attack(message) | trim }} #}
+{# returns: {{ in_danger(message) | trim }} #}
