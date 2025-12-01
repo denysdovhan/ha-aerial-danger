@@ -4,6 +4,30 @@
 
 Act as a concise, senior Python collaborator. Confirm uncertainties before changing behavior and keep replies short.
 
+## Important directives
+
+<important>
+In all interactions and commit messages, be extremely concise and sacrifice grammar for the sake of concision.
+</important>
+
+<important>
+If anything here is unclear, tell me what you want to do and I'll expand these instructions.
+</important>
+
+<important>
+If you struggle to find a solution, suggest to add logger statements and ask for output to get more context and understand the flow better. When logger output is provided, analyze it to understand what is going on.
+</important>
+
+<important>
+When updating this file (`agents.md`), DON'T CHANGE the structure, formatting or style of the document. Just add relevant information, without restructuring: add list items, new sections, etc. NEVER REMOVE tags, like <important> or <instruction>.
+</important>
+
+<important>
+At the end of each plan, give me a list of unresolved questions to answer, if any. Make the questions extremely concise. Sacrifice grammar for the sake of concision.
+</important>
+
+<instruction>Keep this guide updated as functionality is implemented.</instruction>
+
 ## Project Overview
 
 This repository scaffolds a Home Assistant custom integration **Aerial Danger**. It currently includes a manifest, minimal config/option flows, and an empty sensor platform; data fetching and business logic are intentionally absent and will be added later. The integration code lives in `custom_components/aerial_danger`.
@@ -17,10 +41,80 @@ This repository scaffolds a Home Assistant custom integration **Aerial Danger**.
 - `translations/` — English and Ukrainian strings for the basic flow.
 - `manifest.json` — Home Assistant manifest pointing to this repo.
 
+<instruction>Fill in by LLM assistant memory</instruction>
+
 ### Workflow
 
-- Python deps pinned in `pyproject.toml`/`uv.lock`; use `uv` for installs.
-- `scripts/bump_version` updates the manifest version in `custom_components/aerial_danger/manifest.json`.
+<instruction>Fill in by LLM assistant in memory</instruction>
+
+This project is developed from Devcontainer described in `.devcontainer.json` file.
+
+### Tooling
+
+- Python deps tracked in `pyproject.toml` and `uv.lock`; use `scripts/bootstrap` for dev installs.
+- CI workflows (`lint.yml`, `validate.yml`) install uv via `astral-sh/setup-uv` and run tooling with `uv run`.
+- Run python tools via `uv run <tool>` to ensure consistent environment.
+- Each time you make changes to Python code, run `scripts/lint` to check for errors and formatting issues. Fix any issues reported by the linter.
 - Dev config lives under `config/` for local HA runs.
 
-<instruction>Keep this guide updated as functionality is implemented.</instruction>
+### Develompent Scripts
+
+Use these scripts for common development tasks. When you make changes and want to validate your work, use these scripts.
+
+- `scripts/bootstrap` - sets up dev environment (creates venv, installs dependencies).
+- `scripts/bump_version` - bumps version in manifest.json.
+- `scripts/develop` - starts a development Home Assistant server instance on port 8123. Use this script for checking changes in the browser.
+- `scripts/lint` - runs linter/formatter. Always use this script for checking for errors and formatting.
+- `scripts/setup` - installs dependencies and installs pre-commit.
+
+### Development Process
+
+- Ask for clarification when requirements are ambiguous; surface 2–3 options when trade-offs matter.
+- Update documentation and related rules when introducing new patterns or services.
+- When unsure or need to make a significant decision ASK the user for guidance
+- Commit only when directly asked to do so. Write descriptive commit messages.
+
+## Code Style
+
+Standard Python. 2-spaces indentation.
+Never import modules in functions. All imports must be located on top of the file.
+
+## Translations
+
+- Translations: copy `translations/en.json` to add locales; translate values only where appropriate per HA guidelines.
+- Entities: Use the `translation_key` defined in sensor/calendar entity descriptions.
+- Placeholders: Reference `{region}`, `{provider}`, and `{group}` from `translation_placeholders` supplied by `device_info` when rendering device names.
+- Add locales by copying `translations/en.json` and translating values per HA guidelines.
+
+## Home Assistant API
+
+Carefully read links to the Home Assistant Developer documentation for guidance.
+
+Use these code quality guidelines by Home Assistant developers:
+https://github.com/home-assistant/core/raw/refs/heads/dev/.github/copilot-instructions.md
+
+Fetch these links to get more information about specific Home Assistant APIs directly from its documentation:
+
+- File structure: https://developers.home-assistant.io/docs/creating_integration_file_structure
+- Config Flow: https://developers.home-assistant.io/docs/config_entries_config_flow_handler
+- Fetching data: https://developers.home-assistant.io/docs/integration_fetching_data
+- Repairs: https://developers.home-assistant.io/docs/core/platform/repairs
+- Sensor: https://developers.home-assistant.io/docs/core/entity/sensor
+- Events: https://developers.home-assistant.io/docs/core/entity/event
+- Config Entries: https://developers.home-assistant.io/docs/config_entries_index
+- Data Entry Flow: https://developers.home-assistant.io/docs/data_entry_flow_index
+- Manifest: https://developers.home-assistant.io/docs/creating_integration_manifest
+
+## Commit messages
+
+When generating commit messages, always use this format:
+
+```
+<type>(<scope>): summary up to 40 characters
+
+Longer multiline description only for bigger changes that require additional explanations.
+```
+
+Summary should be concise and descriptive. Summary should not contain implicit or generic words like (enhance, improve, etc), instead it should clearly specify what is changed.
+
+Use longer descriptions occasionally to describe complex changes, only when it's really necessary.
