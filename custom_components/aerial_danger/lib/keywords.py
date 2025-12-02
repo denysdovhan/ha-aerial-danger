@@ -1,6 +1,6 @@
 """Keyword templates for the danger detector."""
 
-# Generic danger phrases that refine specific danger types; never used alone.
+# Generic danger phrases that refine specific danger types.
 GENERIC_DANGER = [
     r"(буде|бути) гучно",
     r"в укриття",
@@ -12,40 +12,73 @@ GENERIC_DANGER = [
     r"2 стіни",
     r"від вікон",
     r"вглиб будівель!",
+    r"🟡{area}!",
+    r"❗️{area}!",
+    r"{area}!!",
+    r"{area}!",
+    r"{area} увага",
+    r"{area}.+увага",
+    r"{area} зреагувати",
+    r"{area} жахне",
+    r"на {area}",
+    r"на {area}!",
+    r"🔴🚀.*{area}",
+    r"далі {area}",
 ]
-
 
 # Ballistic-oriented phrases.
 BALLISTIC_DANGER = [
-    r"🔴🚀",
-    r"🟡🚀",
+    r"🔴🚀(?:(?!крилат).)*нив",
+    r"🔴🚀(?:(?!крилат).)*ки(ї|є)в",
     r"🔴❗️",
     r"балістик",
     r"балістика на {area}",
     r"наближення балістики",
     r"вихід балістики",
     r"вихід бр",
+    r"пуск кинджалу",
+    r"вихід з бр",
     r"cпуск балістики",
-    r"кинджал",
+    r"кинджал(?!.*у бік)",
     r"швидкісна ціль",
     r"швидкісна повітряна ціль",
+    r"швидкісна у бік {area}",
+    r"ціль швидка на {area}",
+    r"{area} швидкісна",
+    r"{area} є ціл",
+    r"{area} ціль",
+    r"2 стіни",
+    r"дві стіни",
+    r"спуск {area}",
+    r"спуск на {area}",
+    r"{area} спуск!",
+    r"вектор руху на {area}",
 ]
 
 
 # Cruise-missile oriented phrases (including generic "rocket" wording).
 CRUISE_DANGER = [
+    r"🔴🚀(?!.*нив)",
+    r"🟡🚀",
     r"кр на",
     r"кр повз",
     r"кр від",
+    r"\bкр\b",
     r"кр {area}",
     r"група кр",
     r"групи кр",
+    r"група крилатих",
+    r"групи крилатих",
     r"кр через",
     r"підліт кр",
     r"групи ракет",
     r"крилаті ракети",
     r"крилатих ракет",
     r"крилата ракета",
+    r"крилаті курсом",
+    r"кинджал у бік {area}",
+    r"калібр",
+    r"крилат[а-яії']*",
     r"ракета заходить",
     r"ракети заходять",
     r"ракети на {area}",
@@ -56,23 +89,25 @@ CRUISE_DANGER = [
     r"{area} ціль!",
     r"{area} цілі!",
     r"ціль на {area}",
-    r"ціль швидка на {area}",
-    r"спуск {area}",
-    r"спуск на {area}",
-    r"{area} спуск!",
+    r"вектор.*{area}",
+    r"🚀.*{area}",
 ]
-
 
 # Drone-oriented phrases.
 DRONE_DANGER = [
+    r"🛵",
     r"🟡🛵",
     r"заліт",
     r"бпла",
-    r"{area}!",
     r"{area} рух!",
     r"маневри",
     r"шахед на {area}",
     r"\d+х {area}",
+    r"\d+х.*{area}",
+    r"у бік {area}",
+    r"в бік {area}",
+    r"курс(ом)? на {area}",
+    r"{area} йде",
 ]
 
 

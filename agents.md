@@ -73,6 +73,7 @@ Use these scripts for common development tasks. When you make changes and want t
 - Update documentation and related rules when introducing new patterns or services.
 - When unsure or need to make a significant decision ASK the user for guidance
 - Always run `scripts/lint` after making changes to ensure code quality. 
+- Always run `scripts/test` when modifying library code.
 - Commit only when directly asked to do so. Write descriptive commit messages.
 
 ## Code Style

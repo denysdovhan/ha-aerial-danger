@@ -85,19 +85,17 @@ class DangerDetector:
         self._cities = list(cities)
         self._neighborhoods = list(neighborhoods)
 
-        area_city_and_neighborhood = self._cities + self._neighborhoods
-
         self._ballistic_patterns = compile_patterns(
-            map_areas(BALLISTIC_DANGER + GENERIC_DANGER, area_city_and_neighborhood)
+            map_areas(BALLISTIC_DANGER, self._cities + self._neighborhoods)
         )
         self._cruise_patterns = compile_patterns(
-            map_areas(CRUISE_DANGER + GENERIC_DANGER, area_city_and_neighborhood)
+            map_areas(CRUISE_DANGER, self._cities + self._neighborhoods)
         )
         self._drone_patterns = compile_patterns(
-            map_areas(DRONE_DANGER + GENERIC_DANGER, self._neighborhoods)
+            map_areas(DRONE_DANGER, self._neighborhoods)
         )
         self._generic_patterns = compile_patterns(
-            map_areas(GENERIC_DANGER, area_city_and_neighborhood)
+            map_areas(GENERIC_DANGER, self._cities + self._neighborhoods)
         )
 
     def ballistic_danger(self, message: str) -> Detection:
@@ -108,6 +106,8 @@ class DangerDetector:
             return Detection(danger=False, message=message)
 
         area = find_area(normalized, self._cities + self._neighborhoods)
+        if not area:
+            return Detection(danger=False, message=message)
         return Detection(
             danger=True,
             type=DangerType.BALLISTIC,
@@ -124,6 +124,8 @@ class DangerDetector:
             return Detection(danger=False, message=message)
 
         area = find_area(normalized, self._cities + self._neighborhoods)
+        if not area:
+             return Detection(danger=False, message=message)
         return Detection(
             danger=True,
             type=DangerType.CRUISE,
@@ -140,6 +142,8 @@ class DangerDetector:
             return Detection(danger=False, message=message)
 
         area = find_area(normalized, self._neighborhoods)
+        if not area:
+            return Detection(danger=False, message=message)
         return Detection(
             danger=True,
             type=DangerType.DRONE,
@@ -156,6 +160,8 @@ class DangerDetector:
             return Detection(danger=False, message=message)
 
         area = find_area(normalized, self._cities + self._neighborhoods)
+        if not area:
+            return Detection(danger=False, message=message)
         return Detection(
             danger=True,
             type=DangerType.GENERIC,
@@ -176,7 +182,6 @@ class DangerDetector:
             if detection.danger:
                 return detection
         return Detection(danger=False, message=message)
-
 
 
 __all__ = [
