@@ -125,7 +125,7 @@ class DangerDetector:
 
         area = find_area(normalized, self._cities + self._neighborhoods)
         if not area:
-             return Detection(danger=False, message=message)
+            return Detection(danger=False, message=message)
         return Detection(
             danger=True,
             type=DangerType.CRUISE,

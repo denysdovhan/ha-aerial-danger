@@ -32,85 +32,98 @@ NEIGHBORHOOD_PATTERNS = [
     r"галаган",
 ]
 
+BALLISTIC_CASES: list[str] = [
+    "Київ швидкісна!",
+    "КИЇВ Є ЦІЛІ!",
+    "Київ спуск! Одна за другою!",
+    "❗️ Балістика у напрямку Києва",
+    "❗️Повторний вихід з Брянська у напрямку Києва",
+    "🔴❗️Київ!",
+    "🔴❗️Вектор Київ!",
+    "КИЇВ ЦІЛЬ!",
+    "🔴🚀 «Кинджал» Київ!",
+    "🔴🚀 Вектор руху на Київ!",
+    "КИЇВ 2 СТІНИ!",
+    "🔴🚀Нивки.",
+    "☄Київ Балістика!",
+    "КИЇВ ШВИДКІСНА",
+    "🚀Швидкісна ціль на Київ!",
+    "Ще балістика на Київ!",
+    "‼️ Київ — спуск балістики!",
+    "🚀 Київ! Балістика!",
+    "🚀 Київ! Ще балістика!",
+    "🚀 Київ, балістика!",
+    "❗️ Кинджал вектор Київ/агломерація",
+    "🚀 Київ! Кинджал!",
+    "Київ є ЦІЛЬ!",
+    "🔴🚀 Київ!!",
+    "КИЇВ КИНДЖАЛ",
+    "🚀 Швидкісна у бік Києва!",
+    "‼️Київ — спуск Кинджалу!",
+]
+
+CRUISE_CASES: list[str] = [
+    "🔴Ракета Київ!",
+    "КР Позняки\n КР Теремки\n КР Солом'янка\n КР Нивки",
+    "Київ увага КР!!",
+    "❗ Київ — група КР на місто",
+    "❗️🚀КИЇВ 3-4 ХВЛИНИ ДО КР!",
+    "Київ і агломерація бути в укриттях по КР",
+    "🚀 Васильків/Київ, йде з півдня!",
+    "Київ увага по КР",
+    "Київ ще групи КР!",
+    "‼️ Київ — наближення крилатих ракет",
+    "Київ увага — КР",
+    "🚀 Вектор на столицю!",
+    "Кинджал у бік Києва/Житомира.",
+    "🚀Нивки!",
+    "До 4 КР на Київ/Бориспіль.",
+    "🟡🚀Калібри з Житомирщини розвертаються на Київщину, вектор Київ!",
+    "🚀 Калібри на Київ!",
+    "🚀КР на Київ!",
+    "🟡🚀Калібри на Святошинський район!",
+    "КАЛІБР КИЇВ!",
+    "🔴🚀4х групи крилатих ракет підлітають до Києва!",
+    "🔴🚀Святошино!",
+    "🟡🚀Ракета на Київ, вектор Академмістечко!",
+    "🚀 Група крилатих ракет на Чернігівщині. Курс до нас.",
+    "🚀 Крилаті з Житомирщини курсом до нас.",
+    "❗️Короче, до 10 штук. Крилаті курсом на нашу область.",
+]
+
+DRONE_CASES: list[str] = [
+    "❗️ Київ — 1х Академ/Коцюбинське.",
+    "Київ:\n 1х Нивки/Сирець\n 2х Жуляни\n \n 1х ДВРЗ/Березняки",
+    "🛵 У бік Нивок.",
+    "Київ: \n 2х Куренівка Нивки \n 1х Бортничі",
+    "❗️ Київ — 1х Нивки Сирець",
+    "❗️ Київ — 1х на Святошин.",
+    "🛵 Нивки, може бути гучно!",
+    "Нивки над вами БПЛА!",
+    "🛵 Курс на Нивки/Святошино.",
+    "Антонов йде!",
+    "Святошино/Нивки 🛵",
+]
+
+GENERIC_CASES: list[str] = [
+    "❗️Київ!",
+    "🟡Київ!",
+    "Далі Нивки.",
+    "❗️На Нивки!",
+    "БОЯРКА - ВИШНЕВЕ - КИЇВ!!",
+    "КИЇВ!",
+    "Київ зреагувати!!",
+    "‼️Київ!",
+    "Київ жахне!!",
+    "Нивки увага!",
+    "Київ/Вишгород увага",
+]
+
 MATCH_CASES: list[tuple[DangerType, str]] = [
-    (DangerType.BALLISTIC, "Київ швидкісна!"),
-    (DangerType.BALLISTIC, "КИЇВ Є ЦІЛІ!"),
-    (DangerType.BALLISTIC, "Київ спуск! Одна за другою!"),
-    (DangerType.BALLISTIC, "❗️ Балістика у напрямку Києва"),
-    (DangerType.BALLISTIC, "❗️Повторний вихід з Брянська у напрямку Києва"),
-    (DangerType.BALLISTIC, "🔴❗️Київ!"),
-    (DangerType.BALLISTIC, "🔴❗️Вектор Київ!"),
-    (DangerType.BALLISTIC, "КИЇВ ЦІЛЬ!"),
-    (DangerType.BALLISTIC, "🔴🚀 «Кинджал» Київ!"),
-    (DangerType.BALLISTIC, "🔴🚀 Вектор руху на Київ!"),
-    (DangerType.BALLISTIC, "КИЇВ 2 СТІНИ!"),
-    (DangerType.BALLISTIC, "🔴🚀Нивки."),
-    (DangerType.BALLISTIC, "☄Київ Балістика!"),
-    (DangerType.BALLISTIC, "КИЇВ ШВИДКІСНА"),
-    (DangerType.BALLISTIC, "🚀Швидкісна ціль на Київ!"),
-    (DangerType.BALLISTIC, "Ще балістика на Київ!"),
-    (DangerType.BALLISTIC, "‼️ Київ — спуск балістики!"),
-    (DangerType.BALLISTIC, "🚀 Київ! Балістика!"),
-    (DangerType.BALLISTIC, "🚀 Київ! Ще балістика!"),
-    (DangerType.BALLISTIC, "🚀 Київ, балістика!"),
-    (DangerType.BALLISTIC, "❗️ Кинджал вектор Київ/агломерація"),
-    (DangerType.BALLISTIC, "🚀 Київ! Кинджал!"),
-    (DangerType.BALLISTIC, "Київ є ЦІЛЬ!"),
-    (DangerType.BALLISTIC, "🔴🚀 Київ!!"),
-    (DangerType.BALLISTIC, "КИЇВ КИНДЖАЛ"),
-    (DangerType.BALLISTIC, "🚀 Швидкісна у бік Києва!"),
-    (DangerType.BALLISTIC, "‼️Київ — спуск Кинджалу!"),
-    (DangerType.CRUISE, "🔴Ракета Київ!"),
-    (DangerType.CRUISE, "КР Позняки\n КР Теремки\n КР Солом'янка\n КР Нивки"),
-    (DangerType.CRUISE, "Київ увага КР!!"),
-    (DangerType.CRUISE, "❗ Київ — група КР на місто"),
-    (DangerType.CRUISE, "❗️🚀КИЇВ 3-4 ХВЛИНИ ДО КР!"),
-    (DangerType.CRUISE, "Київ і агломерація бути в укриттях по КР"),
-    (DangerType.CRUISE, "🚀 Васильків/Київ, йде з півдня!"),
-    (DangerType.CRUISE, "Київ увага по КР"),
-    (DangerType.CRUISE, "Київ ще групи КР!"),
-    (DangerType.CRUISE, "‼️ Київ — наближення крилатих ракет"),
-    (DangerType.CRUISE, "Київ увага — КР"),
-    (DangerType.CRUISE, "🚀 Вектор на столицю!"),
-    (DangerType.CRUISE, "Кинджал у бік Києва/Житомира."),
-    (DangerType.CRUISE, "🚀Нивки!"),
-    (DangerType.CRUISE, "До 4 КР на Київ/Бориспіль."),
-    (
-        DangerType.CRUISE,
-        "🟡🚀Калібри з Житомирщини розвертаються на Київщину, вектор Київ!",
-    ),
-    (DangerType.CRUISE, "🚀 Калібри на Київ!"),
-    (DangerType.CRUISE, "🚀КР на Київ!"),
-    (DangerType.CRUISE, "🟡🚀Калібри на Святошинський район!"),
-    (DangerType.CRUISE, "КАЛІБР КИЇВ!"),
-    (DangerType.CRUISE, "🔴🚀4х групи крилатих ракет підлітають до Києва!"),
-    (DangerType.CRUISE, "🔴🚀Святошино!"),
-    (DangerType.CRUISE, "🟡🚀Ракета на Київ, вектор Академмістечко!"),
-    (DangerType.CRUISE, "🚀 Група крилатих ракет на Чернігівщині. Курс до нас."),
-    (DangerType.CRUISE, "🚀 Крилаті з Житомирщини курсом до нас."),
-    (DangerType.CRUISE, "❗️Короче, до 10 штук. Крилаті курсом на нашу область."),
-    (DangerType.DRONE, "❗️ Київ — 1х Академ/Коцюбинське."),
-    (DangerType.DRONE, "Київ:\n 1х Нивки/Сирець\n 2х Жуляни\n \n 1х ДВРЗ/Березняки"),
-    (DangerType.DRONE, "🛵 У бік Нивок."),
-    (DangerType.DRONE, "Київ: \n 2х Куренівка Нивки \n 1х Бортничі"),
-    (DangerType.DRONE, "❗️ Київ — 1х Нивки Сирець"),
-    (DangerType.DRONE, "❗️ Київ — 1х на Святошин."),
-    (DangerType.DRONE, "🛵 Нивки, може бути гучно!"),
-    (DangerType.DRONE, "Нивки над вами БПЛА!"),
-    (DangerType.DRONE, "🛵 Курс на Нивки/Святошино."),
-    (DangerType.DRONE, "Антонов йде!"),
-    (DangerType.DRONE, "Святошино/Нивки 🛵"),
-    (DangerType.GENERIC, "❗️Київ!"),
-    (DangerType.GENERIC, "🟡Київ!"),
-    (DangerType.GENERIC, "Далі Нивки."),
-    (DangerType.GENERIC, "❗️На Нивки!"),
-    (DangerType.GENERIC, "БОЯРКА - ВИШНЕВЕ - КИЇВ!!"),
-    (DangerType.GENERIC, "КИЇВ!"),
-    (DangerType.GENERIC, "Київ зреагувати!!"),
-    (DangerType.GENERIC, "‼️Київ!"),
-    (DangerType.GENERIC, "Київ жахне!!"),
-    (DangerType.GENERIC, "Нивки увага!"),
-    (DangerType.GENERIC, "Київ/Вишгород увага"),
+    *[(DangerType.BALLISTIC, s) for s in BALLISTIC_CASES],
+    *[(DangerType.CRUISE, s) for s in CRUISE_CASES],
+    *[(DangerType.DRONE, s) for s in DRONE_CASES],
+    *[(DangerType.GENERIC, s) for s in GENERIC_CASES],
 ]
 
 
@@ -130,6 +143,40 @@ NO_MATCH_CASES: list[str] = [
     "⚠️ 5х БпЛА на північ від Києва. \n 6х БпЛА у напрямку Вишневе/Білогородка",
 ]
 
+def test_ballistic_only() -> None:
+    """Ballistic-specific helper should flag ballistic samples."""
+    detector = DangerDetector(CITY_PATTERNS, NEIGHBORHOOD_PATTERNS)
+    for text in BALLISTIC_CASES:
+        detection = detector.ballistic_danger(text)
+        assert detection.danger is True, text
+        assert detection.type == DangerType.BALLISTIC, text
+
+
+def test_cruise_only() -> None:
+    """Cruise-specific helper should flag cruise samples."""
+    detector = DangerDetector(CITY_PATTERNS, NEIGHBORHOOD_PATTERNS)
+    for text in CRUISE_CASES:
+        detection = detector.cruise_missile_danger(text)
+        assert detection.danger is True, text
+        assert detection.type == DangerType.CRUISE, text
+
+
+def test_drone_only() -> None:
+    """Drone-specific helper should flag drone samples."""
+    detector = DangerDetector(CITY_PATTERNS, NEIGHBORHOOD_PATTERNS)
+    for text in DRONE_CASES:
+        detection = detector.drone_danger(text)
+        assert detection.danger is True, text
+        assert detection.type == DangerType.DRONE, text
+
+
+def test_generic_only() -> None:
+    """Generic helper should flag generic samples."""
+    detector = DangerDetector(CITY_PATTERNS, NEIGHBORHOOD_PATTERNS)
+    for text in GENERIC_CASES:
+        detection = detector.generic_danger(text)
+        assert detection.danger is True, text
+        assert detection.type == DangerType.GENERIC, text
 
 def test_matches_expected_types() -> None:
     """All positive samples should be detected with the expected type."""
@@ -138,7 +185,6 @@ def test_matches_expected_types() -> None:
         detection = detector.danger(text)
         assert detection.danger is True, text
         assert detection.type == expected_type, text
-
 
 def test_non_matches() -> None:
     """Negative samples should not raise danger flags."""
