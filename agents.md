@@ -43,11 +43,26 @@ This repository scaffolds a Home Assistant custom integration **Aerial Danger**.
 
 <instruction>Fill in by LLM assistant memory</instruction>
 
-### Workflow
+### Parsing data
 
-<instruction>Fill in by LLM assistant in memory</instruction>
+Here are a few notes on parsing data from external sources. Here are words that always have the same meaning:
 
-This project is developed from Devcontainer described in `.devcontainer.json` file.
+- Ballistic missile are usually refered as:
+  - `отрк`
+  - `бр`
+  - `кинджал`
+  - `іскандер`
+- Cruise missile are usually refered as:
+  - `кр`
+  - `крупа кр`
+  - `крилаті ракети`
+  - `х-101`
+  - `калібр`
+- Drones are usually refered as:
+  - `бплa`
+  - `безпілотник`
+  - `дрон`
+  - `шахед`
 
 ### Tooling
 
