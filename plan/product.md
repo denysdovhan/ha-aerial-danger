@@ -34,32 +34,15 @@ Areas should be specified as a list of words (regexps can be used). For example:
 'галаган'
 ```
 
-## Danger Library
+## Danger Library (implemented)
 
-This integration should implement a danger checking library. We already have a simplified implementation for this library as a Jinja template in `danger.jinja` file.
+Location: `custom_components/aerial_danger/danger/keywords.py` (phrase templates) and `custom_components/aerial_danger/danger/danger.py` (logic). API is exposed via `custom_components.aerial_danger.danger` package.
 
-Library takes city and neighborhood keywords (might be regexps) as inputs.
+Public API: `DangerDetector` takes city and neighborhood patterns. Methods `ballistic_danger`, `cruise_missile_danger`, `drone_danger`, `generic_danger`, and composite `danger` (ballistic → cruise → drone → generic order). Each returns a `Detection` dataclass with fields `danger: bool`, `type: DangerType | None`, `area`, `match`, `message`; negative results return `danger=False` and `None` for the rest. `DangerType` is an enum: `ballistic`, `cruise`, `drone`, `generic`.
 
-This library already has lists of keywords and phases indicating different kind of dangers: ballistic danger, cruise missile danger, drone danger, generic danger. Each of these phrases can contain regexps for narrowing keywords matching. Each of these phrases can contain `{area}` keywords that will be mapped to each of defined cities or neighborhoods resulting in list of `city x keywords`, or `city + neighborhood x keywords`.
+Matching rules: message is lowercased; regexes are compiled once per detector. Phrase templates live only in `keywords.py`; `{area}` placeholders are expanded against city and neighborhood patterns; `+` means concatenation, `x` means cartesian combinations. First match wins; areas are evaluated in provided order. Generic phrases can match alone or alongside others; detection reports the matched type.
 
-The library should expose functions for checking different kinds of dangers:
-
-- ballistic - `(city + neightborhood) x (ballistic_keywords + generic_keywords)`
-- cruise missiles - `(city + neighborhood) x (cruise_keywords + generic_keywords)`
-- drone - `neighborhood x (dron_keywords + generic_keywords)`
-- danger - `ballistic or cruise_missiles or drone`
-
-These functions should take an input message from data source and check for keyword matches in these input message. The resulting value should contain:
-
-```
-danger: bool
-type: ballistic or cruise or drone
-area: city or neighborhood
-match: "string that was matched"
-message: "original message"
-```
-
-`danger` function should compose the value from the rest of the danger functions.
+Performance: designed for ~5 sources polled every 5 seconds; regexes are compiled up front.
 
 ## Integration logic
 
@@ -67,18 +50,51 @@ Integration should use a library described above. The integration should listen 
 
 Integration should expose these entities:
 
-- `event.<name>_danger` - event is published when danger occurs. Event should contain all the relevant data.
-- `sensor.<name>_ballistic_danger` - a boolean safety sensor for ballistic danger.
-- `sensor.<name>_cruise_danger` - a boolean safety sensor for cruise missile danger.
-- `sensor.<name>_drone_danger` - a boolean safety sensor for drone danger.
+- `event.<type>_danger` - event is published when danger occurs. Event should contain all the relevant data.
+- `binary_sensor.<name>_ballistic_danger` - a safety binary sensor for ballistic danger.
+- `binary_sensor.<name>_cruise_danger` - a safety binary sensor for cruise missile danger.
+- `binary_sensor.<name>_drone_danger` - a safety binary sensor for drone danger.
+- `binary_sensor.<name>_unknown_danger` - a safety binary sensor for generic danger.
+- `binary_sensor.<name>_danger` - aggregate safety binary sensor; true if any of the above is true.
 
 When danger is `true` the integration should publish an event with all the relevant data and set the relevant sensors to `true`. When value is `false` sensors should be set to `false`.
 
-## Step 1: Danger Library Implementation Plan
+## Progress
 
-- Location: `custom_components/aerial_danger/lib/keywords.py` (phrase templates) and `custom_components/aerial_danger/lib/danger.py` (logic).
-- API: a `Detector` class that takes `cities` and `neighborhoods` at init; methods `ballistic_danger(message)`, `cruise_missile_danger(message)`, `drone_danger(message)`, `generic_danger(message)`, and `danger(message)` (composite).
-- Return type: `Detection` dataclass with fields `danger: bool`, `type: DangerType | None`, `area`, `match`, `message`; methods return the first match or a negative Detection (`danger=False`, others `None`). `DangerType` enum includes `ballistic`, `cruise`, `drone`, `generic`.
-- Matching rules: lowercase message; Unicode + case-insensitive regex. Expand `{area}` placeholders via cartesian product of phrase templates with provided area patterns. Combine phrase sets per plan semantics (`+` = concatenate lists, `x` = every combination of lists). Evaluate order ballistic → cruise → drone, each paired with generic phrases but generic never stands alone. First match wins; area chosen in provided order.
-- Performance: compile all regexes once per `Detector` instance to support ~5 sources polling every 5 seconds.
-- Tests: to be added later after phrases are finalized; will cover expansion, ordering, first-match behavior, emoji/markdown tolerance, and no-match cases.
+- Step 1: Danger library implemented in `custom_components/aerial_danger/danger/` with compiled regex matching, `DangerDetector`, `Detection` dataclass, and `DangerType` enum. Keywords isolated to `keywords.py` per design.
+- Step 2: Library covered by pytest suite in `tests/test_danger.py`; `scripts/test` runs the suite. `scripts/lint` runs ruff; agents guide updated to run tests when touching library code.
+
+## Next Steps
+
+- Step 3: Implement Home Assistant integration wiring (plan below).
+- Step 4: Iterate on UX, robustness, and documentation once integration basics are in place.
+
+## Step 3 Plan: Home Assistant Integration
+
+- Config/Options
+  - Extend flows to capture: entry name, city regex list, neighborhood regex list, list of HA source entity_ids (textual states), and scan interval only if we later add polling. Options flow must allow editing all of these. Store patterns/options on the entry and build `DangerDetector` from them.
+  - User should be able to add more data source (as subentries) later via options flow.
+  - Update manifest `iot_class` to `local_push` (state change subscriptions, no external polling).
+
+- Runtime wiring
+  - On entry setup, create one detector and keep it under `hass.data[DOMAIN][entry_id]`.
+  - Subscribe to `state_changed` for the configured source entities; no extra polling. Process only when the state text actually changes. Each new state (stringified) is sent to the detector.
+  - Composite detection order: ballistic → cruise → drone → generic. First match wins. Generic still surfaces as its own type.
+  - Fire distinct events per type: `ballistic_danger`, `cruise_danger`, `drone_danger`, `unknown_danger` with payload: type, area, match, message, source entity_id, timestamp.
+  - Maintain last detection per type to drive sensors; flip to False when the next processed update does not match that type.
+
+- Entities
+  - Expose five `binary_sensor`s with `device_class: safety`: `ballistic_danger`, `cruise_danger`, `drone_danger`, `unknown_danger` (generic), and aggregated `danger` (true if any type is true). Entity IDs prefixed by entry name.
+  - Consider a single device to group the sensors; device info keyed on config entry.
+
+- Translations & docs
+  - Add strings for new fields, sensors, and event description in `translations/` (en, uk).
+  - README section explaining configuration, sensors, events, and expected message sources.
+
+- Validation & testing
+  - Reuse library tests;
+  - Do not add tests for HA integration itself yet; focus on manual testing in dev environment.
+  - Scripts: keep `scripts/lint` and `scripts/test`; add HA-specific test targets if needed.
+
+- UX specifics
+  - Sources field in flows uses HA entity selector with multi-select, filtered to text-like entities. For now read only the entity state; later we can extend to pick an attribute or template.

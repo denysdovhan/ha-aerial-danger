@@ -3,9 +3,12 @@
   "config": {
     "step": {
       "user": {
-        "description": "Налаштуйте Aerial Danger.",
+        "description": "Налаштуйте Aerial Danger. Вкажіть області та джерела для моніторингу.",
         "data": {
-          "name": "Назва"
+          "name": "Назва",
+          "city_patterns": "Регулярки міст (по одному в рядок)",
+          "neighborhood_patterns": "Регулярки районів (по одному в рядок)",
+          "sources": "Джерела даних"
         }
       }
     },
@@ -16,7 +19,32 @@
   "options": {
     "step": {
       "init": {
-        "title": "Параметри Aerial Danger"
+        "title": "Параметри Aerial Danger",
+        "data": {
+          "name": "Назва",
+          "city_patterns": "Регулярки міст (по одному в рядок)",
+          "neighborhood_patterns": "Регулярки районів (по одному в рядок)",
+          "sources": "Джерела даних"
+        }
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "ballistic": {
+        "name": "Балістична небезпека"
+      },
+      "cruise": {
+        "name": "Небезпека крилатих ракет"
+      },
+      "drone": {
+        "name": "Небезпека дронів"
+      },
+      "unknown": {
+        "name": "Невідома небезпека"
+      },
+      "danger": {
+        "name": "Небезпека"
       }
     }
   }

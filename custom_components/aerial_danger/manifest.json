@@ -4,7 +4,7 @@
   "codeowners": ["@denysdovhan"],
   "config_flow": true,
   "documentation": "https://github.com/denysdovhan/ha-aerial-danger",
-  "iot_class": "cloud_polling",
+  "iot_class": "calculated",
   "issue_tracker": "https://github.com/denysdovhan/ha-aerial-danger",
   "requirements": [],
   "version": "0.0.0-unreleased"

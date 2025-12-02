@@ -3,9 +3,12 @@
   "config": {
     "step": {
       "user": {
-        "description": "Set up Aerial Danger.",
+        "description": "Set up Aerial Danger. Provide areas and source entities to monitor.",
         "data": {
-          "name": "Name"
+          "name": "Name",
+          "city_patterns": "City regex patterns (one per line)",
+          "neighborhood_patterns": "Neighborhood regex patterns (one per line)",
+          "sources": "Source entities"
         }
       }
     },
@@ -16,7 +19,32 @@
   "options": {
     "step": {
       "init": {
-        "title": "Aerial Danger options"
+        "title": "Aerial Danger options",
+        "data": {
+          "name": "Name",
+          "city_patterns": "City regex patterns (one per line)",
+          "neighborhood_patterns": "Neighborhood regex patterns (one per line)",
+          "sources": "Source entities"
+        }
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "ballistic": {
+        "name": "Ballistic danger"
+      },
+      "cruise": {
+        "name": "Cruise missile danger"
+      },
+      "drone": {
+        "name": "Drone danger"
+      },
+      "unknown": {
+        "name": "Unknown danger"
+      },
+      "danger": {
+        "name": "Danger"
       }
     }
   }

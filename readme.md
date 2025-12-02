@@ -2,18 +2,19 @@
 
 # 🛰️ HA Aerial Danger
 
-> Scaffold for a Home Assistant integration that will monitor aerial danger channels and expose sensors based on configurable predicates.
-
-This repository currently contains only the integration skeleton (config flow, manifest, and platform stubs). Business logic and sensor creation will be added later.
+> Home Assistant custom integration that matches danger messages from your own HA entities (e.g. Telegram bots, scrapers) using configurable area regexes and built‑in danger keywords.
 
 ## Status
 
-- ✅ Integration structure and config flow stub
-- ⏳ Data fetching, predicates, sensors, and tests (planned)
+- ✅ Danger detection library with keyword sets and pytest coverage
+- ✅ Config/option flows for name, area patterns, and source entities
+- ✅ Binary sensors for ballistic, cruise, drone, unknown, and aggregate danger
+- ✅ Events per danger type with match details
+- ⏳ Polishing, UX, and HA-level tests
 
 ## Installation (development)
 
-Add this repository to HACS as a custom integration or copy `custom_components/aerial_danger` into your Home Assistant `custom_components` directory. The current version only sets up the config entry and does not create entities.
+Add this repository to HACS as a custom integration or copy `custom_components/aerial_danger` into your Home Assistant `custom_components` directory. Configure via UI: provide area regexes (one per line) and select source entities whose state text contains incoming alerts. The integration listens to state changes (local_push) and updates safety binary_sensors plus emits events per danger type.
 
 ## Contributing
 

@@ -1,5 +1,7 @@
 """Tests for the DangerDetector class in the aerial_danger custom component."""
 
+# ruff: noqa: S101
+
 from custom_components.aerial_danger.danger import DangerDetector, DangerType
 
 CITY_PATTERNS = [
