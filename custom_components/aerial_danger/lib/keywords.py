@@ -12,25 +12,27 @@ GENERIC_DANGER = [
     r"2 стіни",
     r"від вікон",
     r"вглиб будівель!",
-    r"🟡{area}!",
-    r"❗️{area}!",
-    r"{area}!!",
-    r"{area}!",
     r"{area} увага",
     r"{area}.+увага",
     r"{area} зреагувати",
     r"{area} жахне",
     r"на {area}",
     r"на {area}!",
-    r"🔴🚀.*{area}",
     r"далі {area}",
+    r"{area}!!",
+    r"{area}!",
+    r"❗️{area}!",
+    r"🟡{area}!",
+    r"🔴🚀.*{area}",
+    r"🟡🚀.*{area}",
+    r"🔴❗️.*{area}",
+    r"🚀.*{area}",
+    r"вектор.*{area}",
+    r"вектор руху на {area}",
 ]
 
 # Ballistic-oriented phrases.
 BALLISTIC_DANGER = [
-    r"🔴🚀(?:(?!крилат).)*нив",
-    r"🔴🚀(?:(?!крилат).)*ки(ї|є)в",
-    r"🔴❗️",
     r"балістик",
     r"балістика на {area}",
     r"наближення балістики",
@@ -47,19 +49,17 @@ BALLISTIC_DANGER = [
     r"{area} швидкісна",
     r"{area} є ціл",
     r"{area} ціль",
-    r"2 стіни",
-    r"дві стіни",
     r"спуск {area}",
     r"спуск на {area}",
     r"{area} спуск!",
-    r"вектор руху на {area}",
+    r"ціль на {area}",
+    r"{area} ціль!",
+    r"{area} цілі!",
 ]
 
 
 # Cruise-missile oriented phrases (including generic "rocket" wording).
 CRUISE_DANGER = [
-    r"🔴🚀(?!.*нив)",
-    r"🟡🚀",
     r"кр на",
     r"кр повз",
     r"кр від",
@@ -86,11 +86,7 @@ CRUISE_DANGER = [
     r"{area} ракета",
     r"ракета {area}",
     r"заходить ракета",
-    r"{area} ціль!",
-    r"{area} цілі!",
-    r"ціль на {area}",
-    r"вектор.*{area}",
-    r"🚀.*{area}",
+    r"🚀.*?{area}.*?,?\s*йде з",
 ]
 
 # Drone-oriented phrases.
