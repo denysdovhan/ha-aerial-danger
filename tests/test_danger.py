@@ -143,6 +143,7 @@ NO_MATCH_CASES: list[str] = [
     "⚠️ 5х БпЛА на північ від Києва. \n 6х БпЛА у напрямку Вишневе/Білогородка",
 ]
 
+
 def test_ballistic_only() -> None:
     """Ballistic-specific helper should flag ballistic samples."""
     detector = DangerDetector(CITY_PATTERNS, NEIGHBORHOOD_PATTERNS)
@@ -178,6 +179,7 @@ def test_generic_only() -> None:
         assert detection.danger is True, text
         assert detection.type == DangerType.GENERIC, text
 
+
 def test_matches_expected_types() -> None:
     """All positive samples should be detected with the expected type."""
     detector = DangerDetector(CITY_PATTERNS, NEIGHBORHOOD_PATTERNS)
@@ -185,6 +187,7 @@ def test_matches_expected_types() -> None:
         detection = detector.danger(text)
         assert detection.danger is True, text
         assert detection.type == expected_type, text
+
 
 def test_non_matches() -> None:
     """Negative samples should not raise danger flags."""

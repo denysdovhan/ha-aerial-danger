@@ -1,17 +1,8 @@
-"""
-Danger detection library for the Aerial Danger integration.
-
-The detector expands phrase templates against user-provided area regexes,
-compiles them once, and provides per-danger detection helpers plus a composite
-`danger` check. Matching is case-insensitive and returns only the first hit to
-keep processing predictable for downstream sensors.
-"""
+"""Danger detection library for the Aerial Danger integration."""
 
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
-from enum import Enum
 from typing import TYPE_CHECKING
 
 from .keywords import (
@@ -20,61 +11,13 @@ from .keywords import (
     DRONE_DANGER,
     GENERIC_DANGER,
 )
+from .models import DangerType, Detection
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Sequence
 
 RE_FLAGS = re.IGNORECASE | re.UNICODE
 AREA_PLACEHOLDER = "{area}"
-
-
-class DangerType(str, Enum):
-    """Enum of supported aerial danger types."""
-
-    BALLISTIC = "ballistic"
-    CRUISE = "cruise"
-    DRONE = "drone"
-    GENERIC = "generic"
-
-
-@dataclass
-class Detection:
-    """Represents a detected aerial danger."""
-
-    danger: bool
-    message: str
-    type: DangerType | None = None
-    area: str | None = None
-    match: str | None = None
-
-
-def map_areas(phrases: Sequence[str], areas: Sequence[str]) -> list[str]:
-    expanded: list[str] = []
-    for phrase in phrases:
-        if AREA_PLACEHOLDER in phrase:
-            expanded.extend(phrase.replace(AREA_PLACEHOLDER, area) for area in areas)
-        else:
-            expanded.append(phrase)
-    return expanded
-
-
-def compile_patterns(phrases: Sequence[str]) -> list[re.Pattern[str]]:
-    return [re.compile(phrase, RE_FLAGS) for phrase in phrases]
-
-
-def find_area(message: str, areas: Sequence[str]) -> str | None:
-    for area in areas:
-        if re.search(area, message, RE_FLAGS):
-            return area
-    return None
-
-
-def match_first(patterns: Sequence[re.Pattern[str]], message: str) -> str | None:
-    for pattern in patterns:
-        match = pattern.search(message)
-        if match:
-            return match.group(0)
-    return None
 
 
 class DangerDetector:
@@ -85,88 +28,111 @@ class DangerDetector:
         self._cities = list(cities)
         self._neighborhoods = list(neighborhoods)
 
-        self._ballistic_patterns = compile_patterns(
-            map_areas(BALLISTIC_DANGER, self._cities + self._neighborhoods)
+        self._ballistic_patterns = self.compile_patterns(
+            self.map_areas(BALLISTIC_DANGER, self._cities + self._neighborhoods)
         )
-        self._cruise_patterns = compile_patterns(
-            map_areas(CRUISE_DANGER, self._cities + self._neighborhoods)
+        self._cruise_patterns = self.compile_patterns(
+            self.map_areas(CRUISE_DANGER, self._cities + self._neighborhoods)
         )
-        self._drone_patterns = compile_patterns(
-            map_areas(DRONE_DANGER, self._neighborhoods)
+        self._drone_patterns = self.compile_patterns(
+            self.map_areas(DRONE_DANGER, self._neighborhoods)
         )
-        self._generic_patterns = compile_patterns(
-            map_areas(GENERIC_DANGER, self._cities + self._neighborhoods)
+        self._generic_patterns = self.compile_patterns(
+            self.map_areas(GENERIC_DANGER, self._cities + self._neighborhoods)
+        )
+
+    def map_areas(self, phrases: Sequence[str], areas: Sequence[str]) -> list[str]:
+        """Expand phrases with area placeholders into area-specific phrases."""
+        expanded: list[str] = []
+        for phrase in phrases:
+            if AREA_PLACEHOLDER in phrase:
+                expanded.extend(
+                    phrase.replace(AREA_PLACEHOLDER, area) for area in areas
+                )
+            else:
+                expanded.append(phrase)
+        return expanded
+
+    def compile_patterns(self, phrases: Sequence[str]) -> list[re.Pattern[str]]:
+        """Compile a list of regex patterns from phrases."""
+        return [re.compile(phrase, RE_FLAGS) for phrase in phrases]
+
+    def find_area(self, message: str, areas: Sequence[str]) -> str | None:
+        """Find the first area mentioned in the message."""
+        for area in areas:
+            if re.search(area, message, RE_FLAGS):
+                return area
+        return None
+
+    def match_first(
+        self, patterns: Sequence[re.Pattern[str]], message: str
+    ) -> str | None:
+        """Find the first pattern that matches the message."""
+        for pattern in patterns:
+            match = pattern.search(message)
+            if match:
+                return match.group(0)
+        return None
+
+    def detect(
+        self,
+        *,
+        message: str,
+        patterns: Sequence[re.Pattern[str]],
+        areas: Sequence[str],
+        danger_type: DangerType,
+    ) -> Detection:
+        """Shared detection helper used by danger-specific methods."""
+        normalized = message.lower()
+        match = self.match_first(patterns, normalized)
+        if not match:
+            return Detection(danger=False, message=message)
+
+        area = self.find_area(normalized, areas)
+        if area is None:
+            return Detection(danger=False, message=message)
+
+        return Detection(
+            danger=True,
+            type=danger_type,
+            area=area,
+            match=match,
+            message=message,
         )
 
     def ballistic_danger(self, message: str) -> Detection:
         """Detect ballistic danger; returns first match or a negative detection."""
-        normalized = message.lower()
-        match = match_first(self._ballistic_patterns, normalized)
-        if not match:
-            return Detection(danger=False, message=message)
-
-        area = find_area(normalized, self._cities + self._neighborhoods)
-        if not area:
-            return Detection(danger=False, message=message)
-        return Detection(
-            danger=True,
-            type=DangerType.BALLISTIC,
-            area=area,
-            match=match,
+        return self.detect(
+            danger_type=DangerType.BALLISTIC,
+            patterns=self._ballistic_patterns,
+            areas=self._cities + self._neighborhoods,
             message=message,
         )
 
     def cruise_missile_danger(self, message: str) -> Detection:
         """Detect cruise-missile danger; returns first match or a negative detection."""
-        normalized = message.lower()
-        match = match_first(self._cruise_patterns, normalized)
-        if not match:
-            return Detection(danger=False, message=message)
-
-        area = find_area(normalized, self._cities + self._neighborhoods)
-        if not area:
-            return Detection(danger=False, message=message)
-        return Detection(
-            danger=True,
-            type=DangerType.CRUISE,
-            area=area,
-            match=match,
+        return self.detect(
+            danger_type=DangerType.CRUISE,
+            patterns=self._cruise_patterns,
+            areas=self._cities + self._neighborhoods,
             message=message,
         )
 
     def drone_danger(self, message: str) -> Detection:
         """Detect drone danger; returns first match or a negative detection."""
-        normalized = message.lower()
-        match = match_first(self._drone_patterns, normalized)
-        if not match:
-            return Detection(danger=False, message=message)
-
-        area = find_area(normalized, self._neighborhoods)
-        if not area:
-            return Detection(danger=False, message=message)
-        return Detection(
-            danger=True,
-            type=DangerType.DRONE,
-            area=area,
-            match=match,
+        return self.detect(
+            danger_type=DangerType.DRONE,
+            patterns=self._drone_patterns,
+            areas=self._neighborhoods,
             message=message,
         )
 
     def generic_danger(self, message: str) -> Detection:
         """Detect generic danger linked to any provided area."""
-        normalized = message.lower()
-        match = match_first(self._generic_patterns, normalized)
-        if not match:
-            return Detection(danger=False, message=message)
-
-        area = find_area(normalized, self._cities + self._neighborhoods)
-        if not area:
-            return Detection(danger=False, message=message)
-        return Detection(
-            danger=True,
-            type=DangerType.GENERIC,
-            area=area,
-            match=match,
+        return self.detect(
+            danger_type=DangerType.GENERIC,
+            patterns=self._generic_patterns,
+            areas=self._cities + self._neighborhoods,
             message=message,
         )
 
