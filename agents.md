@@ -57,7 +57,7 @@ This project is developed from Devcontainer described in `.devcontainer.json` fi
 - Each time you make changes to Python code, run `scripts/lint` to check for errors and formatting issues. Fix any issues reported by the linter.
 - Dev config lives under `config/` for local HA runs.
 
-### Develompent Scripts
+### Development Scripts
 
 Use these scripts for common development tasks. When you make changes and want to validate your work, use these scripts.
 
@@ -72,6 +72,7 @@ Use these scripts for common development tasks. When you make changes and want t
 - Ask for clarification when requirements are ambiguous; surface 2–3 options when trade-offs matter.
 - Update documentation and related rules when introducing new patterns or services.
 - When unsure or need to make a significant decision ASK the user for guidance
+- Always run `scripts/lint` after making changes to ensure code quality. 
 - Commit only when directly asked to do so. Write descriptive commit messages.
 
 ## Code Style
