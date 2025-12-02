@@ -73,3 +73,12 @@ Integration should expose these entities:
 - `sensor.<name>_drone_danger` - a boolean safety sensor for drone danger.
 
 When danger is `true` the integration should publish an event with all the relevant data and set the relevant sensors to `true`. When value is `false` sensors should be set to `false`.
+
+## Step 1: Danger Library Implementation Plan
+
+- Location: `custom_components/aerial_danger/lib/keywords.py` (phrase templates) and `custom_components/aerial_danger/lib/danger.py` (logic).
+- API: a `Detector` class that takes `cities` and `neighborhoods` at init; methods `ballistic_danger(message)`, `cruise_missile_danger(message)`, `drone_danger(message)`, `generic_danger(message)`, and `danger(message)` (composite).
+- Return type: `Detection` dataclass with fields `danger: bool`, `type: DangerType | None`, `area`, `match`, `message`; methods return the first match or a negative Detection (`danger=False`, others `None`). `DangerType` enum includes `ballistic`, `cruise`, `drone`, `generic`.
+- Matching rules: lowercase message; Unicode + case-insensitive regex. Expand `{area}` placeholders via cartesian product of phrase templates with provided area patterns. Combine phrase sets per plan semantics (`+` = concatenate lists, `x` = every combination of lists). Evaluate order ballistic → cruise → drone, each paired with generic phrases but generic never stands alone. First match wins; area chosen in provided order.
+- Performance: compile all regexes once per `Detector` instance to support ~5 sources polling every 5 seconds.
+- Tests: to be added later after phrases are finalized; will cover expansion, ordering, first-match behavior, emoji/markdown tolerance, and no-match cases.

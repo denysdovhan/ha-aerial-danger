@@ -1,16 +1,6 @@
-"""
-Detection cases derived from plan/cases.md.
+"""Tests for the DangerDetector class in the aerial_danger custom component."""
 
-Add new samples by extending `MATCH_CASES` or `NO_MATCH_CASES`.
-"""
-# ruff: noqa: S101
-
-import sys
-from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-
-from custom_components.aerial_danger.lib.danger import DangerDetector, DangerType
+from custom_components.aerial_danger.danger import DangerDetector, DangerType
 
 CITY_PATTERNS = [
     r"\bки(ї|є)в(а|у|ом|е|і)?\b",
