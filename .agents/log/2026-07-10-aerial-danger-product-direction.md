@@ -13,7 +13,7 @@ related_paths:
 
 Aerial Danger is a Home Assistant custom integration for detecting danger
 messages from Telegram-channel data exposed through user-configured Home
-Assistant sources. Users provide area patterns for cities and neighborhoods.
+Assistant sources. Users provide area patterns for regions and neighborhoods.
 External data collection stays outside the integration; users can feed text via
 scraping integrations, Telegram bots, templates, text helpers, or similar Home
 Assistant entities.
@@ -35,7 +35,7 @@ split between implemented behavior and pending product direction.
 Configure each integration entry with:
 
 - entry name
-- city regex patterns
+- region regex patterns
 - neighborhood regex patterns
 - source Home Assistant entity IDs whose state contains text
 
@@ -64,7 +64,7 @@ area, match, message, source entity ID, and timestamp.
 - Danger library is implemented in `custom_components/aerial_danger/danger/`
   with compiled regex matching, keyword templates, `DangerDetector`,
   `Detection`, and `DangerType`.
-- Config flow is single-instance and captures name, city patterns,
+- Config flow is single-instance and captures name, region patterns,
   neighborhood patterns, and source entity IDs.
 - Options flow allows editing the same fields and normalizes multiline pattern
   input into lists.
@@ -134,7 +134,7 @@ UX/product work.
 - [x] Danger library has pytest coverage in `tests/test_danger.py`.
 - [x] Config/options flow coverage exists in `tests/test_config_flow.py`.
 - [x] Setup and binary sensor behavior coverage exists in `tests/test_init.py`.
-- [ ] Run `scripts/lint` after Python changes in the current worktree.
+- [x] Run `scripts/lint` after Python changes in the current worktree.
 - [ ] Run `scripts/test` before finalizing this entry.
 - [ ] Manually validate Home Assistant source state changes, danger events, and
       binary sensors in the dev server.
@@ -152,3 +152,20 @@ manual validation, and external brands assets.
 
 2026-07-10: Removed retired `plan/` folder after migrating product direction
 into `.agents/log/`.
+
+2026-07-10: Renamed city patterns to region patterns throughout the integration.
+Config entry data and options migrate from `city_patterns` to `region_patterns`
+at minor version 2; the old key remains a setup fallback for incomplete
+migrations.
+
+2026-07-10: `scripts/lint` passed. `scripts/test` could not spawn its `pytest`
+entrypoint in the local uv environment; `uv run python -m pytest` passed all 17
+tests instead.
+
+2026-07-10: No compatibility migration is needed at this starting stage; removed
+the migration, legacy key fallback, and migration test. Configuration now stores
+only `region_patterns`.
+
+2026-07-10: Validate configured regexes through the static
+`DangerDetector.validate_patterns` helper before construction; config and setup
+do not instantiate a detector to validate input.
