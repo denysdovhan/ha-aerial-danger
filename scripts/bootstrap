@@ -13,6 +13,7 @@ if ! command -v uv >/dev/null 2>&1; then
 fi
 
 echo "==> Installing dependencies (including dev)..."
+uv venv --clear
 uv sync --dev
 
 echo "==> Installing pre-commit hooks..."
