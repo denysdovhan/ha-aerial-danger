@@ -34,10 +34,11 @@ This repository scaffolds a Home Assistant custom integration **Aerial Danger**.
 
 ### Code structure (current)
 
-- `__init__.py` — sets up/unloads the config entry and forwards platforms; stores per-entry data in `hass.data[DOMAIN]`.
-- `config_flow.py` — single-instance config flow that captures a name only; options flow placeholder.
+- `__init__.py` — sets up/unloads the config entry, forwards platforms, stores runtime objects in `ConfigEntry.runtime_data`, listens to source entity state changes, and fires danger events.
+- `config_flow.py` — single-instance config and options flows for name, area regex patterns, and source entities; rejects invalid regex patterns.
 - `const.py` — domain/name constants and platform list.
-- `sensor.py` — platform stub; adds no entities yet.
+- `binary_sensor.py` — safety binary sensors for ballistic, cruise, drone, unknown, and aggregate danger.
+- `danger/` — Home Assistant agnostic danger detection library, keyword templates, and data models.
 - `translations/` — English and Ukrainian strings for the basic flow.
 - `manifest.json` — Home Assistant manifest pointing to this repo.
 
@@ -87,7 +88,7 @@ Use these scripts for common development tasks. When you make changes and want t
 - Ask for clarification when requirements are ambiguous; surface 2–3 options when trade-offs matter.
 - Update documentation and related rules when introducing new patterns or services.
 - When unsure or need to make a significant decision ASK the user for guidance
-- Always run `scripts/lint` after making changes to ensure code quality. 
+- Always run `scripts/lint` after making changes to ensure code quality.
 - Always run `scripts/test` when modifying library code.
 - Commit only when directly asked to do so. Write descriptive commit messages.
 

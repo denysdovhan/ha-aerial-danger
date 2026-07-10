@@ -23,22 +23,29 @@ AREA_PLACEHOLDER = "{area}"
 class DangerDetector:
     """Detects aerial danger types in messages using area-based regex patterns."""
 
-    def __init__(self, cities: Iterable[str], neighborhoods: Iterable[str]) -> None:
-        """Initialize detector with city and neighborhood regexes."""
-        self._cities = list(cities)
+    @staticmethod
+    def validate_patterns(*pattern_groups: Iterable[str]) -> None:
+        """Compile configured regex patterns."""
+        for patterns in pattern_groups:
+            for pattern in patterns:
+                re.compile(pattern, RE_FLAGS)
+
+    def __init__(self, regions: Iterable[str], neighborhoods: Iterable[str]) -> None:
+        """Initialize detector with region and neighborhood regexes."""
+        self._regions = list(regions)
         self._neighborhoods = list(neighborhoods)
 
         self._ballistic_patterns = self.compile_patterns(
-            self.map_areas(BALLISTIC_DANGER, self._cities + self._neighborhoods)
+            self.map_areas(BALLISTIC_DANGER, self._regions + self._neighborhoods)
         )
         self._cruise_patterns = self.compile_patterns(
-            self.map_areas(CRUISE_DANGER, self._cities + self._neighborhoods)
+            self.map_areas(CRUISE_DANGER, self._regions + self._neighborhoods)
         )
         self._drone_patterns = self.compile_patterns(
             self.map_areas(DRONE_DANGER, self._neighborhoods)
         )
         self._generic_patterns = self.compile_patterns(
-            self.map_areas(GENERIC_DANGER, self._cities + self._neighborhoods)
+            self.map_areas(GENERIC_DANGER, self._regions + self._neighborhoods)
         )
 
     def map_areas(self, phrases: Sequence[str], areas: Sequence[str]) -> list[str]:
@@ -105,7 +112,7 @@ class DangerDetector:
         return self.detect(
             danger_type=DangerType.BALLISTIC,
             patterns=self._ballistic_patterns,
-            areas=self._cities + self._neighborhoods,
+            areas=self._regions + self._neighborhoods,
             message=message,
         )
 
@@ -114,7 +121,7 @@ class DangerDetector:
         return self.detect(
             danger_type=DangerType.CRUISE,
             patterns=self._cruise_patterns,
-            areas=self._cities + self._neighborhoods,
+            areas=self._regions + self._neighborhoods,
             message=message,
         )
 
@@ -132,7 +139,7 @@ class DangerDetector:
         return self.detect(
             danger_type=DangerType.GENERIC,
             patterns=self._generic_patterns,
-            areas=self._cities + self._neighborhoods,
+            areas=self._regions + self._neighborhoods,
             message=message,
         )
 

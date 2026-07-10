@@ -1,10 +1,17 @@
-"""Tests for the DangerDetector class in the aerial_danger custom component."""
+"""Tests for the aerial danger detection library."""
 
 # ruff: noqa: S101
 
-from custom_components.aerial_danger.danger import DangerDetector, DangerType
+import re
 
-CITY_PATTERNS = [
+import pytest
+
+from custom_components.aerial_danger.danger import (
+    DangerDetector,
+    DangerType,
+)
+
+REGION_PATTERNS = [
     r"\bки(ї|є)в(а|у|ом|е|і)?\b",
     r"\bстолиц(і|ю|я)?\b",
     r"(до|на) нас",
@@ -137,9 +144,17 @@ NO_MATCH_CASES: list[str] = [
 ]
 
 
+def test_validate_patterns() -> None:
+    """Configured patterns compile independently from the detector."""
+    DangerDetector.validate_patterns(REGION_PATTERNS, NEIGHBORHOOD_PATTERNS)
+
+    with pytest.raises(re.error):
+        DangerDetector.validate_patterns(["("])
+
+
 def test_ballistic_only() -> None:
     """Ballistic-specific helper should flag ballistic samples."""
-    detector = DangerDetector(CITY_PATTERNS, NEIGHBORHOOD_PATTERNS)
+    detector = DangerDetector(REGION_PATTERNS, NEIGHBORHOOD_PATTERNS)
     for text in BALLISTIC_CASES:
         detection = detector.ballistic_danger(text)
         assert detection.danger is True, text
@@ -148,7 +163,7 @@ def test_ballistic_only() -> None:
 
 def test_cruise_only() -> None:
     """Cruise-specific helper should flag cruise samples."""
-    detector = DangerDetector(CITY_PATTERNS, NEIGHBORHOOD_PATTERNS)
+    detector = DangerDetector(REGION_PATTERNS, NEIGHBORHOOD_PATTERNS)
     for text in CRUISE_CASES:
         detection = detector.cruise_missile_danger(text)
         assert detection.danger is True, text
@@ -157,7 +172,7 @@ def test_cruise_only() -> None:
 
 def test_drone_only() -> None:
     """Drone-specific helper should flag drone samples."""
-    detector = DangerDetector(CITY_PATTERNS, NEIGHBORHOOD_PATTERNS)
+    detector = DangerDetector(REGION_PATTERNS, NEIGHBORHOOD_PATTERNS)
     for text in DRONE_CASES:
         detection = detector.drone_danger(text)
         assert detection.danger is True, text
@@ -166,7 +181,7 @@ def test_drone_only() -> None:
 
 def test_generic_only() -> None:
     """Generic helper should flag generic samples."""
-    detector = DangerDetector(CITY_PATTERNS, NEIGHBORHOOD_PATTERNS)
+    detector = DangerDetector(REGION_PATTERNS, NEIGHBORHOOD_PATTERNS)
     for text in GENERIC_CASES:
         detection = detector.generic_danger(text)
         assert detection.danger is True, text
@@ -175,7 +190,7 @@ def test_generic_only() -> None:
 
 def test_matches_expected_types() -> None:
     """All positive samples should be detected with the expected type."""
-    detector = DangerDetector(CITY_PATTERNS, NEIGHBORHOOD_PATTERNS)
+    detector = DangerDetector(REGION_PATTERNS, NEIGHBORHOOD_PATTERNS)
     for expected_type, text in MATCH_CASES:
         detection = detector.danger(text)
         assert detection.danger is True, text
@@ -184,7 +199,7 @@ def test_matches_expected_types() -> None:
 
 def test_non_matches() -> None:
     """Negative samples should not raise danger flags."""
-    detector = DangerDetector(CITY_PATTERNS, NEIGHBORHOOD_PATTERNS)
+    detector = DangerDetector(REGION_PATTERNS, NEIGHBORHOOD_PATTERNS)
     for text in NO_MATCH_CASES:
         detection = detector.danger(text)
         assert detection.danger is False, text

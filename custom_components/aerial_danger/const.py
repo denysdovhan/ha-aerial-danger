@@ -4,7 +4,7 @@ from typing import Final
 
 from homeassistant.const import Platform
 
-CONF_CITY_PATTERNS: Final = "city_patterns"
+CONF_REGION_PATTERNS: Final = "region_patterns"
 CONF_NEIGHBORHOOD_PATTERNS: Final = "neighborhood_patterns"
 CONF_SOURCES: Final = "sources"
 
