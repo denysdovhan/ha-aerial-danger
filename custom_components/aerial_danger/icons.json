@@ -1,0 +1,18 @@
+{
+  "entity": {
+    "binary_sensor": {
+      "ballistic": {
+        "default": "mdi:rocket-launch"
+      },
+      "cruise": {
+        "default": "mdi:airplane-landing"
+      },
+      "drone": {
+        "default": "mdi:drone"
+      },
+      "unknown": {
+        "default": "mdi:crosshairs-question"
+      }
+    }
+  }
+}
