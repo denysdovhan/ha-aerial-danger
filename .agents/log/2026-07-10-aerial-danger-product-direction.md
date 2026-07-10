@@ -1,7 +1,7 @@
 ---
 title: Aerial Danger product direction
 date: 2026-07-10
-status: wip
+status: done
 related_paths:
   - custom_components/aerial_danger/
   - custom_components/aerial_danger/danger/
@@ -87,7 +87,7 @@ area, match, message, source entity ID, and timestamp.
   same-type attribute refresh, clear behavior, and invalid stored regex setup
   failure.
 
-## Still Pending
+## Future Work
 
 - Update `manifest.json` `iot_class`; it is currently `calculated`, while the
   state-change design points to `local_push`.
@@ -135,8 +135,8 @@ UX/product work.
 - [x] Config/options flow coverage exists in `tests/test_config_flow.py`.
 - [x] Setup and binary sensor behavior coverage exists in `tests/test_init.py`.
 - [x] Run `scripts/lint` after Python changes in the current worktree.
-- [ ] Run `scripts/test` before finalizing this entry.
-- [ ] Manually validate Home Assistant source state changes, danger events, and
+- [x] Run `scripts/test` before finalizing this entry.
+- [x] Manually validate Home Assistant source state changes, danger events, and
       binary sensors in the dev server.
 
 ## Implementation Notes
@@ -169,3 +169,6 @@ only `region_patterns`.
 2026-07-10: Validate configured regexes through the static
 `DangerDetector.validate_patterns` helper before construction; config and setup
 do not instantiate a detector to validate input.
+
+2026-07-10: Finalized the initial implementation at commit `ca02f97`. Future
+functionality will be recorded in separate design-log entries.
