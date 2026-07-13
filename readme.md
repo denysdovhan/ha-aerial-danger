@@ -6,14 +6,14 @@
 
 ## What it does
 
-Aerial Danger listens to configured Home Assistant source entities whose state contains alert text. It matches that text against your region and neighborhood regex patterns plus built-in Ukrainian aerial-danger keywords, then updates safety binary sensors for ballistic, cruise missile, drone, unknown, and aggregate danger.
+Aerial Danger listens to configured Home Assistant source entities whose state contains alert text. It tracks danger independently per source, matches messages against your region and neighborhood regex patterns plus built-in Ukrainian aerial-danger keywords, then updates safety binary sensors for ballistic, cruise missile, drone, unknown, and aggregate danger.
 
 ## Status
 
 - ✅ Danger detection library with keyword sets and pytest coverage
-- ✅ Config/option flows for name, area patterns, and source entities
+- ✅ Multi-entry config flow with editable area patterns and source entities
 - ✅ Binary sensors for ballistic, cruise, drone, unknown, and aggregate danger
-- ✅ Events per danger type with match details
+- ✅ Native Home Assistant event entity with danger types and match details
 - ✅ HA-level config flow and setup tests
 - ⏳ Brands assets in the Home Assistant brands repository
 
@@ -32,14 +32,17 @@ Aerial Danger listens to configured Home Assistant source entities whose state c
 6. Enter a name, area regex patterns, and source entities.
 7. Select **Submit**.
 
+Repeat these steps to create separate named detection entries for other
+providers, areas, or source groups.
+
 ## Configuration
 
-- **Name**: device and entity name prefix.
+- **Name**: detection entry and device name. Rename the entry with Home Assistant's standard integration rename action.
 - **Region regex patterns**: one region-level Python regex per line.
 - **Neighborhood regex patterns**: one neighborhood-level Python regex per line.
-- **Source entities**: entities whose state text contains alert messages.
+- **Source entities**: entities whose state text contains alert messages. Each source keeps its own active detection; a non-danger message clears only that source.
 
-Invalid regex patterns are rejected in the config and options flows. The integration uses local push updates from source entity state changes; it does not poll.
+At least one area pattern and one source entity are required. Invalid regex patterns are rejected in the config and options flows. Unknown and unavailable source states do not clear active detections. The integration uses local push updates from source entity state changes; it does not poll.
 
 ## Entities
 
@@ -51,22 +54,22 @@ The integration creates these safety binary sensors:
 - Unknown danger
 - Danger
 
-The aggregate **Danger** sensor exposes active danger types as attributes. Type-specific sensors expose match details when available.
+The aggregate **Danger** sensor is on while any type-specific danger sensor is on and exposes active danger types as attributes. Type-specific sensors expose the latest active match details and `source_entity_id` when available.
 
 ## Events
 
-When danger is detected, the integration fires one of these Home Assistant events:
+Each detection entry creates a **Danger detected** event entity. It reports one of these event types:
 
-- `ballistic_danger`
-- `cruise_danger`
-- `drone_danger`
-- `unknown_danger`
+- `ballistic`
+- `cruise`
+- `drone`
+- `unknown`
 
-Event data includes `type`, `area`, `match`, `message`, `entity_id`, and `timestamp`.
+Event attributes include `area`, `match`, `message`, `source_entity_id`, and `timestamp`. Startup state seeding does not trigger an event.
 
 ## Actions, triggers, and conditions
 
-This integration does not register custom service actions, automation triggers, or automation conditions. Use standard Home Assistant state triggers with the binary sensors, or event triggers with the events listed above.
+This integration does not register custom service actions, automation triggers, or automation conditions. Use standard Home Assistant state triggers with the binary sensors or the event entity.
 
 ## Removal
 
