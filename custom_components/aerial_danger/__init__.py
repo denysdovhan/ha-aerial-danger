@@ -14,17 +14,15 @@ from .const import (
     CONF_NEIGHBORHOOD_PATTERNS,
     CONF_REGION_PATTERNS,
     CONF_SOURCES,
+    ERROR_INVALID_PATTERN,
+    ERROR_MISSING_PATTERNS,
+    ERROR_MISSING_SOURCES,
     EVENT_DATA_NEW_STATE,
     EVENT_DATA_OLD_STATE,
     PLATFORMS,
 )
 from .danger import DangerDetector
 from .runtime import RuntimeData, SourceDetection, derive_danger_state
-
-INVALID_PATTERN_MESSAGE = "Invalid regex"
-MISSING_PATTERNS_MESSAGE = "At least one area pattern is required"
-MISSING_SOURCES_MESSAGE = "At least one source entity is required"
-
 
 type AerialDangerConfigEntry = ConfigEntry[RuntimeData]
 
@@ -52,15 +50,14 @@ async def async_setup_entry(
     sources = _entry_list(entry, CONF_SOURCES)
 
     if not regions and not neighborhoods:
-        raise ConfigEntryError(MISSING_PATTERNS_MESSAGE)
+        raise ConfigEntryError(ERROR_MISSING_PATTERNS)
     if not sources:
-        raise ConfigEntryError(MISSING_SOURCES_MESSAGE)
+        raise ConfigEntryError(ERROR_MISSING_SOURCES)
 
     try:
         DangerDetector.validate_patterns(regions, neighborhoods)
     except re.error as ex:
-        message = INVALID_PATTERN_MESSAGE
-        raise ConfigEntryError(message) from ex
+        raise ConfigEntryError(ERROR_INVALID_PATTERN) from ex
 
     detector = DangerDetector(regions, neighborhoods)
 

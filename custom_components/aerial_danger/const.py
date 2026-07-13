@@ -15,6 +15,11 @@ CONF_REGION_PATTERNS: Final = "region_patterns"
 CONF_NEIGHBORHOOD_PATTERNS: Final = "neighborhood_patterns"
 CONF_SOURCES: Final = "sources"
 
+# Errors
+ERROR_INVALID_PATTERN: Final = "Invalid regex"
+ERROR_MISSING_PATTERNS: Final = "At least one area pattern is required"
+ERROR_MISSING_SOURCES: Final = "At least one source entity is required"
+
 # Entity states
 STATE_BALLISTIC: Final = "ballistic"
 STATE_CRUISE: Final = "cruise"
