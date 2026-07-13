@@ -1,6 +1,18 @@
 {
   "entity": {
+    "event": {
+      "danger": {
+        "default": "mdi:alert-decagram"
+      }
+    },
     "binary_sensor": {
+      "danger": {
+        "default": "mdi:alert-decagram",
+        "state": {
+          "on": "mdi:alert-decagram",
+          "off": "mdi:check-decagram"
+        }
+      },
       "ballistic": {
         "default": "mdi:rocket-launch"
       },
