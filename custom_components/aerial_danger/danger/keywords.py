@@ -28,8 +28,29 @@ GENERIC_DANGER = [
     r"вектор руху на {area}",
 ]
 
+# Zircon missile phrases shared by ballistic and cruise detection.
+_ZYRCON_DANGER = [
+    r"^(?:ще |і ще )?циркон(?: є)?[!.]*$",
+    r"^\d+ циркони[!.]*$",
+    r"^🔴\s*пуск (?:ракети.*)?циркон",
+    r"вихід циркон",
+    r"^🔴?\s*циркони? з \w+(?:[!.]* у наш бік)?[!.]*$",
+    r"циркони заходять в область",
+    r"циркон з (?:півдня|півночі) попередньо",
+    r"ще з \w+ (?:на )?циркон",
+    r"циркон[аиу]? (?:на|над|у напрямку|у бік) {area}",
+    r"циркон повз .* на {area}",
+    r"циркон[аи]? {area}",
+    r"циркони з \w+ на {area}",
+    r"також є циркон.*на {area}",
+    r"{area} (?:\d+х? )?циркон",
+    r"{area} увага (?:по )?циркон",
+    r"{area}.*два циркона",
+]
+
 # Ballistic-oriented phrases.
 BALLISTIC_DANGER = [
+    *_ZYRCON_DANGER,
     r"\bбалістик",
     r"\bбр\b",
     r"балістика на {area}",
@@ -55,6 +76,7 @@ BALLISTIC_DANGER = [
 
 # Cruise-missile oriented phrases (including generic "rocket" wording).
 CRUISE_DANGER = [
+    *_ZYRCON_DANGER,
     r"кр (на|до|повз|від|через)",
     r"\bкр\b",
     r"кр {area}",

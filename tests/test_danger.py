@@ -13,6 +13,7 @@ from custom_components.aerial_danger.danger import (
 
 REGION_PATTERNS = [
     r"\bки(ї|є)в(а|у|ом|е|і)?\b",
+    r"\bкиївщин(а|и|і|у|ою)?\b",
     r"\bстолиц(і|ю|я)?\b",
     r"(до|на) нас",
     r"наш(у|ої) област(ьі|і)?",
@@ -29,6 +30,52 @@ NEIGHBORHOOD_PATTERNS = [
     r"cирця",
     r"\bшулявк(а|и)\b",
     r"галаган",
+]
+
+ZYRCON_CASES: list[str] = [
+    "🔴Пуск ракети «Циркон»!",
+    "🔴 Пуск ракети «Циркон»!",
+    "🔴Пуск Циркону!",
+    "🔴 Пуск Циркону!",
+    "ЦИРКОН",
+    "ЦИРКОН Є",
+    "ЩЕ ЦИРКОН",
+    "І ЩЕ ЦИРКОН",
+    "2 ЦИРКОНИ!",
+    "Вихід Циркона Курщина!",
+    "Циркон з Криму! У наш бік!",
+    "Циркон з Курщини! У наш бік!",
+    "🔴Циркон з Криму.",
+    "🔴 Циркон з Криму.",
+    "Циркони заходять в область!",
+    "🔴Циркон Київ!",
+    "❗️ 1х Циркон на Київ з Курська",
+    "❗️ 2х Циркони у напрямку Києва",
+    "Загальна ситуація:\nКР Циркон у напрямку Києва.",
+    "❗️ Київ 1х Циркон на місто",
+    "Циркони над Києвом!!",
+    "🚀 Вихід Циркону у бік Києва!",
+    "❗️З Курська тоже Циркони до нас!",
+    "🚀 Також є циркон. Сумарно до 4 ракет на Київ!",
+    "2-3 Циркона на Київ.",
+    "Циркони з Криму на Київ!",
+    "Циркони з Курщини на Київ!",
+    "Бляяяя, Циркон на Київ!!!",
+    "❗️ 1х Циркон повз Ніжин на Київ",
+    "❗️ Вихід йм. КР Циркон у напрямку Київщини.",
+    "Циркон з півдня попередньо.",
+    "Циркон з півночі попередньо.",
+    "Ще з Курська Циркон!",
+    "Ще з Курщини на Циркон!",
+]
+
+TARGETED_ZYRCON_CASES: list[tuple[str, str]] = [
+    (r"\bхерсон(а|у|ом|і)?\b", "Циркон над Херсоном попередньо!"),
+    (r"\bтроя\b", "Троя, два Циркона!"),
+    (r"\bбц\b", "БЦ увага по Цирконам."),
+    (r"\bбровари\b", "БРОВАРИ ЦИРКОН!"),
+    (r"\bбровари\b", "Бровари увага Циркон."),
+    (r"\bсумщин(а|і|у|ою)?\b", "Циркон на Сумщині!"),
 ]
 
 BALLISTIC_CASES: list[str] = [
@@ -141,6 +188,15 @@ NO_MATCH_CASES: list[str] = [
     "⚠️ 2х БпЛА сектор Павлоград, дніпропетровської області.",
     "‼️Одеса — спуск балістики!",
     "⚠️ 5х БпЛА на північ від Києва. \n 6х БпЛА у напрямку Вишневе/Білогородка",
+    "По Києву били Іскандер-М та Циркони.",
+    "Під час нічної атаки по Києву росія випустила дві ракети «Циркон»/«Онікс».",
+    "На жаль, цієї ночі над Києвом не вдалося збити жодної ракети «Циркон».",
+    "Удар Цирконами по Києву відбувся вночі.",
+    "Вночі було зафіксовано пуск ракети «Циркон» по Києву.",
+    "Циркон над Херсоном попередньо!",
+    "Троя, два Циркона!",
+    "БЦ увага по Цирконам.",
+    "БРОВАРИ ЦИРКОН!",
 ]
 
 
@@ -159,6 +215,31 @@ def test_ballistic_only() -> None:
         detection = detector.ballistic_danger(text)
         assert detection.danger is True, text
         assert detection.type == DangerType.BALLISTIC, text
+
+
+def test_zyrcon_is_ballistic_and_cruise() -> None:
+    """Shared Zircon keywords should match ballistic and cruise detection."""
+    detector = DangerDetector([r".*"], [])
+    for text in ZYRCON_CASES:
+        ballistic = detector.ballistic_danger(text)
+        cruise = detector.cruise_missile_danger(text)
+        assert ballistic.danger is True, text
+        assert ballistic.type == DangerType.BALLISTIC, text
+        assert cruise.danger is True, text
+        assert cruise.type == DangerType.CRUISE, text
+        assert detector.danger(text).type == DangerType.BALLISTIC, text
+
+
+def test_targeted_zyrcon_uses_configured_area() -> None:
+    """Targeted Zircon alerts should require their configured area."""
+    for area, text in TARGETED_ZYRCON_CASES:
+        detector = DangerDetector([area], [])
+        ballistic = detector.ballistic_danger(text)
+        cruise = detector.cruise_missile_danger(text)
+        assert ballistic.danger is True, text
+        assert ballistic.type == DangerType.BALLISTIC, text
+        assert cruise.danger is True, text
+        assert cruise.type == DangerType.CRUISE, text
 
 
 def test_cruise_only() -> None:
