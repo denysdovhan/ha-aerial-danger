@@ -32,7 +32,7 @@ NEIGHBORHOOD_PATTERNS = [
     r"галаган",
 ]
 
-ZYRCON_CASES: list[str] = [
+ZIRCON_CASES: list[str] = [
     "🔴Пуск ракети «Циркон»!",
     "🔴 Пуск ракети «Циркон»!",
     "🔴Пуск Циркону!",
@@ -69,7 +69,7 @@ ZYRCON_CASES: list[str] = [
     "Ще з Курщини на Циркон!",
 ]
 
-TARGETED_ZYRCON_CASES: list[tuple[str, str]] = [
+TARGETED_ZIRCON_CASES: list[tuple[str, str]] = [
     (r"\bхерсон(а|у|ом|і)?\b", "Циркон над Херсоном попередньо!"),
     (r"\bтроя\b", "Троя, два Циркона!"),
     (r"\bбц\b", "БЦ увага по Цирконам."),
@@ -217,10 +217,10 @@ def test_ballistic_only() -> None:
         assert detection.type == DangerType.BALLISTIC, text
 
 
-def test_zyrcon_is_ballistic_and_cruise() -> None:
+def test_zircon_is_ballistic_and_cruise() -> None:
     """Shared Zircon keywords should match ballistic and cruise detection."""
     detector = DangerDetector([r".*"], [])
-    for text in ZYRCON_CASES:
+    for text in ZIRCON_CASES:
         ballistic = detector.ballistic_danger(text)
         cruise = detector.cruise_missile_danger(text)
         assert ballistic.danger is True, text
@@ -230,9 +230,9 @@ def test_zyrcon_is_ballistic_and_cruise() -> None:
         assert detector.danger(text).type == DangerType.BALLISTIC, text
 
 
-def test_targeted_zyrcon_uses_configured_area() -> None:
+def test_targeted_zircon_uses_configured_area() -> None:
     """Targeted Zircon alerts should require their configured area."""
-    for area, text in TARGETED_ZYRCON_CASES:
+    for area, text in TARGETED_ZIRCON_CASES:
         detector = DangerDetector([area], [])
         ballistic = detector.ballistic_danger(text)
         cruise = detector.cruise_missile_danger(text)
