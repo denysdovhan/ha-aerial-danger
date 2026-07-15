@@ -526,10 +526,12 @@ async def test_match_details_are_logged(
     record = next(
         record
         for record in caplog.records
-        if record.message.startswith("Danger matched:")
+        if record.message.startswith("Detected danger for entry")
     )
     assert record.args == (
+        entry.entry_id,
         "sensor.alerts",
+        "ballistic",
         "КИЇВ ШВИДКІСНА!",
         "КИЇВ",
         "КИЇВ ШВИДКІСНА",

@@ -22,7 +22,7 @@ from .const import (
     LOGGER,
     PLATFORMS,
 )
-from .danger import DangerDetector, Detection
+from .danger import DangerDetector
 from .runtime import RuntimeData, SourceDetection, derive_danger_state
 
 type AerialDangerConfigEntry = ConfigEntry[RuntimeData]
@@ -39,20 +39,6 @@ def _entry_list(
     if isinstance(value, str) and value:
         return [value]
     return []
-
-
-def _log_detection(source_entity_id: str, detection: Detection) -> None:
-    """Log matched detection details for debugging."""
-    LOGGER.debug(
-        "Danger matched: entity_id=%s, matched_message=%r, matched_area=%r, "
-        "matched_danger=%r, area_pattern=%r, danger_pattern=%r",
-        source_entity_id,
-        detection.message,
-        detection.matched_area,
-        detection.matched_danger,
-        detection.area_pattern,
-        detection.danger_pattern,
-    )
 
 
 async def async_setup_entry(
@@ -84,7 +70,19 @@ async def async_setup_entry(
 
         detection = detector.danger(str(state.state))
         if detection.danger:
-            _log_detection(source, detection)
+            LOGGER.debug(
+                "Seeded danger for entry %s from %s: type=%s, message=%r, "
+                "matched_area=%r, matched_danger=%r, area_pattern=%r, "
+                "danger_pattern=%r",
+                entry.entry_id,
+                source,
+                detection.type.value if detection.type else None,
+                detection.message,
+                detection.matched_area,
+                detection.matched_danger,
+                detection.area_pattern,
+                detection.danger_pattern,
+            )
             active_detections[source] = SourceDetection(
                 source_entity_id=source,
                 detection=detection,
@@ -122,7 +120,19 @@ async def async_setup_entry(
         detection = detector.danger(message)
 
         if detection.danger:
-            _log_detection(new_state.entity_id, detection)
+            LOGGER.debug(
+                "Detected danger for entry %s from %s: type=%s, message=%r, "
+                "matched_area=%r, matched_danger=%r, area_pattern=%r, "
+                "danger_pattern=%r",
+                entry.entry_id,
+                new_state.entity_id,
+                detection.type.value if detection.type else None,
+                detection.message,
+                detection.matched_area,
+                detection.matched_danger,
+                detection.area_pattern,
+                detection.danger_pattern,
+            )
             runtime.active_detections[new_state.entity_id] = SourceDetection(
                 source_entity_id=new_state.entity_id,
                 detection=detection,
