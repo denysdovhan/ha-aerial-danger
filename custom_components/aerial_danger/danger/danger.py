@@ -11,7 +11,7 @@ from .keywords import (
     DRONE_DANGER,
     GENERIC_DANGER,
 )
-from .models import DangerType, Detection
+from .models import DangerType, Detection, PatternMatch
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Sequence
@@ -64,21 +64,21 @@ class DangerDetector:
         """Compile a list of regex patterns from phrases."""
         return [re.compile(phrase, RE_FLAGS) for phrase in phrases]
 
-    def find_area(self, message: str, areas: Sequence[str]) -> str | None:
+    def find_area(self, message: str, areas: Sequence[str]) -> PatternMatch | None:
         """Find the first area mentioned in the message."""
-        for area in areas:
-            if re.search(area, message, RE_FLAGS):
-                return area
+        for pattern in areas:
+            if match := re.search(pattern, message, RE_FLAGS):
+                return PatternMatch(text=match.group(0), pattern=pattern)
         return None
 
     def match_first(
         self, patterns: Sequence[re.Pattern[str]], message: str
-    ) -> str | None:
+    ) -> PatternMatch | None:
         """Find the first pattern that matches the message."""
         for pattern in patterns:
             match = pattern.search(message)
             if match:
-                return match.group(0)
+                return PatternMatch(text=match.group(0), pattern=pattern.pattern)
         return None
 
     def detect(
@@ -90,21 +90,22 @@ class DangerDetector:
         danger_type: DangerType,
     ) -> Detection:
         """Shared detection helper used by danger-specific methods."""
-        normalized = message.lower()
-        match = self.match_first(patterns, normalized)
-        if not match:
+        danger_match = self.match_first(patterns, message)
+        if danger_match is None:
             return Detection(danger=False, message=message)
 
-        area = self.find_area(normalized, areas)
-        if area is None:
+        area_match = self.find_area(message, areas)
+        if area_match is None:
             return Detection(danger=False, message=message)
 
         return Detection(
             danger=True,
             type=danger_type,
-            area=area,
-            match=match,
             message=message,
+            matched_area=area_match.text,
+            matched_danger=danger_match.text,
+            area_pattern=area_match.pattern,
+            danger_pattern=danger_match.pattern,
         )
 
     def ballistic_danger(self, message: str) -> Detection:
@@ -161,4 +162,5 @@ __all__ = [
     "DangerDetector",
     "DangerType",
     "Detection",
+    "PatternMatch",
 ]

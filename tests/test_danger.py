@@ -9,6 +9,7 @@ import pytest
 from custom_components.aerial_danger.danger import (
     DangerDetector,
     DangerType,
+    PatternMatch,
 )
 
 REGION_PATTERNS = [
@@ -276,6 +277,34 @@ def test_matches_expected_types() -> None:
         detection = detector.danger(text)
         assert detection.danger is True, text
         assert detection.type == expected_type, text
+
+
+def test_detection_includes_exact_matches_and_patterns() -> None:
+    """A detection should preserve exact text and matching regex patterns."""
+    area_pattern = r"\bкиїв\b"
+    detector = DangerDetector([area_pattern], [])
+
+    detection = detector.danger("КИЇВ ШВИДКІСНА!")
+
+    assert detection.matched_area == "КИЇВ"
+    assert detection.matched_danger == "КИЇВ ШВИДКІСНА"
+    assert detection.area_pattern == area_pattern
+    assert detection.danger_pattern == rf"{area_pattern} швидкісна"
+
+
+def test_match_helpers_return_pattern_matches() -> None:
+    """Match helpers should return named text and pattern fields."""
+    area_pattern = r"\bкиїв\b"
+    danger_pattern = rf"{area_pattern} швидкісна"
+    message = "КИЇВ ШВИДКІСНА!"
+    detector = DangerDetector([area_pattern], [])
+
+    assert detector.find_area(message, [area_pattern]) == PatternMatch(
+        text="КИЇВ", pattern=area_pattern
+    )
+    assert detector.match_first(
+        detector.compile_patterns([danger_pattern]), message
+    ) == PatternMatch(text="КИЇВ ШВИДКІСНА", pattern=danger_pattern)
 
 
 def test_non_matches() -> None:

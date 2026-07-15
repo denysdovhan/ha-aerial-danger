@@ -11,18 +11,17 @@
           "sources": "Source entities"
         },
         "data_description": {
-          "name": "Name used for the Aerial Danger device and entities.",
+          "name": "Name used for the Aerial Danger entry and device.",
           "region_patterns": "Python regular expressions that match region-level alert text. Enter one pattern per line.",
           "neighborhood_patterns": "Python regular expressions that match neighborhood-level alert text. Enter one pattern per line.",
           "sources": "Entities whose state text contains incoming alert messages."
         }
       }
     },
-    "abort": {
-      "already_configured": "Only one Aerial Danger integration can be configured."
-    },
     "error": {
-      "invalid_pattern": "One or more regex patterns are invalid."
+      "invalid_pattern": "One or more regex patterns are invalid.",
+      "patterns_required": "Enter at least one region or neighborhood pattern.",
+      "sources_required": "Select at least one source entity."
     }
   },
   "options": {
@@ -30,13 +29,11 @@
       "init": {
         "title": "Aerial Danger options",
         "data": {
-          "name": "Name",
           "region_patterns": "Region regex patterns (one per line)",
           "neighborhood_patterns": "Neighborhood regex patterns (one per line)",
           "sources": "Source entities"
         },
         "data_description": {
-          "name": "Name used for the Aerial Danger device and entities.",
           "region_patterns": "Python regular expressions that match region-level alert text. Enter one pattern per line.",
           "neighborhood_patterns": "Python regular expressions that match neighborhood-level alert text. Enter one pattern per line.",
           "sources": "Entities whose state text contains incoming alert messages."
@@ -44,25 +41,124 @@
       }
     },
     "error": {
-      "invalid_pattern": "One or more regex patterns are invalid."
+      "invalid_pattern": "One or more regex patterns are invalid.",
+      "patterns_required": "Enter at least one region or neighborhood pattern.",
+      "sources_required": "Select at least one source entity."
     }
   },
   "entity": {
+    "event": {
+      "danger": {
+        "name": "Danger detected",
+        "state_attributes": {
+          "matched_message": {
+            "name": "Matched message"
+          },
+          "matched_area": {
+            "name": "Matched area"
+          },
+          "matched_danger": {
+            "name": "Matched danger"
+          },
+          "source_entity_id": {
+            "name": "Source entity"
+          },
+          "event_type": {
+            "state": {
+              "ballistic": "Ballistic danger",
+              "cruise": "Cruise missile danger",
+              "drone": "Drone danger",
+              "unknown": "Unknown danger"
+            }
+          }
+        }
+      }
+    },
     "binary_sensor": {
       "ballistic": {
-        "name": "Ballistic danger"
+        "name": "Ballistic danger",
+        "state_attributes": {
+          "matched_message": {
+            "name": "Matched message"
+          },
+          "matched_area": {
+            "name": "Matched area"
+          },
+          "matched_danger": {
+            "name": "Matched danger"
+          },
+          "source_entity_id": {
+            "name": "Source entity"
+          }
+        }
       },
       "cruise": {
-        "name": "Cruise missile danger"
+        "name": "Cruise missile danger",
+        "state_attributes": {
+          "matched_message": {
+            "name": "Matched message"
+          },
+          "matched_area": {
+            "name": "Matched area"
+          },
+          "matched_danger": {
+            "name": "Matched danger"
+          },
+          "source_entity_id": {
+            "name": "Source entity"
+          }
+        }
       },
       "drone": {
-        "name": "Drone danger"
+        "name": "Drone danger",
+        "state_attributes": {
+          "matched_message": {
+            "name": "Matched message"
+          },
+          "matched_area": {
+            "name": "Matched area"
+          },
+          "matched_danger": {
+            "name": "Matched danger"
+          },
+          "source_entity_id": {
+            "name": "Source entity"
+          }
+        }
       },
       "unknown": {
-        "name": "Unknown danger"
+        "name": "Unknown danger",
+        "state_attributes": {
+          "matched_message": {
+            "name": "Matched message"
+          },
+          "matched_area": {
+            "name": "Matched area"
+          },
+          "matched_danger": {
+            "name": "Matched danger"
+          },
+          "source_entity_id": {
+            "name": "Source entity"
+          }
+        }
       },
       "danger": {
-        "name": "Danger"
+        "name": "Danger",
+        "state_attributes": {
+          "matched_message": {
+            "name": "Matched message"
+          },
+          "matched_area": {
+            "name": "Matched area"
+          },
+          "matched_danger": {
+            "name": "Matched danger"
+          },
+          "source_entity_id": {
+            "name": "Source entity"
+          }
+        }
       }
     }
   }

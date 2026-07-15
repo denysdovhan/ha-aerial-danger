@@ -10,16 +10,26 @@ from homeassistant.components.binary_sensor import (
     BinarySensorEntity,
     BinarySensorEntityDescription,
 )
-from homeassistant.helpers.entity import DeviceInfo
 
-from .const import DEFAULT_NAME, DOMAIN
+from .const import (
+    ATTR_MATCHED_AREA,
+    ATTR_MATCHED_DANGER,
+    ATTR_MATCHED_MESSAGE,
+    ATTR_SOURCE_ENTITY_ID,
+    STATE_BALLISTIC,
+    STATE_CRUISE,
+    STATE_DANGER,
+    STATE_DRONE,
+    STATE_UNKNOWN_DANGER,
+)
 from .danger import DangerType, Detection
+from .entity import AerialDangerEntity
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
     from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
-    from . import AerialDangerConfigEntry, RuntimeData
+    from . import AerialDangerConfigEntry
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -31,27 +41,27 @@ class AerialDangerBinarySensorEntityDescription(BinarySensorEntityDescription):
 
 SENSOR_TYPES: tuple[AerialDangerBinarySensorEntityDescription, ...] = (
     AerialDangerBinarySensorEntityDescription(
-        key="ballistic",
+        key=STATE_BALLISTIC,
         translation_key="ballistic",
         danger_type=DangerType.BALLISTIC,
     ),
     AerialDangerBinarySensorEntityDescription(
-        key="cruise",
+        key=STATE_CRUISE,
         translation_key="cruise",
         danger_type=DangerType.CRUISE,
     ),
     AerialDangerBinarySensorEntityDescription(
-        key="drone",
+        key=STATE_DRONE,
         translation_key="drone",
         danger_type=DangerType.DRONE,
     ),
     AerialDangerBinarySensorEntityDescription(
-        key="unknown",
+        key=STATE_UNKNOWN_DANGER,
         translation_key="unknown",
         danger_type=DangerType.GENERIC,
     ),
     AerialDangerBinarySensorEntityDescription(
-        key="danger",
+        key=STATE_DANGER,
         translation_key="danger",
     ),
 )
@@ -63,11 +73,8 @@ async def async_setup_entry(
     async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
     """Set up Aerial Danger binary sensors."""
-    runtime = entry.runtime_data
-
     entities = [
         DangerBinarySensor(
-            runtime,
             entry,
             description,
         )
@@ -77,7 +84,7 @@ async def async_setup_entry(
     async_add_entities(entities)
 
 
-class DangerBinarySensor(BinarySensorEntity):
+class DangerBinarySensor(AerialDangerEntity, BinarySensorEntity):
     """Represents an Aerial Danger binary sensor."""
 
     _attr_should_poll = False
@@ -85,28 +92,15 @@ class DangerBinarySensor(BinarySensorEntity):
 
     def __init__(
         self,
-        runtime: RuntimeData,
         entry: AerialDangerConfigEntry,
         description: AerialDangerBinarySensorEntityDescription,
     ) -> None:
         """Initialize the binary sensor."""
-        self._runtime = runtime
+        super().__init__(entry)
         self.entity_description = description
 
-        device_name = (
-            entry.options.get("name")
-            or entry.data.get("name")
-            or entry.title
-            or DEFAULT_NAME
-        )
-
-        self._attr_has_entity_name = True
         self._attr_translation_key = description.translation_key
         self._attr_unique_id = f"{entry.entry_id}_{description.key}"
-        self._attr_device_info = DeviceInfo(
-            identifiers={(DOMAIN, entry.entry_id)},
-            name=device_name,
-        )
 
     async def async_added_to_hass(self) -> None:
         """Register entity for push updates."""
@@ -126,28 +120,21 @@ class DangerBinarySensor(BinarySensorEntity):
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
         """Return supplemental attributes for the sensor."""
-        attrs: dict[str, Any] = {}
         if self.entity_description.danger_type is None:
-            # aggregate sensor: show which types are active
-            attrs.update(
-                {
-                    "ballistic": self._runtime.states["ballistic"],
-                    "cruise": self._runtime.states["cruise"],
-                    "drone": self._runtime.states["drone"],
-                    "unknown": self._runtime.states["unknown"],
-                }
-            )
+            source_detection = self._runtime.latest_detection
         else:
-            detection: Detection | None = self._runtime.last_detection.get(
+            source_detection = self._runtime.last_detection.get(
                 self.entity_description.danger_type
             )
-            if detection:
-                attrs.update(
-                    {
-                        "area": detection.area,
-                        "match": detection.match,
-                        "message": detection.message,
-                    }
-                )
 
-        return attrs
+        detection: Detection | None = (
+            source_detection.detection if source_detection else None
+        )
+        return {
+            ATTR_MATCHED_MESSAGE: detection.message if detection else None,
+            ATTR_MATCHED_AREA: detection.matched_area if detection else None,
+            ATTR_MATCHED_DANGER: detection.matched_danger if detection else None,
+            ATTR_SOURCE_ENTITY_ID: (
+                source_detection.source_entity_id if source_detection else None
+            ),
+        }
