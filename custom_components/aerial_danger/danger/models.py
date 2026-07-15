@@ -14,11 +14,21 @@ class DangerType(str, Enum):
 
 
 @dataclass
+class PatternMatch:
+    """Represents text matched by a regex pattern."""
+
+    text: str
+    pattern: str
+
+
+@dataclass
 class Detection:
     """Represents a detected aerial danger."""
 
     danger: bool
     message: str
     type: DangerType | None = None
-    area: str | None = None
-    match: str | None = None
+    matched_area: str | None = None
+    matched_danger: str | None = None
+    area_pattern: str | None = None
+    danger_pattern: str | None = None

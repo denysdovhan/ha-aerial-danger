@@ -51,6 +51,18 @@
       "danger": {
         "name": "Виявлена небезпека",
         "state_attributes": {
+          "matched_message": {
+            "name": "Зіставлене повідомлення"
+          },
+          "matched_area": {
+            "name": "Збіг області"
+          },
+          "matched_danger": {
+            "name": "Збіг небезпеки"
+          },
+          "source_entity_id": {
+            "name": "Сутність-джерело"
+          },
           "event_type": {
             "state": {
               "ballistic": "Балістична небезпека",
@@ -64,19 +76,89 @@
     },
     "binary_sensor": {
       "ballistic": {
-        "name": "Балістична небезпека"
+        "name": "Балістична небезпека",
+        "state_attributes": {
+          "matched_message": {
+            "name": "Зіставлене повідомлення"
+          },
+          "matched_area": {
+            "name": "Збіг області"
+          },
+          "matched_danger": {
+            "name": "Збіг небезпеки"
+          },
+          "source_entity_id": {
+            "name": "Сутність-джерело"
+          }
+        }
       },
       "cruise": {
-        "name": "Небезпека крилатих ракет"
+        "name": "Небезпека крилатих ракет",
+        "state_attributes": {
+          "matched_message": {
+            "name": "Зіставлене повідомлення"
+          },
+          "matched_area": {
+            "name": "Збіг області"
+          },
+          "matched_danger": {
+            "name": "Збіг небезпеки"
+          },
+          "source_entity_id": {
+            "name": "Сутність-джерело"
+          }
+        }
       },
       "drone": {
-        "name": "Небезпека дронів"
+        "name": "Небезпека дронів",
+        "state_attributes": {
+          "matched_message": {
+            "name": "Зіставлене повідомлення"
+          },
+          "matched_area": {
+            "name": "Збіг області"
+          },
+          "matched_danger": {
+            "name": "Збіг небезпеки"
+          },
+          "source_entity_id": {
+            "name": "Сутність-джерело"
+          }
+        }
       },
       "unknown": {
-        "name": "Невідома небезпека"
+        "name": "Невідома небезпека",
+        "state_attributes": {
+          "matched_message": {
+            "name": "Зіставлене повідомлення"
+          },
+          "matched_area": {
+            "name": "Збіг області"
+          },
+          "matched_danger": {
+            "name": "Збіг небезпеки"
+          },
+          "source_entity_id": {
+            "name": "Сутність-джерело"
+          }
+        }
       },
       "danger": {
-        "name": "Небезпека"
+        "name": "Небезпека",
+        "state_attributes": {
+          "matched_message": {
+            "name": "Зіставлене повідомлення"
+          },
+          "matched_area": {
+            "name": "Збіг області"
+          },
+          "matched_danger": {
+            "name": "Збіг небезпеки"
+          },
+          "source_entity_id": {
+            "name": "Сутність-джерело"
+          }
+        }
       }
     }
   }

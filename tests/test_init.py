@@ -25,7 +25,9 @@ from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.aerial_danger import RuntimeData
 from custom_components.aerial_danger.const import (
-    ATTR_MESSAGE,
+    ATTR_MATCHED_AREA,
+    ATTR_MATCHED_DANGER,
+    ATTR_MATCHED_MESSAGE,
     ATTR_SOURCE_ENTITY_ID,
     ATTR_TIMESTAMP,
     CONF_NEIGHBORHOOD_PATTERNS,
@@ -41,6 +43,12 @@ from custom_components.aerial_danger.const import (
 
 pytestmark = pytest.mark.usefixtures("enable_custom_integrations")
 EXPECTED_ENTITY_COUNT = 5
+DETECTION_ATTRIBUTE_KEYS = (
+    ATTR_MATCHED_MESSAGE,
+    ATTR_MATCHED_AREA,
+    ATTR_MATCHED_DANGER,
+    ATTR_SOURCE_ENTITY_ID,
+)
 
 
 def _entry(
@@ -127,6 +135,9 @@ async def test_setup_seeds_source_state_without_firing_event(
 
     state = hass.states.get(_entity_id(hass, entry, "ballistic"))
     assert state.state == STATE_ON
+    assert state.attributes[ATTR_MATCHED_MESSAGE] == "Київ швидкісна!"
+    assert state.attributes[ATTR_MATCHED_AREA] == "Київ"
+    assert state.attributes[ATTR_MATCHED_DANGER] == "Київ швидкісна"
     assert state.attributes[ATTR_SOURCE_ENTITY_ID] == "sensor.alerts"
     assert hass.states.get(_event_entity_id(hass, entry)).state == STATE_UNKNOWN
 
@@ -180,6 +191,9 @@ async def test_source_state_updates_binary_sensors(
     assert hass.states.get("binary_sensor.aerial_danger_ballistic_danger").state == (
         STATE_OFF
     )
+    for key in ("ballistic", "cruise", "drone", "unknown", "danger"):
+        state = hass.states.get(_entity_id(hass, entry, key))
+        assert all(state.attributes[attr] is None for attr in DETECTION_ATTRIBUTE_KEYS)
 
     hass.states.async_set("sensor.alerts", "Київ швидкісна!")
     await hass.async_block_till_done()
@@ -188,6 +202,41 @@ async def test_source_state_updates_binary_sensors(
         STATE_ON
     )
     assert hass.states.get("binary_sensor.aerial_danger_danger").state == STATE_ON
+
+
+async def test_aggregate_attributes_use_latest_active_detection(
+    hass: HomeAssistant,
+) -> None:
+    """Test aggregate attributes follow the latest active detection."""
+    entry = _entry(
+        {
+            CONF_REGION_PATTERNS: [r"\bкиїв\b"],
+            CONF_NEIGHBORHOOD_PATTERNS: [r"\bнивки\b"],
+            CONF_SOURCES: ["sensor.channel_a", "sensor.channel_b"],
+        }
+    )
+    entry.add_to_hass(hass)
+
+    assert await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+
+    danger_id = _entity_id(hass, entry, "danger")
+    hass.states.async_set("sensor.channel_a", "Київ швидкісна!")
+    await hass.async_block_till_done()
+    hass.states.async_set("sensor.channel_b", "Нивки над вами БПЛА!")
+    await hass.async_block_till_done()
+
+    state = hass.states.get(danger_id)
+    assert state.attributes[ATTR_MATCHED_MESSAGE] == "Нивки над вами БПЛА!"
+    assert state.attributes[ATTR_SOURCE_ENTITY_ID] == "sensor.channel_b"
+
+    hass.states.async_set("sensor.channel_b", "Все тихо")
+    await hass.async_block_till_done()
+
+    state = hass.states.get(danger_id)
+    assert state.state == STATE_ON
+    assert state.attributes[ATTR_MATCHED_MESSAGE] == "Київ швидкісна!"
+    assert state.attributes[ATTR_SOURCE_ENTITY_ID] == "sensor.channel_a"
 
 
 async def test_multiple_sources_keep_aggregate_danger_on(
@@ -256,16 +305,16 @@ async def test_latest_active_source_supplies_attributes(
     await hass.async_block_till_done()
 
     state = hass.states.get(ballistic_id)
-    assert state.attributes["message"] == "Київ є ЦІЛЬ!"
-    assert state.attributes["source_entity_id"] == "sensor.channel_b"
+    assert state.attributes[ATTR_MATCHED_MESSAGE] == "Київ є ЦІЛЬ!"
+    assert state.attributes[ATTR_SOURCE_ENTITY_ID] == "sensor.channel_b"
 
     hass.states.async_set("sensor.channel_b", "Все тихо")
     await hass.async_block_till_done()
 
     state = hass.states.get(ballistic_id)
     assert state.state == STATE_ON
-    assert state.attributes["message"] == "Київ швидкісна!"
-    assert state.attributes["source_entity_id"] == "sensor.channel_a"
+    assert state.attributes[ATTR_MATCHED_MESSAGE] == "Київ швидкісна!"
+    assert state.attributes[ATTR_SOURCE_ENTITY_ID] == "sensor.channel_a"
 
 
 @pytest.mark.parametrize("unavailable_state", [STATE_UNKNOWN, STATE_UNAVAILABLE])
@@ -294,7 +343,7 @@ async def test_unavailable_source_preserves_detection(
 
     state = hass.states.get(ballistic_id)
     assert state.state == STATE_ON
-    assert state.attributes["message"] == "Київ швидкісна!"
+    assert state.attributes[ATTR_MATCHED_MESSAGE] == "Київ швидкісна!"
 
 
 async def test_overlapping_entries_are_isolated(hass: HomeAssistant) -> None:
@@ -355,14 +404,16 @@ async def test_same_type_detection_refreshes_attributes(
     assert hass.states.get("binary_sensor.aerial_danger_danger").state == STATE_ON
     assert (
         hass.states.get("binary_sensor.aerial_danger_ballistic_danger").attributes[
-            "message"
+            ATTR_MATCHED_MESSAGE
         ]
         == "Київ швидкісна!"
     )
     event_entity_id = _event_entity_id(hass, entry)
     event_state = hass.states.get(event_entity_id)
     assert event_state.attributes[ATTR_EVENT_TYPE] == EVENT_TYPE_BALLISTIC
-    assert event_state.attributes[ATTR_MESSAGE] == "Київ швидкісна!"
+    assert event_state.attributes[ATTR_MATCHED_MESSAGE] == "Київ швидкісна!"
+    assert event_state.attributes[ATTR_MATCHED_AREA] == "Київ"
+    assert event_state.attributes[ATTR_MATCHED_DANGER] == "Київ швидкісна"
     assert event_state.attributes[ATTR_SOURCE_ENTITY_ID] == "sensor.alerts"
     assert ATTR_TIMESTAMP in event_state.attributes
 
@@ -375,19 +426,19 @@ async def test_same_type_detection_refreshes_attributes(
     assert hass.states.get("binary_sensor.aerial_danger_danger").state == STATE_ON
     assert (
         hass.states.get("binary_sensor.aerial_danger_ballistic_danger").attributes[
-            "message"
+            ATTR_MATCHED_MESSAGE
         ]
         == "Київ є ЦІЛЬ!"
     )
     assert (
         hass.states.get("binary_sensor.aerial_danger_ballistic_danger").attributes[
-            "source_entity_id"
+            ATTR_SOURCE_ENTITY_ID
         ]
         == "sensor.alerts"
     )
     event_state = hass.states.get(event_entity_id)
     assert event_state.attributes[ATTR_EVENT_TYPE] == EVENT_TYPE_BALLISTIC
-    assert event_state.attributes[ATTR_MESSAGE] == "Київ є ЦІЛЬ!"
+    assert event_state.attributes[ATTR_MATCHED_MESSAGE] == "Київ є ЦІЛЬ!"
 
 
 @pytest.mark.parametrize(
@@ -421,13 +472,13 @@ async def test_event_entity_maps_danger_types(
 
     state = hass.states.get(_event_entity_id(hass, entry))
     assert state.attributes[ATTR_EVENT_TYPE] == event_type
-    assert state.attributes[ATTR_MESSAGE] == message
+    assert state.attributes[ATTR_MATCHED_MESSAGE] == message
 
 
-async def test_cleared_detection_removes_stale_attributes(
+async def test_cleared_detection_resets_attributes(
     hass: HomeAssistant,
 ) -> None:
-    """Test non-matching messages clear stale detection attributes."""
+    """Test non-matching messages reset detection attributes to None."""
     entry = _entry(
         {
             CONF_REGION_PATTERNS: [r"\bкиїв\b"],
@@ -447,7 +498,44 @@ async def test_cleared_detection_removes_stale_attributes(
 
     state = hass.states.get("binary_sensor.aerial_danger_ballistic_danger")
     assert state.state == STATE_OFF
-    assert "message" not in state.attributes
+    assert all(state.attributes[attr] is None for attr in DETECTION_ATTRIBUTE_KEYS)
+
+
+async def test_match_details_are_logged(
+    hass: HomeAssistant,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    """Test a match logs exact values and regex patterns at debug level."""
+    area_pattern = r"\bкиїв\b"
+    entry = _entry(
+        {
+            CONF_REGION_PATTERNS: [area_pattern],
+            CONF_NEIGHBORHOOD_PATTERNS: [],
+            CONF_SOURCES: ["sensor.alerts"],
+        }
+    )
+    entry.add_to_hass(hass)
+
+    assert await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+
+    with caplog.at_level("DEBUG", logger="custom_components.aerial_danger"):
+        hass.states.async_set("sensor.alerts", "КИЇВ ШВИДКІСНА!")
+        await hass.async_block_till_done()
+
+    record = next(
+        record
+        for record in caplog.records
+        if record.message.startswith("Danger matched:")
+    )
+    assert record.args == (
+        "sensor.alerts",
+        "КИЇВ ШВИДКІСНА!",
+        "КИЇВ",
+        "КИЇВ ШВИДКІСНА",
+        area_pattern,
+        rf"{area_pattern} швидкісна",
+    )
 
 
 async def test_setup_rejects_invalid_stored_pattern(

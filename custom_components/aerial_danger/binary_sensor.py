@@ -12,14 +12,10 @@ from homeassistant.components.binary_sensor import (
 )
 
 from .const import (
-    ATTR_AREA,
-    ATTR_BALLISTIC,
-    ATTR_CRUISE,
-    ATTR_DRONE,
-    ATTR_MATCH,
-    ATTR_MESSAGE,
+    ATTR_MATCHED_AREA,
+    ATTR_MATCHED_DANGER,
+    ATTR_MATCHED_MESSAGE,
     ATTR_SOURCE_ENTITY_ID,
-    ATTR_UNKNOWN,
     STATE_BALLISTIC,
     STATE_CRUISE,
     STATE_DANGER,
@@ -124,30 +120,21 @@ class DangerBinarySensor(AerialDangerEntity, BinarySensorEntity):
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
         """Return supplemental attributes for the sensor."""
-        attrs: dict[str, Any] = {}
         if self.entity_description.danger_type is None:
-            # aggregate sensor: show which types are active
-            attrs.update(
-                {
-                    ATTR_BALLISTIC: self._runtime.states[STATE_BALLISTIC],
-                    ATTR_CRUISE: self._runtime.states[STATE_CRUISE],
-                    ATTR_DRONE: self._runtime.states[STATE_DRONE],
-                    ATTR_UNKNOWN: self._runtime.states[STATE_UNKNOWN_DANGER],
-                }
-            )
+            source_detection = self._runtime.latest_detection
         else:
             source_detection = self._runtime.last_detection.get(
                 self.entity_description.danger_type
             )
-            if source_detection:
-                detection: Detection = source_detection.detection
-                attrs.update(
-                    {
-                        ATTR_AREA: detection.area,
-                        ATTR_MATCH: detection.match,
-                        ATTR_MESSAGE: detection.message,
-                        ATTR_SOURCE_ENTITY_ID: source_detection.source_entity_id,
-                    }
-                )
 
-        return attrs
+        detection: Detection | None = (
+            source_detection.detection if source_detection else None
+        )
+        return {
+            ATTR_MATCHED_MESSAGE: detection.message if detection else None,
+            ATTR_MATCHED_AREA: detection.matched_area if detection else None,
+            ATTR_MATCHED_DANGER: detection.matched_danger if detection else None,
+            ATTR_SOURCE_ENTITY_ID: (
+                source_detection.source_entity_id if source_detection else None
+            ),
+        }

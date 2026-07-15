@@ -8,9 +8,9 @@ from homeassistant.components.event import EventEntity
 from homeassistant.core import callback
 
 from .const import (
-    ATTR_AREA,
-    ATTR_MATCH,
-    ATTR_MESSAGE,
+    ATTR_MATCHED_AREA,
+    ATTR_MATCHED_DANGER,
+    ATTR_MATCHED_MESSAGE,
     ATTR_SOURCE_ENTITY_ID,
     ATTR_TIMESTAMP,
     EVENT_TYPE_BALLISTIC,
@@ -80,9 +80,9 @@ class AerialDangerEvent(AerialDangerEntity, EventEntity):
         self._trigger_event(
             EVENT_TYPE_BY_DANGER_TYPE[detection.type],
             {
-                ATTR_AREA: detection.area,
-                ATTR_MATCH: detection.match,
-                ATTR_MESSAGE: detection.message,
+                ATTR_MATCHED_MESSAGE: detection.message,
+                ATTR_MATCHED_AREA: detection.matched_area,
+                ATTR_MATCHED_DANGER: detection.matched_danger,
                 ATTR_SOURCE_ENTITY_ID: source_detection.source_entity_id,
                 ATTR_TIMESTAMP: source_detection.updated_at.isoformat(),
             },

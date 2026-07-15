@@ -54,7 +54,7 @@ The integration creates these safety binary sensors:
 - Unknown danger
 - Danger
 
-The aggregate **Danger** sensor is on while any type-specific danger sensor is on and exposes active danger types as attributes. Type-specific sensors expose the latest active match details and `source_entity_id` when available.
+The aggregate **Danger** sensor is on while any type-specific danger sensor is on. Every binary sensor exposes `matched_message`, `matched_area`, `matched_danger`, and `source_entity_id`. Type-specific sensors use their latest active detection; the aggregate sensor uses the latest active detection across all types. When a sensor has no active detection, these attributes remain present with `null` values.
 
 ## Events
 
@@ -65,7 +65,9 @@ Each detection entry creates a **Danger detected** event entity. It reports one 
 - `drone`
 - `unknown`
 
-Event attributes include `area`, `match`, `message`, `source_entity_id`, and `timestamp`. Startup state seeding does not trigger an event.
+Event attributes include `matched_message`, `matched_area`, `matched_danger`, `source_entity_id`, and `timestamp`. Startup state seeding does not trigger an event.
+
+Debug logging records each match with these values and the area and danger regex patterns that matched. Normal logging remains quiet during high-volume message periods.
 
 ## Actions, triggers, and conditions
 

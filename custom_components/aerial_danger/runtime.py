@@ -48,6 +48,7 @@ class RuntimeData:
     active_detections: dict[str, SourceDetection]
     states: dict[str, bool]
     last_detection: dict[DangerType, SourceDetection | None]
+    latest_detection: SourceDetection | None
     entities: set[Entity]
     event_entity: AerialDangerEvent | None
     unsub: Callable[[], None] | None
@@ -58,6 +59,7 @@ def derive_danger_state(
 ) -> tuple[
     dict[str, bool],
     dict[DangerType, SourceDetection | None],
+    SourceDetection | None,
 ]:
     """Derive entry state from active source detections."""
     states = {
@@ -73,6 +75,7 @@ def derive_danger_state(
         DangerType.DRONE: None,
         DangerType.GENERIC: None,
     }
+    latest_detection: SourceDetection | None = None
 
     for source_detection in active_detections.values():
         danger_type = source_detection.detection.type
@@ -87,7 +90,13 @@ def derive_danger_state(
         ) > (current.updated_at, current.source_entity_id):
             last_detection[danger_type] = source_detection
 
+        if latest_detection is None or (
+            source_detection.updated_at,
+            source_detection.source_entity_id,
+        ) > (latest_detection.updated_at, latest_detection.source_entity_id):
+            latest_detection = source_detection
+
     states[STATE_DANGER] = any(
         states[state_key] for state_key in DANGER_TYPE_STATE_KEYS.values()
     )
-    return states, last_detection
+    return states, last_detection, latest_detection
