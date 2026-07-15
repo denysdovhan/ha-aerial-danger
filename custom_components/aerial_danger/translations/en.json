@@ -51,6 +51,18 @@
       "danger": {
         "name": "Danger detected",
         "state_attributes": {
+          "matched_message": {
+            "name": "Matched message"
+          },
+          "matched_area": {
+            "name": "Matched area"
+          },
+          "matched_danger": {
+            "name": "Matched danger"
+          },
+          "source_entity_id": {
+            "name": "Source entity"
+          },
           "event_type": {
             "state": {
               "ballistic": "Ballistic danger",
@@ -64,19 +76,89 @@
     },
     "binary_sensor": {
       "ballistic": {
-        "name": "Ballistic danger"
+        "name": "Ballistic danger",
+        "state_attributes": {
+          "matched_message": {
+            "name": "Matched message"
+          },
+          "matched_area": {
+            "name": "Matched area"
+          },
+          "matched_danger": {
+            "name": "Matched danger"
+          },
+          "source_entity_id": {
+            "name": "Source entity"
+          }
+        }
       },
       "cruise": {
-        "name": "Cruise missile danger"
+        "name": "Cruise missile danger",
+        "state_attributes": {
+          "matched_message": {
+            "name": "Matched message"
+          },
+          "matched_area": {
+            "name": "Matched area"
+          },
+          "matched_danger": {
+            "name": "Matched danger"
+          },
+          "source_entity_id": {
+            "name": "Source entity"
+          }
+        }
       },
       "drone": {
-        "name": "Drone danger"
+        "name": "Drone danger",
+        "state_attributes": {
+          "matched_message": {
+            "name": "Matched message"
+          },
+          "matched_area": {
+            "name": "Matched area"
+          },
+          "matched_danger": {
+            "name": "Matched danger"
+          },
+          "source_entity_id": {
+            "name": "Source entity"
+          }
+        }
       },
       "unknown": {
-        "name": "Unknown danger"
+        "name": "Unknown danger",
+        "state_attributes": {
+          "matched_message": {
+            "name": "Matched message"
+          },
+          "matched_area": {
+            "name": "Matched area"
+          },
+          "matched_danger": {
+            "name": "Matched danger"
+          },
+          "source_entity_id": {
+            "name": "Source entity"
+          }
+        }
       },
       "danger": {
-        "name": "Danger"
+        "name": "Danger",
+        "state_attributes": {
+          "matched_message": {
+            "name": "Matched message"
+          },
+          "matched_area": {
+            "name": "Matched area"
+          },
+          "matched_danger": {
+            "name": "Matched danger"
+          },
+          "source_entity_id": {
+            "name": "Source entity"
+          }
+        }
       }
     }
   }

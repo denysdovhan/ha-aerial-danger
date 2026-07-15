@@ -19,9 +19,10 @@ from .const import (
     ERROR_MISSING_SOURCES,
     EVENT_DATA_NEW_STATE,
     EVENT_DATA_OLD_STATE,
+    LOGGER,
     PLATFORMS,
 )
-from .danger import DangerDetector
+from .danger import DangerDetector, Detection
 from .runtime import RuntimeData, SourceDetection, derive_danger_state
 
 type AerialDangerConfigEntry = ConfigEntry[RuntimeData]
@@ -38,6 +39,20 @@ def _entry_list(
     if isinstance(value, str) and value:
         return [value]
     return []
+
+
+def _log_detection(source_entity_id: str, detection: Detection) -> None:
+    """Log matched detection details for debugging."""
+    LOGGER.debug(
+        "Danger matched: entity_id=%s, matched_message=%r, matched_area=%r, "
+        "matched_danger=%r, area_pattern=%r, danger_pattern=%r",
+        source_entity_id,
+        detection.message,
+        detection.matched_area,
+        detection.matched_danger,
+        detection.area_pattern,
+        detection.danger_pattern,
+    )
 
 
 async def async_setup_entry(
@@ -69,19 +84,21 @@ async def async_setup_entry(
 
         detection = detector.danger(str(state.state))
         if detection.danger:
+            _log_detection(source, detection)
             active_detections[source] = SourceDetection(
                 source_entity_id=source,
                 detection=detection,
                 updated_at=state.last_updated,
             )
 
-    states, last_detection = derive_danger_state(active_detections)
+    states, last_detection, latest_detection = derive_danger_state(active_detections)
 
     runtime = RuntimeData(
         detector=detector,
         active_detections=active_detections,
         states=states,
         last_detection=last_detection,
+        latest_detection=latest_detection,
         entities=set(),
         event_entity=None,
         unsub=None,
@@ -105,6 +122,7 @@ async def async_setup_entry(
         detection = detector.danger(message)
 
         if detection.danger:
+            _log_detection(new_state.entity_id, detection)
             runtime.active_detections[new_state.entity_id] = SourceDetection(
                 source_entity_id=new_state.entity_id,
                 detection=detection,
@@ -117,10 +135,17 @@ async def async_setup_entry(
         else:
             runtime.active_detections.pop(new_state.entity_id, None)
 
-        new_states, new_last_detection = derive_danger_state(runtime.active_detections)
-        if new_states != runtime.states or new_last_detection != runtime.last_detection:
+        new_states, new_last_detection, new_latest_detection = derive_danger_state(
+            runtime.active_detections
+        )
+        if (
+            new_states != runtime.states
+            or new_last_detection != runtime.last_detection
+            or new_latest_detection != runtime.latest_detection
+        ):
             runtime.states = new_states
             runtime.last_detection = new_last_detection
+            runtime.latest_detection = new_latest_detection
             for entity in runtime.entities:
                 entity.async_write_ha_state()
 

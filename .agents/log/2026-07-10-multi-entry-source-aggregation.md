@@ -1,7 +1,7 @@
 ---
 title: Multi-entry source aggregation
 date: 2026-07-10
-status: wip
+status: done
 related_paths:
   - custom_components/aerial_danger/
   - tests/
@@ -93,7 +93,7 @@ listener required for native title-rename device refreshes.
 - [x] Event entity setup, payload, repeated-event, and unload behavior
 - [x] Config-flow coverage is 100%
 - [x] Development server registers event entities without integration errors
-- [ ] Final developer review and approval
+- [x] Final developer review and approval
 
 ## Implementation Notes
 
@@ -114,3 +114,7 @@ device names stay synchronized. Tests cover options reload behavior.
 `scripts/lint` passed, all 36 tests passed, and config-flow coverage is 100%.
 The development server registered both existing entries' event entities without
 integration errors. Area presets and branding remain deferred.
+
+2026-07-13: Developer approved wrapping up this feature. Follow-up attribute
+contract work continues separately in
+[Cleanup attributes](2026-07-13-cleanup-attributes.md).

@@ -1,5 +1,6 @@
 """Constants for the Aerial Danger integration."""
 
+import logging
 from typing import Final
 
 from homeassistant.const import Platform
@@ -9,6 +10,7 @@ DOMAIN: Final = "aerial_danger"
 NAME: Final = "Aerial Danger"
 DEFAULT_NAME: Final = "Aerial Danger"
 PLATFORMS: Final = [Platform.BINARY_SENSOR, Platform.EVENT]
+LOGGER: Final = logging.getLogger(__package__)
 
 # Configuration
 CONF_REGION_PATTERNS: Final = "region_patterns"
@@ -28,15 +30,11 @@ STATE_DRONE: Final = "drone"
 STATE_UNKNOWN_DANGER: Final = "unknown"
 
 # Entity attributes
-ATTR_AREA: Final = "area"
-ATTR_BALLISTIC: Final = "ballistic"
-ATTR_CRUISE: Final = "cruise"
-ATTR_DRONE: Final = "drone"
-ATTR_MATCH: Final = "match"
-ATTR_MESSAGE: Final = "message"
+ATTR_MATCHED_AREA: Final = "matched_area"
+ATTR_MATCHED_DANGER: Final = "matched_danger"
+ATTR_MATCHED_MESSAGE: Final = "matched_message"
 ATTR_SOURCE_ENTITY_ID: Final = "source_entity_id"
 ATTR_TIMESTAMP: Final = "timestamp"
-ATTR_UNKNOWN: Final = "unknown"
 
 # Events
 EVENT_DATA_NEW_STATE: Final = "new_state"
