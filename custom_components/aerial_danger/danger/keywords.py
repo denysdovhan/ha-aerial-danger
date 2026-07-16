@@ -73,7 +73,6 @@ BALLISTIC_DANGER = [
     r"{area} спуск!?",
 ]
 
-
 # Cruise-missile oriented phrases (including generic "rocket" wording).
 CRUISE_DANGER = [
     *_ZIRCON_DANGER,
@@ -113,7 +112,6 @@ DRONE_DANGER = [
     r"курс(ом)? на {area}",
     r"{area} йде",
 ]
-
 
 __all__ = [
     "BALLISTIC_DANGER",
