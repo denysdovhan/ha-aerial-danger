@@ -41,6 +41,7 @@ This repository implements the Home Assistant custom integration **Aerial Danger
 - `entity.py` — shared runtime and device setup for integration entities.
 - `binary_sensor.py` — safety binary sensors for ballistic, cruise, drone, unknown, and aggregate danger; all expose stable matched-message, area, danger, and source attributes.
 - `event.py` — native Home Assistant event entity for ballistic, cruise, drone, and unknown detections.
+- `diagnostics.py` — provides redacted config-entry diagnostics and privacy-safe runtime state details.
 - `danger/` — logger-free, Home Assistant agnostic danger detection library, keyword templates, and data models; detections preserve exact matched text and regex patterns.
 - `translations/` — English and Ukrainian strings for the basic flow.
 - `manifest.json` — Home Assistant manifest pointing to this repo.
