@@ -1,5 +1,9 @@
 [![SWUbanner](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner-direct-single.svg)](https://stand-with-ukraine.pp.ua/)
 
+<p align="center">
+    <img src="./logo.png" alt="Logo Image" width="200"/>
+</p>
+
 # 🛰️ HA Aerial Danger
 
 > Home Assistant custom integration that matches danger messages from your own HA entities (e.g. Telegram bots, scrapers) using configurable area regexes and built‑in danger keywords.
