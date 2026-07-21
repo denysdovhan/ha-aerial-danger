@@ -4,10 +4,24 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from homeassistant.components.diagnostics import async_redact_data
+
+from .const import (
+    CONF_NEIGHBORHOOD_PATTERNS,
+    CONF_REGION_PATTERNS,
+    CONF_SOURCES,
+)
+
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
 
     from . import AerialDangerConfigEntry
+
+TO_REDACT = {
+    CONF_NEIGHBORHOOD_PATTERNS,
+    CONF_REGION_PATTERNS,
+    CONF_SOURCES,
+}
 
 
 async def async_get_config_entry_diagnostics(
@@ -22,8 +36,8 @@ async def async_get_config_entry_diagnostics(
             "version": entry.version,
             "minor_version": entry.minor_version,
             "state": str(entry.state),
-            "data": entry.data,
-            "options": entry.options,
+            "data": async_redact_data(entry.data, TO_REDACT),
+            "options": async_redact_data(entry.options, TO_REDACT),
         },
         "runtime": {
             "states": dict(runtime.states),
