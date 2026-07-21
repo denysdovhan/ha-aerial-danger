@@ -19,6 +19,11 @@ Aerial Danger monitors entities containing Ukrainian alert messages, matches the
 
 It detects intermediate-range ballistic missiles, ballistic missiles, cruise missiles, drones, and unknown aerial dangers. A separate **Danger** sensor indicates when any supported danger is active.
 
+> [!CAUTION]
+> This integration can make mistakes and may miss or detect messages late. Do not use it as your only or official alert source. Always follow official alerts and instructions. When an air-raid alert is issued, immediately go to the nearest shelter and remain there until the official all-clear.
+>
+> The integration is provided “as is.” Its author and maintainer do not guarantee the accuracy, completeness, or timeliness of its data and are not responsible for users’ safety, decisions made, or consequences arising from its use.
+
 ## Sponsorship
 
 Your generosity will help me maintain and develop more projects like this one.
@@ -44,7 +49,12 @@ If it doesn't work, add this repository to HACS manually by using this URL:
 
 ## Usage
 
-Before setup, create or choose a Home Assistant entity whose state contains incoming alert text, such as an entity populated by a Telegram bot or scraper.
+Before setup, create or choose a Home Assistant entity whose state contains incoming alert text. You can create these entities with the [Scrape integration](https://www.home-assistant.io/integrations/scrape) for public Telegram channels such as:
+
+- [Air Force of the Armed Forces of Ukraine](https://telegram.me/s/kpszsu)
+- [War Monitor](https://telegram.me/war_monitor)
+
+Choose the resulting sensors as source entities when configuring Aerial Danger.
 
 This integration is configurable via UI. On the **Devices and Services** page, click **Add Integration** and search for **Aerial Danger**.
 
@@ -52,8 +62,8 @@ Configure the integration with:
 
 - **Name** — the name of the detection entry and device.
 - **Source entities** — entities whose state contains alert messages.
-- **Regions** — select built-in region presets, add custom Python regular expressions, or combine both.
-- **Neighborhoods** — select presets belonging to the chosen regions, add custom regular expressions, or combine both.
+- **Regions** — select built-in region presets, add a YAML list of custom Python regular expressions, or combine both.
+- **Neighborhoods** — select presets belonging to the chosen regions, add a YAML list of custom regular expressions, or combine both.
 
 The first built-in region is Kyiv, with Sviatoshyn, Akademmistechko, Antonov, Nyvky, and Vynohradar neighborhoods. At least one effective region or neighborhood pattern and one source entity are required. You can change sources, presets, and custom patterns later from the integration options. Rename the entry through Home Assistant's native entry rename action.
 

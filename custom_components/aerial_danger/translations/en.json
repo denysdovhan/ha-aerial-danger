@@ -3,40 +3,43 @@
   "config": {
     "step": {
       "user": {
-        "description": "Name this detection entry and choose entities containing incoming alert messages.",
+        "description": "Name this monitoring entry and select the entities whose states the integration will check for danger messages.\n\nYou can create these entities with the [Scrape integration](https://www.home-assistant.io/integrations/scrape) for Telegram channels such as:\n\n- [Air Force of the Armed Forces of Ukraine](https://telegram.me/s/kpszsu)\n- [War Monitor](https://telegram.me/war_monitor)\n\n**‼️ Important:** This integration can make mistakes, miss messages, or detect them late.\nDo not use it as your only or official alert source. Always follow official alerts and their instructions. During an air-raid alert, immediately go to the nearest shelter and remain there until the official all-clear.\nThe integration is provided “as is.” The author does not guarantee the accuracy, completeness, or timeliness of its data and is not responsible for users’ safety, decisions made, or consequences arising from use of the integration.",
         "data": {
           "name": "Name",
-          "sources": "Source entities"
+          "sources": "Danger message sources"
         },
         "data_description": {
-          "name": "Name used for the Aerial Danger entry and device.",
-          "sources": "Entities whose state text contains incoming alert messages."
+          "name": "Name used for the Aerial Danger monitoring entry and device.",
+          "sources": "Select one or more entities whose state contains messages for danger monitoring."
         }
       },
       "regions": {
         "title": "Regions",
-        "description": "Select region presets, add custom Python regular expressions, or use both.",
+        "description": "Select the preset regions where the integration should monitor danger messages. Regions are used to detect ballistic missiles, cruise missiles, and other fast threats that may approach the city. You can select multiple regions.\n\nUse either option or combine both.",
         "data": {
           "region_presets": "Region presets",
-          "region_patterns": "Custom region regex patterns"
+          "region_patterns": "Custom region regex patterns (YAML list)"
         },
         "data_description": {
-          "region_patterns": "Enter one regular expression per line."
+          "region_presets": "Optional. Select one or more preset regions.",
+          "region_patterns": "Optional. Add a YAML list where each item is one [regular expression](https://docs.python.org/3/library/re.html) in single quotes.\n\nExample YAML list:\n\n```yaml\n- '\\bки(їв|єва|єві|єву|євом)\\b'\n- '\\bстолиц(я|і|ю|ею)\\b'\n```"
         }
       },
       "neighborhoods": {
         "title": "Neighborhoods",
-        "description": "Select neighborhoods from the chosen regions, add custom Python regular expressions, or use both.",
+        "description": "Select the preset neighborhoods within the chosen regions where the integration should monitor danger messages. Neighborhoods are used to detect drones and all other threat types. You can select multiple neighborhoods.\n\nNeighborhood presets and custom regular expressions are optional fields. Use either one or combine both.",
         "data": {
           "neighborhood_presets": "Neighborhood presets",
-          "neighborhood_patterns": "Custom neighborhood regex patterns"
+          "neighborhood_patterns": "Custom neighborhood regex patterns (YAML list)"
         },
         "data_description": {
-          "neighborhood_patterns": "Enter one regular expression per line."
+          "neighborhood_presets": "Optional. Select one or more preset neighborhoods.",
+          "neighborhood_patterns": "Optional. Add a YAML list where each item is one [regular expression](https://docs.python.org/3/library/re.html) in single quotes.\n\nExample YAML list:\n\n```yaml\n- '\\bнив(ки|ках|ками|ок)\\b'\n- '\\bвиноградар(а|і|ем)?\\b'\n```"
         }
       }
     },
     "error": {
+      "invalid_pattern_format": "Regex patterns must be a YAML list of strings.",
       "invalid_pattern": "One or more regex patterns are invalid.",
       "patterns_required": "Enter at least one region or neighborhood pattern.",
       "sources_required": "Select at least one source entity."
@@ -46,38 +49,41 @@
     "step": {
       "init": {
         "title": "Aerial Danger options",
-        "description": "Choose entities containing incoming alert messages.",
+        "description": "Select the entities whose states the integration will check for danger messages.",
         "data": {
-          "sources": "Source entities"
+          "sources": "Danger message sources"
         },
         "data_description": {
-          "sources": "Entities whose state text contains incoming alert messages."
+          "sources": "Select one or more entities whose state contains messages for danger monitoring."
         }
       },
       "regions": {
         "title": "Regions",
-        "description": "Select region presets, add custom Python regular expressions, or use both.",
+        "description": "Select the preset regions where the integration should monitor danger messages. Regions are used to detect ballistic missiles, cruise missiles, and other fast threats that may approach the city. You can select multiple regions.\n\nRegion presets and custom regular expressions are optional fields. Use either one or combine both.",
         "data": {
           "region_presets": "Region presets",
-          "region_patterns": "Custom region regex patterns"
+          "region_patterns": "Custom region regex patterns (YAML list)"
         },
         "data_description": {
-          "region_patterns": "Enter one regular expression per line."
+          "region_presets": "Optional. Select one or more preset regions.",
+          "region_patterns": "Optional. Add a YAML list where each item is one [regular expression](https://docs.python.org/3/library/re.html) in single quotes.\n\nExample YAML list:\n\n```yaml\n- '\\bки(їв|єва|єві|єву|євом)\\b'\n- '\\bстолиц(я|і|ю|ею)\\b'\n```"
         }
       },
       "neighborhoods": {
         "title": "Neighborhoods",
-        "description": "Select neighborhoods from the chosen regions, add custom Python regular expressions, or use both.",
+        "description": "Select the preset neighborhoods within the chosen regions where the integration should monitor danger messages. Neighborhoods are used to detect drones and all other threat types. You can select multiple neighborhoods.\n\nNeighborhood presets and custom regular expressions are optional fields. Use either one or combine both.",
         "data": {
           "neighborhood_presets": "Neighborhood presets",
-          "neighborhood_patterns": "Custom neighborhood regex patterns"
+          "neighborhood_patterns": "Custom neighborhood regex patterns (YAML list)"
         },
         "data_description": {
-          "neighborhood_patterns": "Enter one regular expression per line."
+          "neighborhood_presets": "Optional. Select one or more preset neighborhoods.",
+          "neighborhood_patterns": "Optional. Add a YAML list where each item is one [regular expression](https://docs.python.org/3/library/re.html) in single quotes.\n\nExample YAML list:\n\n```yaml\n- '\\bнив(ки|ках|ками|ок)\\b'\n- '\\bвиноградар(а|і|ем)?\\b'\n```"
         }
       }
     },
     "error": {
+      "invalid_pattern_format": "Regex patterns must be a YAML list of strings.",
       "invalid_pattern": "One or more regex patterns are invalid.",
       "patterns_required": "Enter at least one region or neighborhood pattern.",
       "sources_required": "Select at least one source entity."
