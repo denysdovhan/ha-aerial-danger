@@ -1,102 +1,92 @@
 [![SWUbanner](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner-direct-single.svg)](https://stand-with-ukraine.pp.ua/)
 
-<p align="center">
-    <img src="./logo.png" alt="Logo Image" width="200"/>
-</p>
+<!-- markdownlint-disable-next-line no-inline-html -->
+<img alt="HA Aerial Danger Logo" src="./assets/logo.png" width="250px">
 
-# 🛰️ HA Aerial Danger
+# 💥 HA Aerial Danger
 
-> Home Assistant custom integration that matches danger messages from your own HA entities (e.g. Telegram bots, scrapers) using configurable area regexes and built‑in danger keywords.
+[![GitHub Release][gh-release-image]][gh-release-url]
+[![GitHub Downloads][gh-downloads-image]][gh-downloads-url]
+[![hacs][hacs-image]][hacs-url]
+[![GitHub Sponsors][gh-sponsors-image]][gh-sponsors-url]
+[![Buy Me A Coffee][buymeacoffee-image]][buymeacoffee-url]
+[![Twitter][twitter-image]][twitter-url]
 
-## What it does
+> [!NOTE]
+> A [Home Assistant][home-assistant] integration that detects aerial danger alerts for your configured areas from text published by selected entities.
 
-Aerial Danger listens to configured Home Assistant source entities whose state contains alert text. It tracks danger independently per source, matches messages against your region and neighborhood regex patterns plus built-in Ukrainian aerial-danger keywords, then updates safety binary sensors for intermediate-range ballistic missile, ballistic, cruise missile, drone, unknown, and aggregate danger.
+Aerial Danger monitors entities containing Ukrainian alert messages, matches them against your area patterns, and provides binary sensors and events for use in dashboards and automations.
 
-## Status
+It detects intermediate-range ballistic missiles, ballistic missiles, cruise missiles, drones, and unknown aerial dangers. A separate **Danger** sensor indicates when any supported danger is active.
 
-- ✅ Danger detection library with keyword sets and pytest coverage
-- ✅ Multi-entry config flow with editable area patterns and source entities
-- ✅ Binary sensors for intermediate-range ballistic missile, ballistic, cruise, drone, unknown, and aggregate danger
-- ✅ Native Home Assistant event entity with danger types and match details
-- ✅ HA-level config flow and setup tests
-- ⏳ Brands assets in the Home Assistant brands repository
+## Sponsorship
 
-## Prerequisites
+Your generosity will help me maintain and develop more projects like this one.
 
-- A Home Assistant entity whose state contains incoming alert text.
-- Region and neighborhood patterns written as Python regular expressions.
+- 💖 [Sponsor on GitHub][gh-sponsors-url]
+- ☕️ [Buy Me A Coffee][buymeacoffee-url]
+- Bitcoin: `bc1q7lfx6de8jrqt8mcds974l6nrsguhd6u30c6sg8`
+- Ethereum: `0x6aF39C917359897ae6969Ad682C14110afe1a0a1`
 
 ## Installation
 
-1. Add this repository to HACS as a custom integration, or copy `custom_components/aerial_danger` into your Home Assistant `custom_components` directory.
-2. Restart Home Assistant.
-3. Go to **Settings** > **Devices & services**.
-4. Select **Add integration**.
-5. Search for **Aerial Danger**.
-6. Enter a name, area regex patterns, and source entities.
-7. Select **Submit**.
+The quickest way to install this integration is via [HACS][hacs-url] by clicking the button below:
 
-Repeat these steps to create separate named detection entries for other
-providers, areas, or source groups.
+[![Add to HACS via My Home Assistant][hacs-install-image]][hasc-install-url]
 
-## Configuration
+If it doesn't work, add this repository to HACS manually by using this URL:
 
-- **Name**: detection entry and device name. Rename the entry with Home Assistant's standard integration rename action.
-- **Region regex patterns**: one region-level Python regex per line.
-- **Neighborhood regex patterns**: one neighborhood-level Python regex per line.
-- **Source entities**: entities whose state text contains alert messages. Each source keeps its own active detection; a non-danger message clears only that source.
+1. Visit **HACS** → **Integrations** → **...** (in the top right) → **Custom repositories**
+2. Click **Add**
+3. Paste `https://github.com/denysdovhan/ha-aerial-danger` into the **URL** field
+4. Choose **Integration** as the **Category**
+5. **Aerial Danger** will appear in the list of available integrations. Install it normally.
 
-At least one area pattern and one source entity are required. Invalid regex patterns are rejected in the config and options flows. Unknown and unavailable source states do not clear active detections. The integration uses local push updates from source entity state changes; it does not poll.
+## Usage
 
-Intermediate-range ballistic missile alerts are treated as nationwide and do not require a configured area to appear in the message.
+Before setup, create or choose a Home Assistant entity whose state contains incoming alert text, such as an entity populated by a Telegram bot or scraper.
 
-## Entities
+This integration is configurable via UI. On the **Devices and Services** page, click **Add Integration** and search for **Aerial Danger**.
 
-The integration creates these safety binary sensors:
+Configure the integration with:
 
-- Intermediate-range ballistic missile danger
-- Ballistic danger
-- Cruise missile danger
-- Drone danger
-- Unknown danger
-- Danger
+- **Name** — the name of the detection entry and device.
+- **Region patterns** — one Python regular expression per line for matching regions.
+- **Neighborhood patterns** — one Python regular expression per line for matching smaller areas.
+- **Source entities** — entities whose state contains alert messages.
 
-The aggregate **Danger** sensor is on while any type-specific danger sensor is on. Every binary sensor exposes `matched_message`, `matched_area`, `matched_danger`, and `source_entity_id`. Type-specific sensors use their latest active detection; the aggregate sensor uses the latest active detection across all types. Nationwide intermediate-range ballistic missile detections have `null` matched-area attributes. When a sensor has no active detection, these attributes remain present with `null` values.
+At least one area pattern and one source entity are required. You can change the patterns and source entities later from the integration options.
 
-## Events
+The integration creates a binary sensor for each supported danger type, an aggregate **Danger** binary sensor, and a **Danger detected** event entity. Repeat the setup to monitor different providers, areas, or source groups independently.
 
-Each detection entry creates a **Danger detected** event entity. It reports one of these event types:
+## Development
 
-- `irbm`
-- `ballistic`
-- `cruise`
-- `drone`
-- `unknown`
+Want to contribute to the project?
 
-Event attributes include `matched_message`, `matched_area`, `matched_danger`, `source_entity_id`, and `timestamp`. Startup state seeding does not trigger an event.
-
-Debug logging records each match with these values and the area and danger regex patterns that matched. Normal logging remains quiet during high-volume message periods.
-
-## Actions, triggers, and conditions
-
-This integration does not register custom service actions, automation triggers, or automation conditions. Use standard Home Assistant state triggers with the binary sensors or the event entity.
-
-## Removal
-
-1. Go to **Settings** > **Devices & services**.
-2. Open **Aerial Danger**.
-3. Select the three-dot menu.
-4. Select **Delete**.
-5. Remove the copied custom component files or the HACS custom repository if no longer needed.
-
-## Quality scale
-
-Bronze-target code, docs, and tests live in this repository. Full Bronze still requires branding assets in the separate Home Assistant brands repository.
-
-## Contributing
-
-Contributions are welcome once functionality planning is complete. Please check `contributing.md` for general guidance.
+First, thanks! Check the [contributing guideline](./contributing.md) for more information.
 
 ## License
 
-MIT © [Denys Dovhan](https://github.com/denysdovhan)
+MIT © [Denys Dovhan][denysdovhan]
+
+<!-- Badges -->
+
+[gh-release-url]: https://github.com/denysdovhan/ha-aerial-danger/releases/latest
+[gh-release-image]: https://img.shields.io/github/v/release/denysdovhan/ha-aerial-danger?style=flat-square
+[gh-downloads-url]: https://github.com/denysdovhan/ha-aerial-danger/releases
+[gh-downloads-image]: https://img.shields.io/github/downloads/denysdovhan/ha-aerial-danger/total?style=flat-square
+[hacs-url]: https://github.com/hacs/integration
+[hacs-image]: https://img.shields.io/badge/hacs-default-orange.svg?style=flat-square
+[gh-sponsors-url]: https://github.com/sponsors/denysdovhan
+[gh-sponsors-image]: https://img.shields.io/github/sponsors/denysdovhan?style=flat-square
+[buymeacoffee-url]: https://buymeacoffee.com/denysdovhan
+[buymeacoffee-image]: https://img.shields.io/badge/support-buymeacoffee-222222.svg?style=flat-square
+[twitter-url]: https://x.com/denysdovhan
+[twitter-image]: https://img.shields.io/badge/follow-%40denysdovhan-000000.svg?style=flat-square
+
+<!-- References -->
+
+[home-assistant]: https://www.home-assistant.io/
+[denysdovhan]: https://github.com/denysdovhan
+[hasc-install-url]: https://my.home-assistant.io/redirect/hacs_repository/?owner=denysdovhan&repository=ha-aerial-danger&category=integration
+[hacs-install-image]: https://my.home-assistant.io/badges/hacs_repository.svg
