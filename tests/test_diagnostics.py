@@ -12,7 +12,9 @@ from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.aerial_danger.const import (
     CONF_NEIGHBORHOOD_PATTERNS,
+    CONF_NEIGHBORHOOD_PRESETS,
     CONF_REGION_PATTERNS,
+    CONF_REGION_PRESETS,
     CONF_SOURCES,
     DOMAIN,
     STATE_BALLISTIC,
@@ -33,12 +35,16 @@ async def test_config_entry_diagnostics_redacts_user_data(
         domain=DOMAIN,
         data={
             CONF_REGION_PATTERNS: [r"\bкиїв\b"],
+            CONF_REGION_PRESETS: ["kyiv"],
             CONF_NEIGHBORHOOD_PATTERNS: [r"\bнивки\b"],
+            CONF_NEIGHBORHOOD_PRESETS: ["kyiv_nyvky"],
             CONF_SOURCES: ["sensor.alerts"],
         },
         options={
             CONF_REGION_PATTERNS: [r"\bкиївщина\b"],
+            CONF_REGION_PRESETS: ["kyiv"],
             CONF_NEIGHBORHOOD_PATTERNS: [],
+            CONF_NEIGHBORHOOD_PRESETS: ["kyiv_nyvky"],
             CONF_SOURCES: ["sensor.private_alerts"],
         },
     )
@@ -56,12 +62,16 @@ async def test_config_entry_diagnostics_redacts_user_data(
         "state": str(ConfigEntryState.LOADED),
         "data": {
             CONF_REGION_PATTERNS: REDACTED,
+            CONF_REGION_PRESETS: REDACTED,
             CONF_NEIGHBORHOOD_PATTERNS: REDACTED,
+            CONF_NEIGHBORHOOD_PRESETS: REDACTED,
             CONF_SOURCES: REDACTED,
         },
         "options": {
             CONF_REGION_PATTERNS: REDACTED,
+            CONF_REGION_PRESETS: REDACTED,
             CONF_NEIGHBORHOOD_PATTERNS: REDACTED,
+            CONF_NEIGHBORHOOD_PRESETS: REDACTED,
             CONF_SOURCES: REDACTED,
         },
     }

@@ -3,24 +3,41 @@
   "config": {
     "step": {
       "user": {
-        "description": "Set up Aerial Danger. Provide area patterns as YAML lists and choose source entities.\n\nUse one single-quoted regular expression per list item so backslashes stay unchanged:\n\n```yaml\n# One regex per list item\n- '\\bkyiv\\b'\n- '\\bcapital\\b'\n```",
+        "description": "Name this detection entry and choose entities containing incoming alert messages.",
         "data": {
           "name": "Name",
-          "region_patterns": "Region regex patterns (YAML list)",
-          "neighborhood_patterns": "Neighborhood regex patterns (YAML list)",
           "sources": "Source entities"
         },
         "data_description": {
           "name": "Name used for the Aerial Danger entry and device.",
-          "region_patterns": "YAML list of Python regular expressions that match region-level alert text. Add one single-quoted pattern per list item.",
-          "neighborhood_patterns": "YAML list of Python regular expressions that match neighborhood-level alert text. Add one single-quoted pattern per list item.",
           "sources": "Entities whose state text contains incoming alert messages."
+        }
+      },
+      "regions": {
+        "title": "Regions",
+        "description": "Select region presets, add custom Python regular expressions, or use both.",
+        "data": {
+          "region_presets": "Region presets",
+          "region_patterns": "Custom region regex patterns"
+        },
+        "data_description": {
+          "region_patterns": "Enter one regular expression per line."
+        }
+      },
+      "neighborhoods": {
+        "title": "Neighborhoods",
+        "description": "Select neighborhoods from the chosen regions, add custom Python regular expressions, or use both.",
+        "data": {
+          "neighborhood_presets": "Neighborhood presets",
+          "neighborhood_patterns": "Custom neighborhood regex patterns"
+        },
+        "data_description": {
+          "neighborhood_patterns": "Enter one regular expression per line."
         }
       }
     },
     "error": {
       "invalid_pattern": "One or more regex patterns are invalid.",
-      "invalid_pattern_format": "Enter patterns as a YAML list of strings.",
       "patterns_required": "Enter at least one region or neighborhood pattern.",
       "sources_required": "Select at least one source entity."
     }
@@ -29,24 +46,57 @@
     "step": {
       "init": {
         "title": "Aerial Danger options",
-        "description": "Enter area patterns as YAML lists. Use one single-quoted regular expression per list item so backslashes stay unchanged:\n\n```yaml\n# One regex per list item\n- '\\bkyiv\\b'\n- '\\bcapital\\b'\n```",
+        "description": "Choose entities containing incoming alert messages.",
         "data": {
-          "region_patterns": "Region regex patterns (YAML list)",
-          "neighborhood_patterns": "Neighborhood regex patterns (YAML list)",
           "sources": "Source entities"
         },
         "data_description": {
-          "region_patterns": "YAML list of Python regular expressions that match region-level alert text. Add one single-quoted pattern per list item.",
-          "neighborhood_patterns": "YAML list of Python regular expressions that match neighborhood-level alert text. Add one single-quoted pattern per list item.",
           "sources": "Entities whose state text contains incoming alert messages."
+        }
+      },
+      "regions": {
+        "title": "Regions",
+        "description": "Select region presets, add custom Python regular expressions, or use both.",
+        "data": {
+          "region_presets": "Region presets",
+          "region_patterns": "Custom region regex patterns"
+        },
+        "data_description": {
+          "region_patterns": "Enter one regular expression per line."
+        }
+      },
+      "neighborhoods": {
+        "title": "Neighborhoods",
+        "description": "Select neighborhoods from the chosen regions, add custom Python regular expressions, or use both.",
+        "data": {
+          "neighborhood_presets": "Neighborhood presets",
+          "neighborhood_patterns": "Custom neighborhood regex patterns"
+        },
+        "data_description": {
+          "neighborhood_patterns": "Enter one regular expression per line."
         }
       }
     },
     "error": {
       "invalid_pattern": "One or more regex patterns are invalid.",
-      "invalid_pattern_format": "Enter patterns as a YAML list of strings.",
       "patterns_required": "Enter at least one region or neighborhood pattern.",
       "sources_required": "Select at least one source entity."
+    }
+  },
+  "selector": {
+    "region_presets": {
+      "options": {
+        "kyiv": "Kyiv"
+      }
+    },
+    "neighborhood_presets": {
+      "options": {
+        "kyiv_sviatoshyn": "Sviatoshyn",
+        "kyiv_akademmistechko": "Akademmistechko",
+        "kyiv_antonov": "Antonov",
+        "kyiv_nyvky": "Nyvky",
+        "kyiv_vynohradar": "Vynohradar"
+      }
     }
   },
   "entity": {

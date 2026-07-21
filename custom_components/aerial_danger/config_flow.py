@@ -13,52 +13,90 @@ from homeassistant.helpers import selector
 
 from .const import (
     CONF_NEIGHBORHOOD_PATTERNS,
+    CONF_NEIGHBORHOOD_PRESETS,
     CONF_REGION_PATTERNS,
+    CONF_REGION_PRESETS,
     CONF_SOURCES,
     DEFAULT_NAME,
     DOMAIN,
 )
 from .danger import DangerDetector
+from .danger.presets import (
+    PRESETS,
+    neighborhood_ids,
+    resolve_neighborhood_patterns,
+    resolve_region_patterns,
+)
 
 if TYPE_CHECKING:
     from homeassistant.data_entry_flow import FlowResult
 
 
-def _validate_pattern_input(value: Any) -> list[str] | None:
-    """Validate YAML pattern input."""
-    if value is None or value == {}:
-        return []
-    if isinstance(value, list) and all(isinstance(pattern, str) for pattern in value):
-        return value
-    return None
+def _split_lines(value: str | None) -> list[str]:
+    """Normalize a multiline pattern value."""
+    return [line.strip() for line in (value or "").splitlines() if line.strip()]
 
 
-def _patterns_are_valid(
-    region_patterns: list[str],
-    neighborhood_patterns: list[str],
-) -> bool:
-    """Return whether configured regex patterns compile."""
+def _patterns_are_valid(patterns: list[str]) -> bool:
+    """Return whether regex patterns compile."""
     try:
-        DangerDetector.validate_patterns(region_patterns, neighborhood_patterns)
+        DangerDetector.validate_patterns(patterns)
     except re.error:
         return False
     return True
 
 
-def _validate_input(
-    region_patterns: list[str],
-    neighborhood_patterns: list[str],
-    sources: list[str],
-) -> dict[str, str]:
-    """Validate config or options input."""
-    errors: dict[str, str] = {}
-    if not region_patterns and not neighborhood_patterns:
-        errors["base"] = "patterns_required"
-    elif not _patterns_are_valid(region_patterns, neighborhood_patterns):
-        errors["base"] = "invalid_pattern"
-    if not sources:
-        errors[CONF_SOURCES] = "sources_required"
-    return errors
+def _select(options: list[str], translation_key: str) -> selector.SelectSelector:
+    """Create a translated multi-select selector."""
+    return selector.SelectSelector(
+        selector.SelectSelectorConfig(
+            options=options,
+            multiple=True,
+            translation_key=translation_key,
+        )
+    )
+
+
+def _regions_schema(selected_presets: list[str], patterns: list[str]) -> vol.Schema:
+    """Return the region step schema."""
+    return vol.Schema(
+        {
+            vol.Optional(CONF_REGION_PRESETS, default=selected_presets): _select(
+                list(PRESETS), "region_presets"
+            ),
+            vol.Optional(
+                CONF_REGION_PATTERNS, default="\n".join(patterns)
+            ): selector.TextSelector(selector.TextSelectorConfig(multiline=True)),
+        }
+    )
+
+
+def _neighborhoods_schema(
+    region_presets: list[str],
+    selected_presets: list[str],
+    patterns: list[str],
+) -> vol.Schema:
+    """Return the neighborhood step schema for selected regions."""
+    fields: dict[vol.Marker, object] = {}
+    available_neighborhoods = neighborhood_ids(region_presets)
+    if available_neighborhoods:
+        fields[vol.Optional(CONF_NEIGHBORHOOD_PRESETS, default=selected_presets)] = (
+            _select(available_neighborhoods, "neighborhood_presets")
+        )
+    fields[vol.Optional(CONF_NEIGHBORHOOD_PATTERNS, default="\n".join(patterns))] = (
+        selector.TextSelector(selector.TextSelectorConfig(multiline=True))
+    )
+    return vol.Schema(fields)
+
+
+def _entry_value(entry: config_entries.ConfigEntry, key: str) -> list[str]:
+    """Return an option list falling back to entry data."""
+    value = entry.options.get(key, entry.data.get(key, []))
+    if isinstance(value, list):
+        return value
+    if isinstance(value, str) and value:
+        return [value]
+    return []
 
 
 class AerialDangerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -66,52 +104,108 @@ class AerialDangerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     VERSION = 1
 
+    def __init__(self) -> None:
+        """Initialize config flow state."""
+        self._name = DEFAULT_NAME
+        self._sources: list[str] = []
+        self._region_presets: list[str] = []
+        self._region_patterns: list[str] = []
+
     async def async_step_user(
-        self,
-        user_input: dict[str, Any] | None = None,
+        self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
-        """Handle the initial step."""
+        """Collect the entry name and source entities."""
         errors: dict[str, str] = {}
         if user_input is not None:
-            name = user_input[CONF_NAME]
-            region_patterns = _validate_pattern_input(
-                user_input.get(CONF_REGION_PATTERNS)
-            )
-            neighborhood_patterns = _validate_pattern_input(
-                user_input.get(CONF_NEIGHBORHOOD_PATTERNS)
-            )
-            sources: list[str] = user_input[CONF_SOURCES]
-            if region_patterns is None or neighborhood_patterns is None:
-                errors["base"] = "invalid_pattern_format"
-            else:
-                errors = _validate_input(
-                    region_patterns,
-                    neighborhood_patterns,
-                    sources,
-                )
-                if not errors:
-                    return self.async_create_entry(
-                        title=name,
-                        data={
-                            CONF_SOURCES: sources,
-                            CONF_REGION_PATTERNS: region_patterns,
-                            CONF_NEIGHBORHOOD_PATTERNS: neighborhood_patterns,
-                        },
-                    )
+            self._name = user_input[CONF_NAME]
+            self._sources = user_input[CONF_SOURCES]
+            if self._sources:
+                return await self.async_step_regions()
+            errors[CONF_SOURCES] = "sources_required"
 
         return self.async_show_form(
             step_id="user",
             data_schema=vol.Schema(
                 {
-                    vol.Optional(CONF_NAME, default=DEFAULT_NAME): str,
-                    vol.Required(CONF_SOURCES, default=[]): selector.EntitySelector(
+                    vol.Optional(CONF_NAME, default=self._name): str,
+                    vol.Required(
+                        CONF_SOURCES, default=self._sources
+                    ): selector.EntitySelector(
                         selector.EntitySelectorConfig(multiple=True)
                     ),
-                    # ObjectSelector renders a YAML editor. Expected input:
-                    # - '\bkyiv\b'
-                    vol.Optional(CONF_REGION_PATTERNS): selector.ObjectSelector(),
-                    vol.Optional(CONF_NEIGHBORHOOD_PATTERNS): selector.ObjectSelector(),
-                },
+                }
+            ),
+            errors=errors,
+        )
+
+    async def async_step_regions(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
+        """Collect region presets and custom patterns."""
+        errors: dict[str, str] = {}
+        if user_input is not None:
+            patterns = _split_lines(user_input.get(CONF_REGION_PATTERNS))
+            if not _patterns_are_valid(patterns):
+                errors["base"] = "invalid_pattern"
+            else:
+                self._region_presets = user_input.get(CONF_REGION_PRESETS, [])
+                self._region_patterns = patterns
+                return await self.async_step_neighborhoods()
+
+        return self.async_show_form(
+            step_id="regions",
+            data_schema=_regions_schema(self._region_presets, self._region_patterns),
+            errors=errors,
+        )
+
+    async def async_step_neighborhoods(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
+        """Collect neighborhood presets and custom patterns."""
+        errors: dict[str, str] = {}
+        selected_neighborhoods: list[str] = []
+        neighborhood_patterns: list[str] = []
+        if user_input is not None:
+            neighborhood_patterns_input = _split_lines(
+                user_input.get(CONF_NEIGHBORHOOD_PATTERNS)
+            )
+            if not _patterns_are_valid(neighborhood_patterns_input):
+                errors["base"] = "invalid_pattern"
+            else:
+                neighborhood_patterns = neighborhood_patterns_input
+                allowed = set(neighborhood_ids(self._region_presets))
+                selected_neighborhoods = [
+                    preset
+                    for preset in user_input.get(CONF_NEIGHBORHOOD_PRESETS, [])
+                    if preset in allowed
+                ]
+                regions = resolve_region_patterns(
+                    self._region_patterns,
+                    self._region_presets,
+                )
+                neighborhoods = resolve_neighborhood_patterns(
+                    neighborhood_patterns,
+                    self._region_presets,
+                    selected_neighborhoods,
+                )
+                if not regions and not neighborhoods:
+                    errors["base"] = "patterns_required"
+                else:
+                    return self.async_create_entry(
+                        title=self._name,
+                        data={
+                            CONF_SOURCES: self._sources,
+                            CONF_REGION_PRESETS: self._region_presets,
+                            CONF_REGION_PATTERNS: self._region_patterns,
+                            CONF_NEIGHBORHOOD_PRESETS: selected_neighborhoods,
+                            CONF_NEIGHBORHOOD_PATTERNS: neighborhood_patterns,
+                        },
+                    )
+
+        return self.async_show_form(
+            step_id="neighborhoods",
+            data_schema=_neighborhoods_schema(
+                self._region_presets, selected_neighborhoods, neighborhood_patterns
             ),
             errors=errors,
         )
@@ -129,61 +223,107 @@ class AerialDangerOptionsFlow(config_entries.OptionsFlow):
     """Handle an options flow for Aerial Danger."""
 
     async def async_step_init(
-        self,
-        user_input: dict[str, Any] | None = None,
+        self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
-        """Manage the options."""
+        """Collect source entities."""
+        current_sources = _entry_value(self.config_entry, CONF_SOURCES)
         errors: dict[str, str] = {}
         if user_input is not None:
-            user_input = dict(user_input)
-            region_patterns = _validate_pattern_input(
-                user_input.get(CONF_REGION_PATTERNS)
-            )
-            neighborhood_patterns = _validate_pattern_input(
-                user_input.get(CONF_NEIGHBORHOOD_PATTERNS)
-            )
-            if region_patterns is None or neighborhood_patterns is None:
-                errors["base"] = "invalid_pattern_format"
-            else:
-                user_input[CONF_REGION_PATTERNS] = region_patterns
-                user_input[CONF_NEIGHBORHOOD_PATTERNS] = neighborhood_patterns
-                errors = _validate_input(
-                    region_patterns,
-                    neighborhood_patterns,
-                    user_input[CONF_SOURCES],
-                )
-                if not errors:
-                    user_input.pop(CONF_NAME, None)
-                    return self.async_create_entry(title="", data=user_input)
-
-        data = self.config_entry.data
-        options = self.config_entry.options
+            self._sources = user_input[CONF_SOURCES]
+            if self._sources:
+                return await self.async_step_regions()
+            errors[CONF_SOURCES] = "sources_required"
+            current_sources = self._sources
 
         return self.async_show_form(
             step_id="init",
             data_schema=vol.Schema(
                 {
                     vol.Required(
-                        CONF_SOURCES,
-                        default=options.get(CONF_SOURCES, data.get(CONF_SOURCES, [])),
+                        CONF_SOURCES, default=current_sources
                     ): selector.EntitySelector(
                         selector.EntitySelectorConfig(multiple=True)
-                    ),
-                    vol.Optional(
-                        CONF_REGION_PATTERNS,
-                        default=options.get(
-                            CONF_REGION_PATTERNS,
-                            data.get(CONF_REGION_PATTERNS, []),
-                        ),
-                    ): selector.ObjectSelector(),
-                    vol.Optional(
-                        CONF_NEIGHBORHOOD_PATTERNS,
-                        default=options.get(
-                            CONF_NEIGHBORHOOD_PATTERNS,
-                            data.get(CONF_NEIGHBORHOOD_PATTERNS, []),
-                        ),
-                    ): selector.ObjectSelector(),
+                    )
                 }
+            ),
+            errors=errors,
+        )
+
+    async def async_step_regions(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
+        """Collect region options."""
+        current_presets = _entry_value(self.config_entry, CONF_REGION_PRESETS)
+        current_patterns = _entry_value(self.config_entry, CONF_REGION_PATTERNS)
+        errors: dict[str, str] = {}
+        if user_input is not None:
+            current_presets = user_input.get(CONF_REGION_PRESETS, [])
+            patterns = _split_lines(user_input.get(CONF_REGION_PATTERNS))
+            if not _patterns_are_valid(patterns):
+                errors["base"] = "invalid_pattern"
+            else:
+                self._region_presets = current_presets
+                self._region_patterns = patterns
+                return await self.async_step_neighborhoods()
+            current_patterns = patterns
+
+        return self.async_show_form(
+            step_id="regions",
+            data_schema=_regions_schema(current_presets, current_patterns),
+            errors=errors,
+        )
+
+    async def async_step_neighborhoods(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
+        """Collect neighborhood options and save them."""
+        allowed = set(neighborhood_ids(self._region_presets))
+        current_presets = [
+            preset
+            for preset in _entry_value(self.config_entry, CONF_NEIGHBORHOOD_PRESETS)
+            if preset in allowed
+        ]
+        current_patterns = _entry_value(self.config_entry, CONF_NEIGHBORHOOD_PATTERNS)
+        errors: dict[str, str] = {}
+        if user_input is not None:
+            current_presets = [
+                preset
+                for preset in user_input.get(CONF_NEIGHBORHOOD_PRESETS, [])
+                if preset in allowed
+            ]
+            patterns = _split_lines(user_input.get(CONF_NEIGHBORHOOD_PATTERNS))
+            if not _patterns_are_valid(patterns):
+                errors["base"] = "invalid_pattern"
+            else:
+                current_patterns = patterns
+                regions = resolve_region_patterns(
+                    self._region_patterns,
+                    self._region_presets,
+                )
+                neighborhoods = resolve_neighborhood_patterns(
+                    current_patterns,
+                    self._region_presets,
+                    current_presets,
+                )
+                if not regions and not neighborhoods:
+                    errors["base"] = "patterns_required"
+                else:
+                    return self.async_create_entry(
+                        title="",
+                        data={
+                            CONF_SOURCES: self._sources,
+                            CONF_REGION_PRESETS: self._region_presets,
+                            CONF_REGION_PATTERNS: self._region_patterns,
+                            CONF_NEIGHBORHOOD_PRESETS: current_presets,
+                            CONF_NEIGHBORHOOD_PATTERNS: current_patterns,
+                        },
+                    )
+            current_patterns = patterns
+
+        return self.async_show_form(
+            step_id="neighborhoods",
+            data_schema=_neighborhoods_schema(
+                self._region_presets, current_presets, current_patterns
             ),
             errors=errors,
         )
