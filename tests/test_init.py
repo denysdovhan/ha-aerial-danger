@@ -31,7 +31,9 @@ from custom_components.aerial_danger.const import (
     ATTR_SOURCE_ENTITY_ID,
     ATTR_TIMESTAMP,
     CONF_NEIGHBORHOOD_PATTERNS,
+    CONF_NEIGHBORHOOD_PRESETS,
     CONF_REGION_PATTERNS,
+    CONF_REGION_PRESETS,
     CONF_SOURCES,
     DEFAULT_NAME,
     DOMAIN,
@@ -115,6 +117,27 @@ async def test_setup_stores_runtime_data_on_entry(
     assert config_entry.state is ConfigEntryState.LOADED
     assert isinstance(config_entry.runtime_data, RuntimeData)
     assert len(config_entry.runtime_data.entities) == EXPECTED_ENTITY_COUNT
+
+
+async def test_setup_resolves_preset_patterns(hass: HomeAssistant) -> None:
+    """Test runtime detector uses current preset definitions."""
+    entry = _entry(
+        {
+            CONF_REGION_PRESETS: ["kyiv"],
+            CONF_REGION_PATTERNS: [],
+            CONF_NEIGHBORHOOD_PRESETS: ["kyiv_nyvky"],
+            CONF_NEIGHBORHOOD_PATTERNS: [],
+            CONF_SOURCES: ["sensor.alerts"],
+        }
+    )
+    entry.add_to_hass(hass)
+
+    assert await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+
+    hass.states.async_set("sensor.alerts", "На Нивках БПЛА!")
+    await hass.async_block_till_done()
+    assert hass.states.get(_entity_id(hass, entry, "drone")).state == STATE_ON
 
 
 async def test_setup_seeds_source_state_without_firing_event(

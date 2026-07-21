@@ -15,6 +15,8 @@ LOGGER: Final = logging.getLogger(__package__)
 # Configuration
 CONF_REGION_PATTERNS: Final = "region_patterns"
 CONF_NEIGHBORHOOD_PATTERNS: Final = "neighborhood_patterns"
+CONF_REGION_PRESETS: Final = "region_presets"
+CONF_NEIGHBORHOOD_PRESETS: Final = "neighborhood_presets"
 CONF_SOURCES: Final = "sources"
 
 # Errors

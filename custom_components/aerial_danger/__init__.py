@@ -12,7 +12,9 @@ from homeassistant.helpers.event import async_track_state_change_event
 
 from .const import (
     CONF_NEIGHBORHOOD_PATTERNS,
+    CONF_NEIGHBORHOOD_PRESETS,
     CONF_REGION_PATTERNS,
+    CONF_REGION_PRESETS,
     CONF_SOURCES,
     ERROR_INVALID_PATTERN,
     ERROR_MISSING_PATTERNS,
@@ -23,6 +25,7 @@ from .const import (
     PLATFORMS,
 )
 from .danger import DangerDetector
+from .danger.presets import resolve_neighborhood_patterns, resolve_region_patterns
 from .runtime import RuntimeData, SourceDetection, derive_danger_state
 
 type AerialDangerConfigEntry = ConfigEntry[RuntimeData]
@@ -46,8 +49,16 @@ async def async_setup_entry(
     entry: AerialDangerConfigEntry,
 ) -> bool:
     """Set up Aerial Danger from a config entry."""
-    regions = _entry_list(entry, CONF_REGION_PATTERNS)
-    neighborhoods = _entry_list(entry, CONF_NEIGHBORHOOD_PATTERNS)
+    region_presets = _entry_list(entry, CONF_REGION_PRESETS)
+    regions = resolve_region_patterns(
+        _entry_list(entry, CONF_REGION_PATTERNS),
+        region_presets,
+    )
+    neighborhoods = resolve_neighborhood_patterns(
+        _entry_list(entry, CONF_NEIGHBORHOOD_PATTERNS),
+        region_presets,
+        _entry_list(entry, CONF_NEIGHBORHOOD_PRESETS),
+    )
     sources = _entry_list(entry, CONF_SOURCES)
 
     if not regions and not neighborhoods:
