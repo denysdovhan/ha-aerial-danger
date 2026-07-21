@@ -27,13 +27,13 @@
       },
       "neighborhoods": {
         "title": "Neighborhoods",
-        "description": "Select neighborhoods within the chosen regions. Neighborhoods are used to detect drones and all other threat types. You can select multiple neighborhoods.\n\n**Tip:** Select your neighborhood and nearby neighborhoods to receive notifications about approaching targets.\n\nUse either option or combine both.",
+        "description": "Select neighborhoods within the chosen regions. Neighborhoods are used to detect drones and all other threat types. You can select multiple neighborhoods.\n\nUse either option or combine both.",
         "data": {
           "neighborhood_presets": "Neighborhood presets",
           "neighborhood_patterns": "Custom neighborhood regex patterns (YAML list)"
         },
         "data_description": {
-          "neighborhood_presets": "Optional. Select one or more preset neighborhoods.",
+          "neighborhood_presets": "Optional. Select one or more preset neighborhoods.\n\n**Tip:** Select your neighborhood and nearby neighborhoods to receive notifications about approaching targets.",
           "neighborhood_patterns": "Optional. Add a YAML list where each item is one [regular expression](https://docs.python.org/3/library/re.html) in single quotes.\n\nExample YAML list:\n\n```yaml\n- '\\bнив(ки|ках|ками|ок)\\b'\n- '\\bвиноградар(а|і|ем)?\\b'\n```"
         }
       }
@@ -71,13 +71,13 @@
       },
       "neighborhoods": {
         "title": "Neighborhoods",
-        "description": "Select neighborhoods within the chosen regions. Neighborhoods are used to detect drones and all other threat types. You can select multiple neighborhoods.\n\n**Tip:** Select your neighborhood and nearby neighborhoods to receive notifications about approaching targets.\n\nUse either option or combine both.",
+        "description": "Select neighborhoods within the chosen regions. Neighborhoods are used to detect drones and all other threat types. You can select multiple neighborhoods.\n\nUse either option or combine both.",
         "data": {
           "neighborhood_presets": "Neighborhood presets",
           "neighborhood_patterns": "Custom neighborhood regex patterns (YAML list)"
         },
         "data_description": {
-          "neighborhood_presets": "Optional. Select one or more preset neighborhoods.",
+          "neighborhood_presets": "Optional. Select one or more preset neighborhoods.\n\n**Tip:** Select your neighborhood and nearby neighborhoods to receive notifications about approaching targets.",
           "neighborhood_patterns": "Optional. Add a YAML list where each item is one [regular expression](https://docs.python.org/3/library/re.html) in single quotes.\n\nExample YAML list:\n\n```yaml\n- '\\bнив(ки|ках|ками|ок)\\b'\n- '\\bвиноградар(а|і|ем)?\\b'\n```"
         }
       }
