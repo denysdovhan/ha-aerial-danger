@@ -8,9 +8,7 @@ from homeassistant.components.diagnostics import async_redact_data
 
 from .const import (
     CONF_NEIGHBORHOOD_PATTERNS,
-    CONF_NEIGHBORHOOD_PRESETS,
     CONF_REGION_PATTERNS,
-    CONF_REGION_PRESETS,
     CONF_SOURCES,
 )
 
@@ -21,9 +19,7 @@ if TYPE_CHECKING:
 
 TO_REDACT = {
     CONF_NEIGHBORHOOD_PATTERNS,
-    CONF_NEIGHBORHOOD_PRESETS,
     CONF_REGION_PATTERNS,
-    CONF_REGION_PRESETS,
     CONF_SOURCES,
 }
 

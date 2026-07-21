@@ -27,10 +27,10 @@ from custom_components.aerial_danger.diagnostics import (
 pytestmark = pytest.mark.usefixtures("enable_custom_integrations")
 
 
-async def test_config_entry_diagnostics_redacts_user_data(
+async def test_config_entry_diagnostics_redacts_user_data_only(
     hass: HomeAssistant,
 ) -> None:
-    """Test diagnostics redact location patterns and source entities."""
+    """Test diagnostics expose presets but redact user-defined data."""
     entry = MockConfigEntry(
         domain=DOMAIN,
         data={
@@ -62,16 +62,16 @@ async def test_config_entry_diagnostics_redacts_user_data(
         "state": str(ConfigEntryState.LOADED),
         "data": {
             CONF_REGION_PATTERNS: REDACTED,
-            CONF_REGION_PRESETS: REDACTED,
+            CONF_REGION_PRESETS: ["kyiv"],
             CONF_NEIGHBORHOOD_PATTERNS: REDACTED,
-            CONF_NEIGHBORHOOD_PRESETS: REDACTED,
+            CONF_NEIGHBORHOOD_PRESETS: ["kyiv_nyvky"],
             CONF_SOURCES: REDACTED,
         },
         "options": {
             CONF_REGION_PATTERNS: REDACTED,
-            CONF_REGION_PRESETS: REDACTED,
+            CONF_REGION_PRESETS: ["kyiv"],
             CONF_NEIGHBORHOOD_PATTERNS: REDACTED,
-            CONF_NEIGHBORHOOD_PRESETS: REDACTED,
+            CONF_NEIGHBORHOOD_PRESETS: ["kyiv_nyvky"],
             CONF_SOURCES: REDACTED,
         },
     }
