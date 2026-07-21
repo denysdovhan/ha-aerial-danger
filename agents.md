@@ -152,6 +152,8 @@ Here is a list of Telegram channels that report danger. You can use them to fetc
 
 Kyiv only channels might omit Kyiv city or region in names, so keep that in mind.
 
+When authoring area presets, research the relevant listed Telegram histories. Use live, actionable alert wording and exclude aftermath or summary wording.
+
 ## Commit messages
 
 When generating commit messages, always use this format:
