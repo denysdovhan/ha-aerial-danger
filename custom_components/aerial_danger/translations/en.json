@@ -15,7 +15,7 @@
       },
       "regions": {
         "title": "Regions",
-        "description": "Select the preset regions where the integration should monitor danger messages. Regions are used to detect ballistic missiles, cruise missiles, and other fast threats that may approach the city. You can select multiple regions.\n\nUse either option or combine both.",
+        "description": "Select regions.\n\nRegions are used to detect ballistic missiles, cruise missiles, and other fast threats that may approach your location.\n\nUse either option or combine both.",
         "data": {
           "region_presets": "Region presets",
           "region_patterns": "Custom region regex patterns (YAML list)"
@@ -27,7 +27,7 @@
       },
       "neighborhoods": {
         "title": "Neighborhoods",
-        "description": "Select the preset neighborhoods within the chosen regions where the integration should monitor danger messages. Neighborhoods are used to detect drones and all other threat types. You can select multiple neighborhoods.\n\n**Tip:** Select your neighborhood and nearby neighborhoods to receive notifications about approaching targets.\n\nNeighborhood presets and custom regular expressions are optional fields. Use either one or combine both.",
+        "description": "Select neighborhoods within the chosen regions. Neighborhoods are used to detect drones and all other threat types. You can select multiple neighborhoods.\n\n**Tip:** Select your neighborhood and nearby neighborhoods to receive notifications about approaching targets.\n\nUse either option or combine both.",
         "data": {
           "neighborhood_presets": "Neighborhood presets",
           "neighborhood_patterns": "Custom neighborhood regex patterns (YAML list)"
@@ -59,7 +59,7 @@
       },
       "regions": {
         "title": "Regions",
-        "description": "Select the preset regions where the integration should monitor danger messages. Regions are used to detect ballistic missiles, cruise missiles, and other fast threats that may approach the city. You can select multiple regions.\n\nRegion presets and custom regular expressions are optional fields. Use either one or combine both.",
+        "description": "Select regions.\n\nRegions are used to detect ballistic missiles, cruise missiles, and other fast threats that may approach your location.\n\nUse either option or combine both.",
         "data": {
           "region_presets": "Region presets",
           "region_patterns": "Custom region regex patterns (YAML list)"
@@ -71,7 +71,7 @@
       },
       "neighborhoods": {
         "title": "Neighborhoods",
-        "description": "Select the preset neighborhoods within the chosen regions where the integration should monitor danger messages. Neighborhoods are used to detect drones and all other threat types. You can select multiple neighborhoods.\n\n**Tip:** Select your neighborhood and nearby neighborhoods to receive notifications about approaching targets.\n\nNeighborhood presets and custom regular expressions are optional fields. Use either one or combine both.",
+        "description": "Select neighborhoods within the chosen regions. Neighborhoods are used to detect drones and all other threat types. You can select multiple neighborhoods.\n\n**Tip:** Select your neighborhood and nearby neighborhoods to receive notifications about approaching targets.\n\nUse either option or combine both.",
         "data": {
           "neighborhood_presets": "Neighborhood presets",
           "neighborhood_patterns": "Custom neighborhood regex patterns (YAML list)"
