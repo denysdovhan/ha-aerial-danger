@@ -138,6 +138,20 @@ Fetch these links to get more information about specific Home Assistant APIs dir
 - Data Entry Flow: https://developers.home-assistant.io/docs/data_entry_flow_index
 - Manifest: https://developers.home-assistant.io/docs/creating_integration_manifest
 
+## Monitoring data
+
+Here is a list of Telegram channels that report danger. You can use them to fetch examples of messages to test your regex patterns:
+
+- https://telegram.me/s/operinform
+- https://telegram.me/s/war_monitor
+- https://telegram.me/s/AerisRimor
+- https://telegram.me/s/kpszsu
+- https://telegram.me/s/nebo_raketa (kyiv only)
+- https://telegram.me/s/kyiv_airdef (kyiv only)
+- https://telegram.me/s/kyivblabla (kyiv only)
+
+Kyiv only channels might omit Kyiv city or region in names, so keep that in mind.
+
 ## Commit messages
 
 When generating commit messages, always use this format:
