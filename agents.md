@@ -28,6 +28,14 @@ At the end of each plan, give me a list of unresolved questions to answer, if an
 
 <instruction>Keep this guide updated as functionality is implemented.</instruction>
 
+## Design Log
+
+- Before any repository work, read `.agents/log/index.md`.
+- Search `.agents/log/` by touched paths and 2-3 task keywords, then read matching entries in full.
+- Treat `done` entries as binding and `wip` entries as current direction. Newer decisions win. Surface conflicts before proceeding.
+- Cite relevant entries when explaining existing behavior or past decisions.
+- Never edit `done` entries. Keep matching `wip` entries and the index current for significant work; skip routine chores.
+
 ## Project Overview
 
 This repository implements the Home Assistant custom integration **Aerial Danger**. It detects aerial danger messages from user-selected Home Assistant source entities and exposes safety binary sensors and danger events. The integration code lives in `custom_components/aerial_danger`.
@@ -46,7 +54,12 @@ This repository implements the Home Assistant custom integration **Aerial Danger
 - `translations/` — English and Ukrainian strings for the basic flow.
 - `manifest.json` — Home Assistant manifest pointing to this repo.
 
-<instruction>Fill in by LLM assistant memory</instruction>
+### How it works
+
+- Each config entry builds a detector from configured region and neighborhood regex patterns and subscribes to selected Home Assistant source entities.
+- Changed source text is checked in order: IRBM, ballistic, cruise, drone, then generic danger. First match wins.
+- Runtime tracks active detections per source, so a safe message clears only that source. Binary sensors aggregate remaining detections, and the event entity records each new detection.
+- Source data collection stays outside this integration. The `danger/` library stays Home Assistant agnostic and logger-free.
 
 ### Parsing data
 
