@@ -7,12 +7,12 @@ import re
 import pytest
 
 from custom_components.aerial_danger.danger import DangerDetector
-from custom_components.aerial_danger.danger.presets import (
-    PRESETS,
+from custom_components.aerial_danger.danger.pattern_utils import (
     neighborhood_ids,
     resolve_neighborhood_patterns,
     resolve_region_patterns,
 )
+from custom_components.aerial_danger.danger.presets import PRESETS
 
 
 def test_registry_ids_ownership_and_compilation() -> None:

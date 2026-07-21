@@ -21,20 +21,24 @@ from .const import (
     DOMAIN,
 )
 from .danger import DangerDetector
-from .danger.presets import (
-    PRESETS,
+from .danger.pattern_utils import (
     neighborhood_ids,
     resolve_neighborhood_patterns,
     resolve_region_patterns,
 )
+from .danger.presets import PRESETS
 
 if TYPE_CHECKING:
     from homeassistant.data_entry_flow import FlowResult
 
 
-def _split_lines(value: str | None) -> list[str]:
-    """Normalize a multiline pattern value."""
-    return [line.strip() for line in (value or "").splitlines() if line.strip()]
+def _validate_pattern_input(value: Any) -> list[str] | None:
+    """Validate YAML pattern input."""
+    if value is None or value == {}:
+        return []
+    if isinstance(value, list) and all(isinstance(pattern, str) for pattern in value):
+        return value
+    return None
 
 
 def _patterns_are_valid(patterns: list[str]) -> bool:
@@ -46,32 +50,37 @@ def _patterns_are_valid(patterns: list[str]) -> bool:
     return True
 
 
-def _select(options: list[str], translation_key: str) -> selector.SelectSelector:
-    """Create a translated multi-select selector."""
+def build_preset_selector(
+    options: list[str], translation_key: str
+) -> selector.SelectSelector:
+    """Create a searchable translated preset selector."""
     return selector.SelectSelector(
         selector.SelectSelectorConfig(
             options=options,
             multiple=True,
+            mode=selector.SelectSelectorMode.DROPDOWN,
             translation_key=translation_key,
         )
     )
 
 
-def _regions_schema(selected_presets: list[str], patterns: list[str]) -> vol.Schema:
+def build_regions_schema(
+    selected_presets: list[str], patterns: list[str]
+) -> vol.Schema:
     """Return the region step schema."""
     return vol.Schema(
         {
-            vol.Optional(CONF_REGION_PRESETS, default=selected_presets): _select(
-                list(PRESETS), "region_presets"
-            ),
             vol.Optional(
-                CONF_REGION_PATTERNS, default="\n".join(patterns)
-            ): selector.TextSelector(selector.TextSelectorConfig(multiline=True)),
+                CONF_REGION_PRESETS, default=selected_presets
+            ): build_preset_selector(list(PRESETS), "region_presets"),
+            vol.Optional(
+                CONF_REGION_PATTERNS, default=patterns
+            ): selector.ObjectSelector(),
         }
     )
 
 
-def _neighborhoods_schema(
+def build_neighborhoods_schema(
     region_presets: list[str],
     selected_presets: list[str],
     patterns: list[str],
@@ -81,10 +90,10 @@ def _neighborhoods_schema(
     available_neighborhoods = neighborhood_ids(region_presets)
     if available_neighborhoods:
         fields[vol.Optional(CONF_NEIGHBORHOOD_PRESETS, default=selected_presets)] = (
-            _select(available_neighborhoods, "neighborhood_presets")
+            build_preset_selector(available_neighborhoods, "neighborhood_presets")
         )
-    fields[vol.Optional(CONF_NEIGHBORHOOD_PATTERNS, default="\n".join(patterns))] = (
-        selector.TextSelector(selector.TextSelectorConfig(multiline=True))
+    fields[vol.Optional(CONF_NEIGHBORHOOD_PATTERNS, default=patterns)] = (
+        selector.ObjectSelector()
     )
     return vol.Schema(fields)
 
@@ -144,8 +153,10 @@ class AerialDangerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Collect region presets and custom patterns."""
         errors: dict[str, str] = {}
         if user_input is not None:
-            patterns = _split_lines(user_input.get(CONF_REGION_PATTERNS))
-            if not _patterns_are_valid(patterns):
+            patterns = _validate_pattern_input(user_input.get(CONF_REGION_PATTERNS))
+            if patterns is None:
+                errors["base"] = "invalid_pattern_format"
+            elif not _patterns_are_valid(patterns):
                 errors["base"] = "invalid_pattern"
             else:
                 self._region_presets = user_input.get(CONF_REGION_PRESETS, [])
@@ -154,7 +165,9 @@ class AerialDangerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         return self.async_show_form(
             step_id="regions",
-            data_schema=_regions_schema(self._region_presets, self._region_patterns),
+            data_schema=build_regions_schema(
+                self._region_presets, self._region_patterns
+            ),
             errors=errors,
         )
 
@@ -166,10 +179,12 @@ class AerialDangerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         selected_neighborhoods: list[str] = []
         neighborhood_patterns: list[str] = []
         if user_input is not None:
-            neighborhood_patterns_input = _split_lines(
+            neighborhood_patterns_input = _validate_pattern_input(
                 user_input.get(CONF_NEIGHBORHOOD_PATTERNS)
             )
-            if not _patterns_are_valid(neighborhood_patterns_input):
+            if neighborhood_patterns_input is None:
+                errors["base"] = "invalid_pattern_format"
+            elif not _patterns_are_valid(neighborhood_patterns_input):
                 errors["base"] = "invalid_pattern"
             else:
                 neighborhood_patterns = neighborhood_patterns_input
@@ -204,7 +219,7 @@ class AerialDangerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         return self.async_show_form(
             step_id="neighborhoods",
-            data_schema=_neighborhoods_schema(
+            data_schema=build_neighborhoods_schema(
                 self._region_presets, selected_neighborhoods, neighborhood_patterns
             ),
             errors=errors,
@@ -258,18 +273,20 @@ class AerialDangerOptionsFlow(config_entries.OptionsFlow):
         errors: dict[str, str] = {}
         if user_input is not None:
             current_presets = user_input.get(CONF_REGION_PRESETS, [])
-            patterns = _split_lines(user_input.get(CONF_REGION_PATTERNS))
-            if not _patterns_are_valid(patterns):
+            patterns = _validate_pattern_input(user_input.get(CONF_REGION_PATTERNS))
+            if patterns is None:
+                errors["base"] = "invalid_pattern_format"
+            elif not _patterns_are_valid(patterns):
                 errors["base"] = "invalid_pattern"
+                current_patterns = patterns
             else:
                 self._region_presets = current_presets
                 self._region_patterns = patterns
                 return await self.async_step_neighborhoods()
-            current_patterns = patterns
 
         return self.async_show_form(
             step_id="regions",
-            data_schema=_regions_schema(current_presets, current_patterns),
+            data_schema=build_regions_schema(current_presets, current_patterns),
             errors=errors,
         )
 
@@ -291,9 +308,14 @@ class AerialDangerOptionsFlow(config_entries.OptionsFlow):
                 for preset in user_input.get(CONF_NEIGHBORHOOD_PRESETS, [])
                 if preset in allowed
             ]
-            patterns = _split_lines(user_input.get(CONF_NEIGHBORHOOD_PATTERNS))
-            if not _patterns_are_valid(patterns):
+            patterns = _validate_pattern_input(
+                user_input.get(CONF_NEIGHBORHOOD_PATTERNS)
+            )
+            if patterns is None:
+                errors["base"] = "invalid_pattern_format"
+            elif not _patterns_are_valid(patterns):
                 errors["base"] = "invalid_pattern"
+                current_patterns = patterns
             else:
                 current_patterns = patterns
                 regions = resolve_region_patterns(
@@ -318,11 +340,10 @@ class AerialDangerOptionsFlow(config_entries.OptionsFlow):
                             CONF_NEIGHBORHOOD_PATTERNS: current_patterns,
                         },
                     )
-            current_patterns = patterns
 
         return self.async_show_form(
             step_id="neighborhoods",
-            data_schema=_neighborhoods_schema(
+            data_schema=build_neighborhoods_schema(
                 self._region_presets, current_presets, current_patterns
             ),
             errors=errors,

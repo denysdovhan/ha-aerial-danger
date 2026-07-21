@@ -25,7 +25,7 @@ from .const import (
     PLATFORMS,
 )
 from .danger import DangerDetector
-from .danger.presets import resolve_neighborhood_patterns, resolve_region_patterns
+from .danger.pattern_utils import resolve_neighborhood_patterns, resolve_region_patterns
 from .runtime import RuntimeData, SourceDetection, derive_danger_state
 
 type AerialDangerConfigEntry = ConfigEntry[RuntimeData]
