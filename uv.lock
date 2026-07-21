@@ -713,6 +713,18 @@ wheels = [
 ]
 
 [[package]]
+name = "colorlog"
+version = "6.10.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "colorama", marker = "sys_platform == 'win32'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a2/61/f083b5ac52e505dfc1c624eafbf8c7589a0d7f32daa398d2e7590efa5fda/colorlog-6.10.1.tar.gz", hash = "sha256:eb4ae5cb65fe7fec7773c2306061a8e63e02efc2c72eba9d27b0fa23c94f1321", size = 17162, upload-time = "2025-10-16T16:14:11.978Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/6d/c1/e419ef3723a074172b68aaa89c9f3de486ed4c2399e2dbd8113a4fdcaf9e/colorlog-6.10.1-py3-none-any.whl", hash = "sha256:2d7e8348291948af66122cff006c9f8da6255d224e7cf8e37d8de2df3bad8c9c", size = 11743, upload-time = "2025-10-16T16:14:10.512Z" },
+]
+
+[[package]]
 name = "coverage"
 version = "7.10.6"
 source = { registry = "https://pypi.org/simple" }
@@ -1078,6 +1090,7 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "colorlog" },
     { name = "pre-commit" },
     { name = "pytest" },
     { name = "pytest-homeassistant-custom-component" },
@@ -1089,6 +1102,7 @@ requires-dist = [{ name = "homeassistant", specifier = "==2025.11.3" }]
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "colorlog", specifier = "==6.10.1" },
     { name = "pre-commit", specifier = ">=3.7.1" },
     { name = "pytest", specifier = ">=8.3.0" },
     { name = "pytest-homeassistant-custom-component", specifier = ">=0.13.297" },
