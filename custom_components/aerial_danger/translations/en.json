@@ -3,23 +3,24 @@
   "config": {
     "step": {
       "user": {
-        "description": "Set up Aerial Danger. Provide areas and source entities to monitor.",
+        "description": "Set up Aerial Danger. Provide area patterns as YAML lists and choose source entities.\n\nUse one single-quoted regular expression per list item so backslashes stay unchanged:\n\n```yaml\n# One regex per list item\n- '\\bkyiv\\b'\n- '\\bcapital\\b'\n```",
         "data": {
           "name": "Name",
-          "region_patterns": "Region regex patterns (one per line)",
-          "neighborhood_patterns": "Neighborhood regex patterns (one per line)",
+          "region_patterns": "Region regex patterns (YAML list)",
+          "neighborhood_patterns": "Neighborhood regex patterns (YAML list)",
           "sources": "Source entities"
         },
         "data_description": {
           "name": "Name used for the Aerial Danger entry and device.",
-          "region_patterns": "Python regular expressions that match region-level alert text. Enter one pattern per line.",
-          "neighborhood_patterns": "Python regular expressions that match neighborhood-level alert text. Enter one pattern per line.",
+          "region_patterns": "YAML list of Python regular expressions that match region-level alert text. Add one single-quoted pattern per list item.",
+          "neighborhood_patterns": "YAML list of Python regular expressions that match neighborhood-level alert text. Add one single-quoted pattern per list item.",
           "sources": "Entities whose state text contains incoming alert messages."
         }
       }
     },
     "error": {
       "invalid_pattern": "One or more regex patterns are invalid.",
+      "invalid_pattern_format": "Enter patterns as a YAML list of strings.",
       "patterns_required": "Enter at least one region or neighborhood pattern.",
       "sources_required": "Select at least one source entity."
     }
@@ -28,20 +29,22 @@
     "step": {
       "init": {
         "title": "Aerial Danger options",
+        "description": "Enter area patterns as YAML lists. Use one single-quoted regular expression per list item so backslashes stay unchanged:\n\n```yaml\n# One regex per list item\n- '\\bkyiv\\b'\n- '\\bcapital\\b'\n```",
         "data": {
-          "region_patterns": "Region regex patterns (one per line)",
-          "neighborhood_patterns": "Neighborhood regex patterns (one per line)",
+          "region_patterns": "Region regex patterns (YAML list)",
+          "neighborhood_patterns": "Neighborhood regex patterns (YAML list)",
           "sources": "Source entities"
         },
         "data_description": {
-          "region_patterns": "Python regular expressions that match region-level alert text. Enter one pattern per line.",
-          "neighborhood_patterns": "Python regular expressions that match neighborhood-level alert text. Enter one pattern per line.",
+          "region_patterns": "YAML list of Python regular expressions that match region-level alert text. Add one single-quoted pattern per list item.",
+          "neighborhood_patterns": "YAML list of Python regular expressions that match neighborhood-level alert text. Add one single-quoted pattern per list item.",
           "sources": "Entities whose state text contains incoming alert messages."
         }
       }
     },
     "error": {
       "invalid_pattern": "One or more regex patterns are invalid.",
+      "invalid_pattern_format": "Enter patterns as a YAML list of strings.",
       "patterns_required": "Enter at least one region or neighborhood pattern.",
       "sources_required": "Select at least one source entity."
     }

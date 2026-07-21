@@ -7,6 +7,7 @@ from homeassistant.config_entries import SOURCE_USER
 from homeassistant.const import CONF_NAME
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
+from homeassistant.helpers import selector
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.aerial_danger.const import (
@@ -22,7 +23,7 @@ pytestmark = pytest.mark.usefixtures("enable_custom_integrations")
 
 
 async def test_user_flow_creates_entry(hass: HomeAssistant) -> None:
-    """Test user flow creates an entry with normalized lists."""
+    """Test user flow creates an entry with YAML lists."""
     result = await hass.config_entries.flow.async_init(
         DOMAIN,
         context={"source": SOURCE_USER},
@@ -30,13 +31,16 @@ async def test_user_flow_creates_entry(hass: HomeAssistant) -> None:
 
     assert result["type"] is FlowResultType.FORM
     assert result["step_id"] == "user"
+    schema = result["data_schema"].schema
+    assert isinstance(schema[CONF_REGION_PATTERNS], selector.ObjectSelector)
+    assert isinstance(schema[CONF_NEIGHBORHOOD_PATTERNS], selector.ObjectSelector)
 
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"],
         {
             CONF_NAME: "Kyiv alerts",
-            CONF_REGION_PATTERNS: "kyiv\n\ncapital ",
-            CONF_NEIGHBORHOOD_PATTERNS: "nyvky",
+            CONF_REGION_PATTERNS: ["kyiv", "capital"],
+            CONF_NEIGHBORHOOD_PATTERNS: ["nyvky"],
             CONF_SOURCES: ["sensor.alerts"],
         },
     )
@@ -61,8 +65,8 @@ async def test_user_flow_rejects_invalid_pattern(hass: HomeAssistant) -> None:
         result["flow_id"],
         {
             CONF_NAME: DEFAULT_NAME,
-            CONF_REGION_PATTERNS: "(",
-            CONF_NEIGHBORHOOD_PATTERNS: "",
+            CONF_REGION_PATTERNS: ["("],
+            CONF_NEIGHBORHOOD_PATTERNS: [],
             CONF_SOURCES: ["sensor.alerts"],
         },
     )
@@ -74,8 +78,8 @@ async def test_user_flow_rejects_invalid_pattern(hass: HomeAssistant) -> None:
         result["flow_id"],
         {
             CONF_NAME: DEFAULT_NAME,
-            CONF_REGION_PATTERNS: "kyiv",
-            CONF_NEIGHBORHOOD_PATTERNS: "",
+            CONF_REGION_PATTERNS: ["kyiv"],
+            CONF_NEIGHBORHOOD_PATTERNS: [],
             CONF_SOURCES: ["sensor.alerts"],
         },
     )
@@ -85,12 +89,12 @@ async def test_user_flow_rejects_invalid_pattern(hass: HomeAssistant) -> None:
 
 @pytest.mark.parametrize(
     ("region_patterns", "neighborhood_patterns"),
-    [("", ""), ("\n", "  ")],
+    [([], []), ({}, {})],
 )
 async def test_user_flow_requires_pattern(
     hass: HomeAssistant,
-    region_patterns: str,
-    neighborhood_patterns: str,
+    region_patterns: list[str] | dict,
+    neighborhood_patterns: list[str] | dict,
 ) -> None:
     """Test user flow requires at least one area pattern."""
     result = await hass.config_entries.flow.async_init(
@@ -112,6 +116,34 @@ async def test_user_flow_requires_pattern(
     assert result["errors"] == {"base": "patterns_required"}
 
 
+@pytest.mark.parametrize(
+    "region_patterns",
+    ["kyiv", {"pattern": "kyiv"}],
+)
+async def test_user_flow_rejects_invalid_pattern_format(
+    hass: HomeAssistant,
+    region_patterns: object,
+) -> None:
+    """Test user flow requires patterns to be a YAML list of strings."""
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN,
+        context={"source": SOURCE_USER},
+    )
+
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"],
+        {
+            CONF_NAME: DEFAULT_NAME,
+            CONF_REGION_PATTERNS: region_patterns,
+            CONF_NEIGHBORHOOD_PATTERNS: [],
+            CONF_SOURCES: ["sensor.alerts"],
+        },
+    )
+
+    assert result["type"] is FlowResultType.FORM
+    assert result["errors"] == {"base": "invalid_pattern_format"}
+
+
 async def test_user_flow_requires_source(hass: HomeAssistant) -> None:
     """Test user flow requires at least one source entity."""
     result = await hass.config_entries.flow.async_init(
@@ -123,8 +155,8 @@ async def test_user_flow_requires_source(hass: HomeAssistant) -> None:
         result["flow_id"],
         {
             CONF_NAME: DEFAULT_NAME,
-            CONF_REGION_PATTERNS: "kyiv",
-            CONF_NEIGHBORHOOD_PATTERNS: "",
+            CONF_REGION_PATTERNS: ["kyiv"],
+            CONF_NEIGHBORHOOD_PATTERNS: [],
             CONF_SOURCES: [],
         },
     )
@@ -158,8 +190,8 @@ async def test_user_flow_allows_multiple_entries(
         result["flow_id"],
         {
             CONF_NAME: "Additional alerts",
-            CONF_REGION_PATTERNS: "capital",
-            CONF_NEIGHBORHOOD_PATTERNS: "nyvky",
+            CONF_REGION_PATTERNS: ["capital"],
+            CONF_NEIGHBORHOOD_PATTERNS: ["nyvky"],
             CONF_SOURCES: ["sensor.additional_alerts"],
         },
     )
@@ -169,12 +201,12 @@ async def test_user_flow_allows_multiple_entries(
 
 
 async def test_options_flow_updates_lists(hass: HomeAssistant) -> None:
-    """Test options flow updates normalized list options."""
+    """Test options flow updates list options."""
     entry = MockConfigEntry(
         domain=DOMAIN,
         title=DEFAULT_NAME,
         data={
-            CONF_REGION_PATTERNS: "kyiv",
+            CONF_REGION_PATTERNS: ["kyiv"],
             CONF_NEIGHBORHOOD_PATTERNS: ["nyvky"],
             CONF_SOURCES: ["sensor.old_alerts"],
         },
@@ -185,12 +217,15 @@ async def test_options_flow_updates_lists(hass: HomeAssistant) -> None:
 
     assert result["type"] is FlowResultType.FORM
     assert result["step_id"] == "init"
+    schema = result["data_schema"].schema
+    assert isinstance(schema[CONF_REGION_PATTERNS], selector.ObjectSelector)
+    assert isinstance(schema[CONF_NEIGHBORHOOD_PATTERNS], selector.ObjectSelector)
 
     result = await hass.config_entries.options.async_configure(
         result["flow_id"],
         {
-            CONF_REGION_PATTERNS: "kyiv\ncapital",
-            CONF_NEIGHBORHOOD_PATTERNS: "nyvky\nsvyatoshyn",
+            CONF_REGION_PATTERNS: ["kyiv", "capital"],
+            CONF_NEIGHBORHOOD_PATTERNS: ["nyvky", "svyatoshyn"],
             CONF_SOURCES: ["sensor.alerts"],
         },
     )
@@ -224,8 +259,8 @@ async def test_options_flow_reloads_loaded_entry(hass: HomeAssistant) -> None:
     result = await hass.config_entries.options.async_configure(
         result["flow_id"],
         {
-            CONF_REGION_PATTERNS: "capital",
-            CONF_NEIGHBORHOOD_PATTERNS: "",
+            CONF_REGION_PATTERNS: ["capital"],
+            CONF_NEIGHBORHOOD_PATTERNS: [],
             CONF_SOURCES: ["sensor.new_alerts"],
         },
     )
@@ -253,8 +288,20 @@ async def test_options_flow_rejects_invalid_pattern(hass: HomeAssistant) -> None
     result = await hass.config_entries.options.async_configure(
         result["flow_id"],
         {
-            CONF_REGION_PATTERNS: "kyiv",
-            CONF_NEIGHBORHOOD_PATTERNS: "(",
+            CONF_REGION_PATTERNS: ["kyiv"],
+            CONF_NEIGHBORHOOD_PATTERNS: {"pattern": "nyvky"},
+            CONF_SOURCES: ["sensor.alerts"],
+        },
+    )
+
+    assert result["type"] is FlowResultType.FORM
+    assert result["errors"] == {"base": "invalid_pattern_format"}
+
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"],
+        {
+            CONF_REGION_PATTERNS: ["kyiv"],
+            CONF_NEIGHBORHOOD_PATTERNS: ["("],
             CONF_SOURCES: ["sensor.alerts"],
         },
     )
@@ -265,8 +312,8 @@ async def test_options_flow_rejects_invalid_pattern(hass: HomeAssistant) -> None
     result = await hass.config_entries.options.async_configure(
         result["flow_id"],
         {
-            CONF_REGION_PATTERNS: "kyiv",
-            CONF_NEIGHBORHOOD_PATTERNS: "",
+            CONF_REGION_PATTERNS: ["kyiv"],
+            CONF_NEIGHBORHOOD_PATTERNS: [],
             CONF_SOURCES: ["sensor.alerts"],
         },
     )
@@ -291,8 +338,8 @@ async def test_options_flow_requires_pattern(hass: HomeAssistant) -> None:
     result = await hass.config_entries.options.async_configure(
         result["flow_id"],
         {
-            CONF_REGION_PATTERNS: "",
-            CONF_NEIGHBORHOOD_PATTERNS: "",
+            CONF_REGION_PATTERNS: {},
+            CONF_NEIGHBORHOOD_PATTERNS: {},
             CONF_SOURCES: ["sensor.alerts"],
         },
     )
@@ -318,8 +365,8 @@ async def test_options_flow_requires_source(hass: HomeAssistant) -> None:
     result = await hass.config_entries.options.async_configure(
         result["flow_id"],
         {
-            CONF_REGION_PATTERNS: "kyiv",
-            CONF_NEIGHBORHOOD_PATTERNS: "",
+            CONF_REGION_PATTERNS: ["kyiv"],
+            CONF_NEIGHBORHOOD_PATTERNS: [],
             CONF_SOURCES: [],
         },
     )

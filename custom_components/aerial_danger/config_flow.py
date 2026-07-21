@@ -24,11 +24,13 @@ if TYPE_CHECKING:
     from homeassistant.data_entry_flow import FlowResult
 
 
-def _split_lines(value: str | None) -> list[str]:
-    """Split multiline text into a list of non-empty lines."""
-    if not value:
+def _validate_pattern_input(value: Any) -> list[str] | None:
+    """Validate YAML pattern input."""
+    if value is None or value == {}:
         return []
-    return [line.strip() for line in value.splitlines() if line.strip()]
+    if isinstance(value, list) and all(isinstance(pattern, str) for pattern in value):
+        return value
+    return None
 
 
 def _patterns_are_valid(
@@ -48,7 +50,7 @@ def _validate_input(
     neighborhood_patterns: list[str],
     sources: list[str],
 ) -> dict[str, str]:
-    """Validate normalized config or options input."""
+    """Validate config or options input."""
     errors: dict[str, str] = {}
     if not region_patterns and not neighborhood_patterns:
         errors["base"] = "patterns_required"
@@ -72,40 +74,43 @@ class AerialDangerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors: dict[str, str] = {}
         if user_input is not None:
             name = user_input[CONF_NAME]
-            region_patterns = _split_lines(user_input.get(CONF_REGION_PATTERNS))
-            neighborhood_patterns = _split_lines(
+            region_patterns = _validate_pattern_input(
+                user_input.get(CONF_REGION_PATTERNS)
+            )
+            neighborhood_patterns = _validate_pattern_input(
                 user_input.get(CONF_NEIGHBORHOOD_PATTERNS)
             )
             sources: list[str] = user_input[CONF_SOURCES]
-            errors = _validate_input(
-                region_patterns,
-                neighborhood_patterns,
-                sources,
-            )
-            if not errors:
-                return self.async_create_entry(
-                    title=name,
-                    data={
-                        CONF_REGION_PATTERNS: region_patterns,
-                        CONF_NEIGHBORHOOD_PATTERNS: neighborhood_patterns,
-                        CONF_SOURCES: sources,
-                    },
+            if region_patterns is None or neighborhood_patterns is None:
+                errors["base"] = "invalid_pattern_format"
+            else:
+                errors = _validate_input(
+                    region_patterns,
+                    neighborhood_patterns,
+                    sources,
                 )
+                if not errors:
+                    return self.async_create_entry(
+                        title=name,
+                        data={
+                            CONF_SOURCES: sources,
+                            CONF_REGION_PATTERNS: region_patterns,
+                            CONF_NEIGHBORHOOD_PATTERNS: neighborhood_patterns,
+                        },
+                    )
 
         return self.async_show_form(
             step_id="user",
             data_schema=vol.Schema(
                 {
                     vol.Optional(CONF_NAME, default=DEFAULT_NAME): str,
-                    vol.Optional(CONF_REGION_PATTERNS): selector.TextSelector(
-                        selector.TextSelectorConfig(multiline=True)
-                    ),
-                    vol.Optional(CONF_NEIGHBORHOOD_PATTERNS): selector.TextSelector(
-                        selector.TextSelectorConfig(multiline=True)
-                    ),
                     vol.Required(CONF_SOURCES, default=[]): selector.EntitySelector(
                         selector.EntitySelectorConfig(multiple=True)
                     ),
+                    # ObjectSelector renders a YAML editor. Expected input:
+                    # - '\bkyiv\b'
+                    vol.Optional(CONF_REGION_PATTERNS): selector.ObjectSelector(),
+                    vol.Optional(CONF_NEIGHBORHOOD_PATTERNS): selector.ObjectSelector(),
                 },
             ),
             errors=errors,
@@ -131,61 +136,53 @@ class AerialDangerOptionsFlow(config_entries.OptionsFlow):
         errors: dict[str, str] = {}
         if user_input is not None:
             user_input = dict(user_input)
-            user_input[CONF_REGION_PATTERNS] = _split_lines(
+            region_patterns = _validate_pattern_input(
                 user_input.get(CONF_REGION_PATTERNS)
             )
-            user_input[CONF_NEIGHBORHOOD_PATTERNS] = _split_lines(
+            neighborhood_patterns = _validate_pattern_input(
                 user_input.get(CONF_NEIGHBORHOOD_PATTERNS)
             )
-            errors = _validate_input(
-                user_input[CONF_REGION_PATTERNS],
-                user_input[CONF_NEIGHBORHOOD_PATTERNS],
-                user_input[CONF_SOURCES],
-            )
-            if not errors:
-                user_input.pop(CONF_NAME, None)
-                return self.async_create_entry(title="", data=user_input)
+            if region_patterns is None or neighborhood_patterns is None:
+                errors["base"] = "invalid_pattern_format"
+            else:
+                user_input[CONF_REGION_PATTERNS] = region_patterns
+                user_input[CONF_NEIGHBORHOOD_PATTERNS] = neighborhood_patterns
+                errors = _validate_input(
+                    region_patterns,
+                    neighborhood_patterns,
+                    user_input[CONF_SOURCES],
+                )
+                if not errors:
+                    user_input.pop(CONF_NAME, None)
+                    return self.async_create_entry(title="", data=user_input)
 
         data = self.config_entry.data
         options = self.config_entry.options
-
-        def _join(value: list[str] | str | None) -> str:
-            if isinstance(value, list):
-                return "\n".join(value)
-            return value or ""
 
         return self.async_show_form(
             step_id="init",
             data_schema=vol.Schema(
                 {
-                    vol.Optional(
-                        CONF_REGION_PATTERNS,
-                        default=_join(
-                            options.get(
-                                CONF_REGION_PATTERNS,
-                                data.get(CONF_REGION_PATTERNS, []),
-                            )
-                        ),
-                    ): selector.TextSelector(
-                        selector.TextSelectorConfig(multiline=True)
-                    ),
-                    vol.Optional(
-                        CONF_NEIGHBORHOOD_PATTERNS,
-                        default=_join(
-                            options.get(
-                                CONF_NEIGHBORHOOD_PATTERNS,
-                                data.get(CONF_NEIGHBORHOOD_PATTERNS, []),
-                            )
-                        ),
-                    ): selector.TextSelector(
-                        selector.TextSelectorConfig(multiline=True)
-                    ),
                     vol.Required(
                         CONF_SOURCES,
                         default=options.get(CONF_SOURCES, data.get(CONF_SOURCES, [])),
                     ): selector.EntitySelector(
                         selector.EntitySelectorConfig(multiple=True)
                     ),
+                    vol.Optional(
+                        CONF_REGION_PATTERNS,
+                        default=options.get(
+                            CONF_REGION_PATTERNS,
+                            data.get(CONF_REGION_PATTERNS, []),
+                        ),
+                    ): selector.ObjectSelector(),
+                    vol.Optional(
+                        CONF_NEIGHBORHOOD_PATTERNS,
+                        default=options.get(
+                            CONF_NEIGHBORHOOD_PATTERNS,
+                            data.get(CONF_NEIGHBORHOOD_PATTERNS, []),
+                        ),
+                    ): selector.ObjectSelector(),
                 }
             ),
             errors=errors,
