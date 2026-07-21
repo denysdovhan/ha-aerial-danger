@@ -63,7 +63,11 @@
           "source_entity_id": {
             "name": "Source entity"
           },
+          "timestamp": {
+            "name": "Detection timestamp"
+          },
           "event_type": {
+            "name": "Event type",
             "state": {
               "irbm": "Intermediate-range ballistic missile danger",
               "ballistic": "Ballistic danger",
