@@ -27,7 +27,7 @@
       },
       "neighborhoods": {
         "title": "Neighborhoods",
-        "description": "Select the preset neighborhoods within the chosen regions where the integration should monitor danger messages. Neighborhoods are used to detect drones and all other threat types. You can select multiple neighborhoods.\n\nNeighborhood presets and custom regular expressions are optional fields. Use either one or combine both.",
+        "description": "Select the preset neighborhoods within the chosen regions where the integration should monitor danger messages. Neighborhoods are used to detect drones and all other threat types. You can select multiple neighborhoods.\n\n**Tip:** Select your neighborhood and nearby neighborhoods to receive notifications about approaching targets.\n\nNeighborhood presets and custom regular expressions are optional fields. Use either one or combine both.",
         "data": {
           "neighborhood_presets": "Neighborhood presets",
           "neighborhood_patterns": "Custom neighborhood regex patterns (YAML list)"
@@ -71,7 +71,7 @@
       },
       "neighborhoods": {
         "title": "Neighborhoods",
-        "description": "Select the preset neighborhoods within the chosen regions where the integration should monitor danger messages. Neighborhoods are used to detect drones and all other threat types. You can select multiple neighborhoods.\n\nNeighborhood presets and custom regular expressions are optional fields. Use either one or combine both.",
+        "description": "Select the preset neighborhoods within the chosen regions where the integration should monitor danger messages. Neighborhoods are used to detect drones and all other threat types. You can select multiple neighborhoods.\n\n**Tip:** Select your neighborhood and nearby neighborhoods to receive notifications about approaching targets.\n\nNeighborhood presets and custom regular expressions are optional fields. Use either one or combine both.",
         "data": {
           "neighborhood_presets": "Neighborhood presets",
           "neighborhood_patterns": "Custom neighborhood regex patterns (YAML list)"
