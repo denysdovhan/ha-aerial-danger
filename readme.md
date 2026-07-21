@@ -10,13 +10,13 @@
 
 ## What it does
 
-Aerial Danger listens to configured Home Assistant source entities whose state contains alert text. It tracks danger independently per source, matches messages against your region and neighborhood regex patterns plus built-in Ukrainian aerial-danger keywords, then updates safety binary sensors for ballistic, cruise missile, drone, unknown, and aggregate danger.
+Aerial Danger listens to configured Home Assistant source entities whose state contains alert text. It tracks danger independently per source, matches messages against your region and neighborhood regex patterns plus built-in Ukrainian aerial-danger keywords, then updates safety binary sensors for intermediate-range ballistic missile, ballistic, cruise missile, drone, unknown, and aggregate danger.
 
 ## Status
 
 - ✅ Danger detection library with keyword sets and pytest coverage
 - ✅ Multi-entry config flow with editable area patterns and source entities
-- ✅ Binary sensors for ballistic, cruise, drone, unknown, and aggregate danger
+- ✅ Binary sensors for intermediate-range ballistic missile, ballistic, cruise, drone, unknown, and aggregate danger
 - ✅ Native Home Assistant event entity with danger types and match details
 - ✅ HA-level config flow and setup tests
 - ⏳ Brands assets in the Home Assistant brands repository
@@ -48,22 +48,26 @@ providers, areas, or source groups.
 
 At least one area pattern and one source entity are required. Invalid regex patterns are rejected in the config and options flows. Unknown and unavailable source states do not clear active detections. The integration uses local push updates from source entity state changes; it does not poll.
 
+Intermediate-range ballistic missile alerts are treated as nationwide and do not require a configured area to appear in the message.
+
 ## Entities
 
 The integration creates these safety binary sensors:
 
+- Intermediate-range ballistic missile danger
 - Ballistic danger
 - Cruise missile danger
 - Drone danger
 - Unknown danger
 - Danger
 
-The aggregate **Danger** sensor is on while any type-specific danger sensor is on. Every binary sensor exposes `matched_message`, `matched_area`, `matched_danger`, and `source_entity_id`. Type-specific sensors use their latest active detection; the aggregate sensor uses the latest active detection across all types. When a sensor has no active detection, these attributes remain present with `null` values.
+The aggregate **Danger** sensor is on while any type-specific danger sensor is on. Every binary sensor exposes `matched_message`, `matched_area`, `matched_danger`, and `source_entity_id`. Type-specific sensors use their latest active detection; the aggregate sensor uses the latest active detection across all types. Nationwide intermediate-range ballistic missile detections have `null` matched-area attributes. When a sensor has no active detection, these attributes remain present with `null` values.
 
 ## Events
 
 Each detection entry creates a **Danger detected** event entity. It reports one of these event types:
 
+- `irbm`
 - `ballistic`
 - `cruise`
 - `drone`

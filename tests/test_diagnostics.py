@@ -70,11 +70,12 @@ async def test_config_entry_diagnostics_redacts_user_data(
             STATE_BALLISTIC: True,
             "cruise": False,
             "drone": False,
+            "irbm": False,
             "unknown": False,
             STATE_DANGER: True,
         },
         "active_detection_types": [STATE_BALLISTIC],
-        "entity_count": 5,
+        "entity_count": 6,
         "event_entity_available": True,
         "state_listener_active": True,
     }

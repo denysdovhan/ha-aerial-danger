@@ -10,6 +10,7 @@ from .keywords import (
     CRUISE_DANGER,
     DRONE_DANGER,
     GENERIC_DANGER,
+    IRBM_DANGER,
 )
 from .models import DangerType, Detection, PatternMatch
 
@@ -38,6 +39,7 @@ class DangerDetector:
         self._ballistic_patterns = self.compile_patterns(
             self.map_areas(BALLISTIC_DANGER, self._regions + self._neighborhoods)
         )
+        self._irbm_patterns = self.compile_patterns(IRBM_DANGER)
         self._cruise_patterns = self.compile_patterns(
             self.map_areas(CRUISE_DANGER, self._regions + self._neighborhoods)
         )
@@ -88,23 +90,24 @@ class DangerDetector:
         patterns: Sequence[re.Pattern[str]],
         areas: Sequence[str],
         danger_type: DangerType,
+        match_areas: bool = True,
     ) -> Detection:
         """Shared detection helper used by danger-specific methods."""
         danger_match = self.match_first(patterns, message)
         if danger_match is None:
             return Detection(danger=False, message=message)
 
-        area_match = self.find_area(message, areas)
-        if area_match is None:
+        area_match = self.find_area(message, areas) if match_areas else None
+        if match_areas and area_match is None:
             return Detection(danger=False, message=message)
 
         return Detection(
             danger=True,
             type=danger_type,
             message=message,
-            matched_area=area_match.text,
+            matched_area=area_match.text if area_match else None,
             matched_danger=danger_match.text,
-            area_pattern=area_match.pattern,
+            area_pattern=area_match.pattern if area_match else None,
             danger_pattern=danger_match.pattern,
         )
 
@@ -115,6 +118,16 @@ class DangerDetector:
             patterns=self._ballistic_patterns,
             areas=self._regions + self._neighborhoods,
             message=message,
+        )
+
+    def irbm_danger(self, message: str) -> Detection:
+        """Detect nationwide IRBM danger without requiring a configured area."""
+        return self.detect(
+            danger_type=DangerType.IRBM,
+            patterns=self._irbm_patterns,
+            areas=(),
+            message=message,
+            match_areas=False,
         )
 
     def cruise_missile_danger(self, message: str) -> Detection:
@@ -145,8 +158,9 @@ class DangerDetector:
         )
 
     def danger(self, message: str) -> Detection:
-        """Composite detector: ballistic → cruise → drone → generic; first hit wins."""
+        """Composite detector: IRBM → ballistic → cruise → drone → generic."""
         for checker in (
+            self.irbm_danger,
             self.ballistic_danger,
             self.cruise_missile_danger,
             self.drone_danger,

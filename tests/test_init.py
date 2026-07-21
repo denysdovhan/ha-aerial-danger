@@ -38,11 +38,12 @@ from custom_components.aerial_danger.const import (
     EVENT_TYPE_BALLISTIC,
     EVENT_TYPE_CRUISE,
     EVENT_TYPE_DRONE,
+    EVENT_TYPE_IRBM,
     EVENT_TYPE_UNKNOWN,
 )
 
 pytestmark = pytest.mark.usefixtures("enable_custom_integrations")
-EXPECTED_ENTITY_COUNT = 5
+EXPECTED_ENTITY_COUNT = 6
 DETECTION_ATTRIBUTE_KEYS = (
     ATTR_MATCHED_MESSAGE,
     ATTR_MATCHED_AREA,
@@ -191,7 +192,7 @@ async def test_source_state_updates_binary_sensors(
     assert hass.states.get("binary_sensor.aerial_danger_ballistic_danger").state == (
         STATE_OFF
     )
-    for key in ("ballistic", "cruise", "drone", "unknown", "danger"):
+    for key in ("irbm", "ballistic", "cruise", "drone", "unknown", "danger"):
         state = hass.states.get(_entity_id(hass, entry, key))
         assert all(state.attributes[attr] is None for attr in DETECTION_ATTRIBUTE_KEYS)
 
@@ -202,6 +203,12 @@ async def test_source_state_updates_binary_sensors(
         STATE_ON
     )
     assert hass.states.get("binary_sensor.aerial_danger_danger").state == STATE_ON
+
+    hass.states.async_set("sensor.alerts", "Загроза БРСД.")
+    await hass.async_block_till_done()
+
+    assert hass.states.get(_entity_id(hass, entry, "irbm")).state == STATE_ON
+    assert hass.states.get(_entity_id(hass, entry, "ballistic")).state == STATE_OFF
 
 
 async def test_aggregate_attributes_use_latest_active_detection(
@@ -444,6 +451,7 @@ async def test_same_type_detection_refreshes_attributes(
 @pytest.mark.parametrize(
     ("message", "event_type"),
     [
+        ("Загроза БРСД.", EVENT_TYPE_IRBM),
         ("Київ швидкісна!", EVENT_TYPE_BALLISTIC),
         ("Київ увага КР!!", EVENT_TYPE_CRUISE),
         ("Нивки над вами БПЛА!", EVENT_TYPE_DRONE),

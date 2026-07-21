@@ -65,6 +65,7 @@
           },
           "event_type": {
             "state": {
+              "irbm": "Intermediate-range ballistic missile danger",
               "ballistic": "Ballistic danger",
               "cruise": "Cruise missile danger",
               "drone": "Drone danger",
@@ -75,6 +76,23 @@
       }
     },
     "binary_sensor": {
+      "irbm": {
+        "name": "Intermediate-range ballistic missile danger",
+        "state_attributes": {
+          "matched_message": {
+            "name": "Matched message"
+          },
+          "matched_area": {
+            "name": "Matched area"
+          },
+          "matched_danger": {
+            "name": "Matched danger"
+          },
+          "source_entity_id": {
+            "name": "Source entity"
+          }
+        }
+      },
       "ballistic": {
         "name": "Ballistic danger",
         "state_attributes": {

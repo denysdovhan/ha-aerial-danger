@@ -39,8 +39,8 @@ This repository implements the Home Assistant custom integration **Aerial Danger
 - `config_flow.py` — multi-entry config flow with user-defined entry titles and options for area regex patterns and source entities; requires patterns and sources and rejects invalid regex patterns.
 - `const.py` — grouped configuration, attribute, state, event, logger, and integration constants.
 - `entity.py` — shared runtime and device setup for integration entities.
-- `binary_sensor.py` — safety binary sensors for ballistic, cruise, drone, unknown, and aggregate danger; all expose stable matched-message, area, danger, and source attributes.
-- `event.py` — native Home Assistant event entity for ballistic, cruise, drone, and unknown detections.
+- `binary_sensor.py` — safety binary sensors for IRBM, ballistic, cruise, drone, unknown, and aggregate danger; all expose stable matched-message, area, danger, and source attributes.
+- `event.py` — native Home Assistant event entity for IRBM, ballistic, cruise, drone, and unknown detections.
 - `diagnostics.py` — provides redacted config-entry diagnostics and privacy-safe runtime state details.
 - `danger/` — logger-free, Home Assistant agnostic danger detection library, keyword templates, and data models; detections preserve exact matched text and regex patterns.
 - `translations/` — English and Ukrainian strings for the basic flow.
@@ -57,6 +57,17 @@ Here are a few notes on parsing data from external sources. Here are words that 
   - `бр`
   - `кинджал`
   - `іскандер`
+- Intermediate-range ballistic missiles are usually refered as:
+  - `брсд`
+  - `бсд`
+  - `рсд`
+  - `орєшнік`
+  - `орешник`
+  - `кедр`
+  - `кєдр`
+  - `рс-26`
+  - `рубіж`
+- IRBM alerts are nationwide and do not require an area match.
 - Cruise missile are usually refered as:
   - `кр`
   - `крупа кр`

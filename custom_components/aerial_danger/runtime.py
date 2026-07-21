@@ -10,6 +10,7 @@ from .const import (
     STATE_CRUISE,
     STATE_DANGER,
     STATE_DRONE,
+    STATE_IRBM,
     STATE_UNKNOWN_DANGER,
 )
 from .danger import DangerDetector, DangerType, Detection
@@ -24,6 +25,7 @@ if TYPE_CHECKING:
 
 
 DANGER_TYPE_STATE_KEYS = {
+    DangerType.IRBM: STATE_IRBM,
     DangerType.BALLISTIC: STATE_BALLISTIC,
     DangerType.CRUISE: STATE_CRUISE,
     DangerType.DRONE: STATE_DRONE,
@@ -63,6 +65,7 @@ def derive_danger_state(
 ]:
     """Derive entry state from active source detections."""
     states = {
+        STATE_IRBM: False,
         STATE_BALLISTIC: False,
         STATE_CRUISE: False,
         STATE_DRONE: False,
@@ -70,6 +73,7 @@ def derive_danger_state(
         STATE_DANGER: False,
     }
     last_detection: dict[DangerType, SourceDetection | None] = {
+        DangerType.IRBM: None,
         DangerType.BALLISTIC: None,
         DangerType.CRUISE: None,
         DangerType.DRONE: None,

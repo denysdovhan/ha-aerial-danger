@@ -1,5 +1,8 @@
 """Keyword templates for the danger detector."""
 
+_CYRILLIC_LETTERS = "а-яіїєґ"
+_ORESHNIK = r"[«“\"]?ор[єе]шн[іи]к"
+
 # Generic danger phrases that refine specific danger types.
 GENERIC_DANGER = [
     r"(буде|бути) гучно",
@@ -46,6 +49,31 @@ _ZIRCON_DANGER = [
     r"{area} (?:\d+х? )?циркон",
     r"{area} увага (?:по )?циркон",
     r"{area}.*два циркона",
+]
+
+# Intermediate-range ballistic missile phrases.
+IRBM_DANGER = [
+    (
+        rf"^[^{_CYRILLIC_LETTERS}]*(?:(?:увага!?|повторна)\s*)?"
+        r"загроза (?:застосування )?"
+        r"(?:балістики середньої дальності|"
+        r"балістичної ракети середньої дальності|брсд)\b"
+    ),
+    rf"^[^{_CYRILLIC_LETTERS}]*пуск {_ORESHNIK}",
+    rf"\bє інформація про пуск {_ORESHNIK}",
+    rf"\bбула інформація про пуск {_ORESHNIK}",
+    (
+        rf"^[^{_CYRILLIC_LETTERS}]*загроза "
+        rf"(?:пусків |пуски |застосування |нанесення )?{_ORESHNIK}"
+    ),
+    rf"^[^{_CYRILLIC_LETTERS}]*тривога по {_ORESHNIK}",
+    (
+        rf"^[^{_CYRILLIC_LETTERS}]*по {_ORESHNIK}"
+        rf"[{_CYRILLIC_LETTERS}]*[^{_CYRILLIC_LETTERS}]+загроза актуальна"
+    ),
+    r"тривог.*імовірну активність брсд",
+    r"додалась загроза застосування балістики з капустиного яру",
+    r"загроза застосування міжконтинентальних балістичних ракет.*рс-26",
 ]
 
 # Ballistic-oriented phrases.
@@ -128,4 +156,5 @@ __all__ = [
     "CRUISE_DANGER",
     "DRONE_DANGER",
     "GENERIC_DANGER",
+    "IRBM_DANGER",
 ]

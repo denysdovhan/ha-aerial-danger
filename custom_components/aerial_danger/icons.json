@@ -16,6 +16,9 @@
       "ballistic": {
         "default": "mdi:rocket-launch"
       },
+      "irbm": {
+        "default": "mdi:rocket"
+      },
       "cruise": {
         "default": "mdi:airplane-landing"
       },
