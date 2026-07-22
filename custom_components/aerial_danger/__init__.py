@@ -11,8 +11,8 @@ from homeassistant.exceptions import ConfigEntryError
 from homeassistant.helpers.event import async_track_state_change_event
 
 from .const import (
-    CONF_NEIGHBORHOOD_PATTERNS,
-    CONF_NEIGHBORHOOD_PRESETS,
+    CONF_LOCALITY_PATTERNS,
+    CONF_LOCALITY_PRESETS,
     CONF_REGION_PATTERNS,
     CONF_REGION_PRESETS,
     CONF_SOURCES,
@@ -25,7 +25,7 @@ from .const import (
     PLATFORMS,
 )
 from .danger import DangerDetector
-from .danger.pattern_utils import resolve_neighborhood_patterns, resolve_region_patterns
+from .danger.pattern_utils import resolve_locality_patterns, resolve_region_patterns
 from .runtime import RuntimeData, SourceDetection, derive_danger_state
 
 type AerialDangerConfigEntry = ConfigEntry[RuntimeData]
@@ -54,24 +54,24 @@ async def async_setup_entry(
         _entry_list(entry, CONF_REGION_PATTERNS),
         region_presets,
     )
-    neighborhoods = resolve_neighborhood_patterns(
-        _entry_list(entry, CONF_NEIGHBORHOOD_PATTERNS),
+    localities = resolve_locality_patterns(
+        _entry_list(entry, CONF_LOCALITY_PATTERNS),
         region_presets,
-        _entry_list(entry, CONF_NEIGHBORHOOD_PRESETS),
+        _entry_list(entry, CONF_LOCALITY_PRESETS),
     )
     sources = _entry_list(entry, CONF_SOURCES)
 
-    if not regions and not neighborhoods:
+    if not regions and not localities:
         raise ConfigEntryError(ERROR_MISSING_PATTERNS)
     if not sources:
         raise ConfigEntryError(ERROR_MISSING_SOURCES)
 
     try:
-        DangerDetector.validate_patterns(regions, neighborhoods)
+        DangerDetector.validate_patterns(regions, localities)
     except re.error as ex:
         raise ConfigEntryError(ERROR_INVALID_PATTERN) from ex
 
-    detector = DangerDetector(regions, neighborhoods)
+    detector = DangerDetector(regions, localities)
 
     active_detections: dict[str, SourceDetection] = {}
     for source in sources:

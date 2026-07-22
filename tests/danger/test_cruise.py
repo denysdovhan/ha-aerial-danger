@@ -4,7 +4,7 @@
 
 from custom_components.aerial_danger.danger import DangerDetector, DangerType
 
-from .common import NEIGHBORHOOD_PATTERNS, REGION_PATTERNS
+from .common import LOCALITY_PATTERNS, REGION_PATTERNS
 from .test_ballistic import TARGETED_ZIRCON_CASES, ZIRCON_CASES
 
 CRUISE_CASES: list[str] = [
@@ -35,7 +35,7 @@ CRUISE_CASES: list[str] = [
 
 def test_cruise_only() -> None:
     """Cruise-specific helper should flag cruise samples."""
-    detector = DangerDetector(REGION_PATTERNS, NEIGHBORHOOD_PATTERNS)
+    detector = DangerDetector(REGION_PATTERNS, LOCALITY_PATTERNS)
     for text in CRUISE_CASES:
         detection = detector.cruise_missile_danger(text)
         assert detection.danger is True, text

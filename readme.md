@@ -63,9 +63,9 @@ Configure the integration with:
 - **Name** — the name of the detection entry and device.
 - **Source entities** — entities whose state contains alert messages.
 - **Regions** — select built-in region presets, add a YAML list of custom Python regular expressions, or combine both.
-- **Neighborhoods** — select presets belonging to the chosen regions, add a YAML list of custom regular expressions, or combine both.
+- **Localities** — select presets belonging to the chosen regions, add a YAML list of custom regular expressions, or combine both.
 
-The first built-in region is Kyiv, with Sviatoshyn, Akademmistechko, Antonov, Nyvky, and Vynohradar neighborhoods. At least one effective region or neighborhood pattern and one source entity are required. You can change sources, presets, and custom patterns later from the integration options. Rename the entry through Home Assistant's native entry rename action.
+The first built-in region is Kyiv, with Sviatoshyn, Akademmistechko, Antonov, Nyvky, and Vynohradar localities. At least one effective region or locality pattern and one source entity are required. You can change sources, presets, and custom patterns later from the integration options. Rename the entry through Home Assistant's native entry rename action.
 
 The integration creates a binary sensor for each supported danger type, an aggregate **Danger** binary sensor, and a **Danger detected** event entity. Repeat the setup to monitor different providers, areas, or source groups independently.
 

@@ -5,7 +5,7 @@
 from custom_components.aerial_danger.danger import DangerDetector, DangerType
 from custom_components.aerial_danger.danger.keywords import DRONE_DANGER
 
-from .common import NEIGHBORHOOD_PATTERNS, REGION_PATTERNS
+from .common import LOCALITY_PATTERNS, REGION_PATTERNS
 
 DRONE_CASES: list[tuple[str, str]] = [
     (DRONE_DANGER[10], "🛵 У бік Нивок."),
@@ -113,7 +113,7 @@ REACTIVE_DRONE_AFTERMATH_CASES: list[tuple[str, str]] = [
 
 def test_drone_only() -> None:
     """Drone-specific helper should flag drone samples."""
-    detector = DangerDetector(REGION_PATTERNS, NEIGHBORHOOD_PATTERNS)
+    detector = DangerDetector(REGION_PATTERNS, LOCALITY_PATTERNS)
     for danger_template, text in DRONE_CASES:
         detection = detector.drone_danger(text)
         assert detection.danger is True, text

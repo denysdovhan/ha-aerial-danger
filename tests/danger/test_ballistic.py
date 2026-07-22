@@ -4,7 +4,7 @@
 
 from custom_components.aerial_danger.danger import DangerDetector, DangerType
 
-from .common import NEIGHBORHOOD_PATTERNS, REGION_PATTERNS
+from .common import LOCALITY_PATTERNS, REGION_PATTERNS
 
 ZIRCON_CASES: list[str] = [
     "🔴Пуск ракети «Циркон»!",
@@ -80,7 +80,7 @@ BALLISTIC_CASES: list[str] = [
 
 def test_ballistic_only() -> None:
     """Ballistic-specific helper should flag ballistic samples."""
-    detector = DangerDetector(REGION_PATTERNS, NEIGHBORHOOD_PATTERNS)
+    detector = DangerDetector(REGION_PATTERNS, LOCALITY_PATTERNS)
     for text in BALLISTIC_CASES:
         detection = detector.ballistic_danger(text)
         assert detection.danger is True, text

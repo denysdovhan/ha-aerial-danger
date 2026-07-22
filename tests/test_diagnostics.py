@@ -11,8 +11,8 @@ from homeassistant.core import HomeAssistant
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.aerial_danger.const import (
-    CONF_NEIGHBORHOOD_PATTERNS,
-    CONF_NEIGHBORHOOD_PRESETS,
+    CONF_LOCALITY_PATTERNS,
+    CONF_LOCALITY_PRESETS,
     CONF_REGION_PATTERNS,
     CONF_REGION_PRESETS,
     CONF_SOURCES,
@@ -36,15 +36,15 @@ async def test_config_entry_diagnostics_redacts_user_data_only(
         data={
             CONF_REGION_PATTERNS: [r"\bкиїв\b"],
             CONF_REGION_PRESETS: ["kyiv"],
-            CONF_NEIGHBORHOOD_PATTERNS: [r"\bнивки\b"],
-            CONF_NEIGHBORHOOD_PRESETS: ["kyiv_nyvky"],
+            CONF_LOCALITY_PATTERNS: [r"\bнивки\b"],
+            CONF_LOCALITY_PRESETS: ["kyiv_nyvky"],
             CONF_SOURCES: ["sensor.alerts"],
         },
         options={
             CONF_REGION_PATTERNS: [r"\bкиївщина\b"],
             CONF_REGION_PRESETS: ["kyiv"],
-            CONF_NEIGHBORHOOD_PATTERNS: [],
-            CONF_NEIGHBORHOOD_PRESETS: ["kyiv_nyvky"],
+            CONF_LOCALITY_PATTERNS: [],
+            CONF_LOCALITY_PRESETS: ["kyiv_nyvky"],
             CONF_SOURCES: ["sensor.private_alerts"],
         },
     )
@@ -63,15 +63,15 @@ async def test_config_entry_diagnostics_redacts_user_data_only(
         "data": {
             CONF_REGION_PATTERNS: REDACTED,
             CONF_REGION_PRESETS: ["kyiv"],
-            CONF_NEIGHBORHOOD_PATTERNS: REDACTED,
-            CONF_NEIGHBORHOOD_PRESETS: ["kyiv_nyvky"],
+            CONF_LOCALITY_PATTERNS: REDACTED,
+            CONF_LOCALITY_PRESETS: ["kyiv_nyvky"],
             CONF_SOURCES: REDACTED,
         },
         "options": {
             CONF_REGION_PATTERNS: REDACTED,
             CONF_REGION_PRESETS: ["kyiv"],
-            CONF_NEIGHBORHOOD_PATTERNS: REDACTED,
-            CONF_NEIGHBORHOOD_PRESETS: ["kyiv_nyvky"],
+            CONF_LOCALITY_PATTERNS: REDACTED,
+            CONF_LOCALITY_PRESETS: ["kyiv_nyvky"],
             CONF_SOURCES: REDACTED,
         },
     }

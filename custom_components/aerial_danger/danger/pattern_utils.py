@@ -3,13 +3,13 @@
 from .presets import PRESETS
 
 
-def neighborhood_ids(region_ids: list[str]) -> list[str]:
-    """Return neighborhood IDs owned by selected regions."""
+def locality_ids(region_ids: list[str]) -> list[str]:
+    """Return locality IDs owned by selected regions."""
     return [
-        neighborhood_id
+        locality_id
         for region_id in region_ids
         if (region := PRESETS.get(region_id)) is not None
-        for neighborhood_id in region.neighborhoods
+        for locality_id in region.localities
     ]
 
 
@@ -26,19 +26,19 @@ def resolve_region_patterns(
     return list(dict.fromkeys(region_patterns))
 
 
-def resolve_neighborhood_patterns(
-    custom_neighborhood_patterns: list[str],
+def resolve_locality_patterns(
+    custom_locality_patterns: list[str],
     region_ids: list[str],
-    selected_neighborhood_ids: list[str],
+    selected_locality_ids: list[str],
 ) -> list[str]:
-    """Resolve custom and preset neighborhood patterns in stable order."""
-    neighborhood_patterns = list(custom_neighborhood_patterns)
-    selected_neighborhoods = set(selected_neighborhood_ids)
+    """Resolve custom and preset locality patterns in stable order."""
+    locality_patterns = list(custom_locality_patterns)
+    selected_localities = set(selected_locality_ids)
     for region_id in region_ids:
         if (region := PRESETS.get(region_id)) is None:
             continue
-        for neighborhood_id, neighborhood in region.neighborhoods.items():
-            if neighborhood_id in selected_neighborhoods:
-                neighborhood_patterns.extend(neighborhood.patterns)
+        for locality_id, locality in region.localities.items():
+            if locality_id in selected_localities:
+                locality_patterns.extend(locality.patterns)
 
-    return list(dict.fromkeys(neighborhood_patterns))
+    return list(dict.fromkeys(locality_patterns))

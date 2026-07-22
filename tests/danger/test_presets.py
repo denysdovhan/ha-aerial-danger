@@ -10,8 +10,8 @@ import pytest
 
 from custom_components.aerial_danger.danger import DangerDetector
 from custom_components.aerial_danger.danger.pattern_utils import (
-    neighborhood_ids,
-    resolve_neighborhood_patterns,
+    locality_ids,
+    resolve_locality_patterns,
     resolve_region_patterns,
 )
 from custom_components.aerial_danger.danger.presets import PRESETS
@@ -20,16 +20,16 @@ from custom_components.aerial_danger.danger.presets import PRESETS
 def test_registry_ids_ownership_and_compilation() -> None:
     """Test stable IDs, nested ownership, and valid regexes."""
     assert list(PRESETS) == ["kyiv", "kyiv_oblast"]
-    assert neighborhood_ids([]) == []
+    assert locality_ids([]) == []
     for region_id, region in PRESETS.items():
-        assert neighborhood_ids([region_id]) == list(region.neighborhoods)
+        assert locality_ids([region_id]) == list(region.localities)
     assert PRESETS["kyiv"].name == "Київ"
     assert PRESETS["kyiv_oblast"].name == "Київська область"
     for region in PRESETS.values():
-        assert list(region.neighborhoods) == sorted(region.neighborhoods)
+        assert list(region.localities) == sorted(region.localities)
         DangerDetector.validate_patterns(
             region.patterns,
-            *(preset.patterns for preset in region.neighborhoods.values()),
+            *(preset.patterns for preset in region.localities.values()),
         )
 
 
@@ -53,7 +53,7 @@ def test_selector_translations_cover_regions(language: str) -> None:
 
 
 @pytest.mark.parametrize("language", ["en", "uk"])
-def test_selector_translations_cover_neighborhoods(language: str) -> None:
+def test_selector_translations_cover_localities(language: str) -> None:
     """Test every preset has a selector translation in registry order."""
     translations_path = (
         Path(__file__).parents[2]
@@ -63,16 +63,16 @@ def test_selector_translations_cover_neighborhoods(language: str) -> None:
         / f"{language}.json"
     )
     translations = json.loads(translations_path.read_text())
-    options = translations["selector"]["neighborhood_presets"]["options"]
-    neighborhoods = {
+    options = translations["selector"]["locality_presets"]["options"]
+    localities = {
         preset_id: preset
         for region in PRESETS.values()
-        for preset_id, preset in region.neighborhoods.items()
+        for preset_id, preset in region.localities.items()
     }
-    assert list(options) == list(neighborhoods)
+    assert list(options) == list(localities)
     if language == "uk":
         assert options == {
-            preset_id: preset.name for preset_id, preset in neighborhoods.items()
+            preset_id: preset.name for preset_id, preset in localities.items()
         }
 
 
@@ -90,9 +90,9 @@ def test_selector_translations_cover_neighborhoods(language: str) -> None:
         ("kyiv_voskresenka", "Воскресенка"),
     ],
 )
-def test_additional_neighborhood_variants(preset_id: str, text: str) -> None:
+def test_additional_locality_variants(preset_id: str, text: str) -> None:
     """Test additional aliases and spellings."""
-    patterns = PRESETS["kyiv"].neighborhoods[preset_id].patterns
+    patterns = PRESETS["kyiv"].localities[preset_id].patterns
     assert any(
         re.search(pattern, text, re.IGNORECASE | re.UNICODE) for pattern in patterns
     )
@@ -137,7 +137,7 @@ def test_researched_kyiv_oblast_variants(text: str) -> None:
 )
 def test_boryspil_variants(text: str) -> None:
     """Test Boryspil forms and its alert shorthand."""
-    patterns = PRESETS["kyiv_oblast"].neighborhoods["kyiv_oblast_boryspil"].patterns
+    patterns = PRESETS["kyiv_oblast"].localities["kyiv_oblast_boryspil"].patterns
     assert any(
         re.search(pattern, text, re.IGNORECASE | re.UNICODE) for pattern in patterns
     )
@@ -146,13 +146,11 @@ def test_boryspil_variants(text: str) -> None:
 def test_boundaries_and_safe_location_text() -> None:
     """Test preset boundaries and ordinary location text stay safe."""
     regions = resolve_region_patterns([], ["kyiv"])
-    neighborhoods = resolve_neighborhood_patterns(
-        [], ["kyiv"], ["kyiv_akademmistechko"]
-    )
-    detector = DangerDetector(regions, neighborhoods)
+    localities = resolve_locality_patterns([], ["kyiv"], ["kyiv_akademmistechko"])
+    detector = DangerDetector(regions, localities)
     assert not any(re.search(pattern, "Київщина", re.IGNORECASE) for pattern in regions)
     assert not any(
-        re.search(pattern, "академія", re.IGNORECASE) for pattern in neighborhoods
+        re.search(pattern, "академія", re.IGNORECASE) for pattern in localities
     )
     assert not detector.danger("Станція метро Академмістечко відкрита").danger
 
@@ -161,8 +159,8 @@ def test_resolve_custom_first_deduplicates_and_ignores_unknown_ids() -> None:
     """Test resolution order, deduplication, and current-definition lookup."""
     kyiv_pattern = PRESETS["kyiv"].patterns[0]
     regions = resolve_region_patterns([kyiv_pattern, "custom"], ["missing", "kyiv"])
-    neighborhoods = resolve_neighborhood_patterns(
+    localities = resolve_locality_patterns(
         [], ["missing", "kyiv"], ["kyiv_nyvky", "missing"]
     )
     assert regions == [kyiv_pattern, "custom", PRESETS["kyiv"].patterns[1]]
-    assert neighborhoods == list(PRESETS["kyiv"].neighborhoods["kyiv_nyvky"].patterns)
+    assert localities == list(PRESETS["kyiv"].localities["kyiv_nyvky"].patterns)

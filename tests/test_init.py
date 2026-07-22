@@ -30,8 +30,8 @@ from custom_components.aerial_danger.const import (
     ATTR_MATCHED_MESSAGE,
     ATTR_SOURCE_ENTITY_ID,
     ATTR_TIMESTAMP,
-    CONF_NEIGHBORHOOD_PATTERNS,
-    CONF_NEIGHBORHOOD_PRESETS,
+    CONF_LOCALITY_PATTERNS,
+    CONF_LOCALITY_PRESETS,
     CONF_REGION_PATTERNS,
     CONF_REGION_PRESETS,
     CONF_SOURCES,
@@ -103,7 +103,7 @@ async def test_setup_stores_runtime_data_on_entry(
     entry = _entry(
         {
             CONF_REGION_PATTERNS: [r"\bкиїв\b"],
-            CONF_NEIGHBORHOOD_PATTERNS: [r"\bнивки\b"],
+            CONF_LOCALITY_PATTERNS: [r"\bнивки\b"],
             CONF_SOURCES: ["sensor.alerts"],
         }
     )
@@ -125,8 +125,8 @@ async def test_setup_resolves_preset_patterns(hass: HomeAssistant) -> None:
         {
             CONF_REGION_PRESETS: ["kyiv"],
             CONF_REGION_PATTERNS: [],
-            CONF_NEIGHBORHOOD_PRESETS: ["kyiv_nyvky"],
-            CONF_NEIGHBORHOOD_PATTERNS: [],
+            CONF_LOCALITY_PRESETS: ["kyiv_nyvky"],
+            CONF_LOCALITY_PATTERNS: [],
             CONF_SOURCES: ["sensor.alerts"],
         }
     )
@@ -148,7 +148,7 @@ async def test_setup_seeds_source_state_without_firing_event(
     entry = _entry(
         {
             CONF_REGION_PATTERNS: [r"\bкиїв\b"],
-            CONF_NEIGHBORHOOD_PATTERNS: [r"\bнивки\b"],
+            CONF_LOCALITY_PATTERNS: [r"\bнивки\b"],
             CONF_SOURCES: ["sensor.alerts"],
         }
     )
@@ -172,7 +172,7 @@ async def test_entry_title_rename_updates_device_name(hass: HomeAssistant) -> No
         {
             CONF_NAME: "Legacy name",
             CONF_REGION_PATTERNS: [r"\bкиїв\b"],
-            CONF_NEIGHBORHOOD_PATTERNS: [r"\bнивки\b"],
+            CONF_LOCALITY_PATTERNS: [r"\bнивки\b"],
             CONF_SOURCES: ["sensor.alerts"],
         },
         title="Kyiv alerts",
@@ -203,7 +203,7 @@ async def test_source_state_updates_binary_sensors(
     entry = _entry(
         {
             CONF_REGION_PATTERNS: [r"\bкиїв\b"],
-            CONF_NEIGHBORHOOD_PATTERNS: [r"\bнивки\b"],
+            CONF_LOCALITY_PATTERNS: [r"\bнивки\b"],
             CONF_SOURCES: ["sensor.alerts"],
         }
     )
@@ -241,7 +241,7 @@ async def test_aggregate_attributes_use_latest_active_detection(
     entry = _entry(
         {
             CONF_REGION_PATTERNS: [r"\bкиїв\b"],
-            CONF_NEIGHBORHOOD_PATTERNS: [r"\bнивки\b"],
+            CONF_LOCALITY_PATTERNS: [r"\bнивки\b"],
             CONF_SOURCES: ["sensor.channel_a", "sensor.channel_b"],
         }
     )
@@ -276,7 +276,7 @@ async def test_multiple_sources_keep_aggregate_danger_on(
     entry = _entry(
         {
             CONF_REGION_PATTERNS: [r"\bкиїв\b"],
-            CONF_NEIGHBORHOOD_PATTERNS: [r"\bнивки\b"],
+            CONF_LOCALITY_PATTERNS: [r"\bнивки\b"],
             CONF_SOURCES: ["sensor.channel_a", "sensor.channel_b"],
         }
     )
@@ -319,7 +319,7 @@ async def test_latest_active_source_supplies_attributes(
     entry = _entry(
         {
             CONF_REGION_PATTERNS: [r"\bкиїв\b"],
-            CONF_NEIGHBORHOOD_PATTERNS: [r"\bнивки\b"],
+            CONF_LOCALITY_PATTERNS: [r"\bнивки\b"],
             CONF_SOURCES: ["sensor.channel_a", "sensor.channel_b"],
         }
     )
@@ -356,7 +356,7 @@ async def test_unavailable_source_preserves_detection(
     entry = _entry(
         {
             CONF_REGION_PATTERNS: [r"\bкиїв\b"],
-            CONF_NEIGHBORHOOD_PATTERNS: [],
+            CONF_LOCALITY_PATTERNS: [],
             CONF_SOURCES: ["sensor.alerts"],
         }
     )
@@ -380,7 +380,7 @@ async def test_overlapping_entries_are_isolated(hass: HomeAssistant) -> None:
     """Test entries can share a source and unload independently."""
     data = {
         CONF_REGION_PATTERNS: [r"\bкиїв\b"],
-        CONF_NEIGHBORHOOD_PATTERNS: [],
+        CONF_LOCALITY_PATTERNS: [],
         CONF_SOURCES: ["sensor.alerts"],
     }
     entry_a = _entry(data, title="Provider A")
@@ -418,7 +418,7 @@ async def test_same_type_detection_refreshes_attributes(
     entry = _entry(
         {
             CONF_REGION_PATTERNS: [r"\bкиїв\b"],
-            CONF_NEIGHBORHOOD_PATTERNS: [r"\bнивки\b"],
+            CONF_LOCALITY_PATTERNS: [r"\bнивки\b"],
             CONF_SOURCES: ["sensor.alerts"],
         }
     )
@@ -490,7 +490,7 @@ async def test_event_entity_maps_danger_types(
     entry = _entry(
         {
             CONF_REGION_PATTERNS: [r"\bкиїв\b"],
-            CONF_NEIGHBORHOOD_PATTERNS: [r"\bнивки\b"],
+            CONF_LOCALITY_PATTERNS: [r"\bнивки\b"],
             CONF_SOURCES: ["sensor.alerts"],
         }
     )
@@ -513,7 +513,7 @@ async def test_cleared_detection_resets_attributes(
     entry = _entry(
         {
             CONF_REGION_PATTERNS: [r"\bкиїв\b"],
-            CONF_NEIGHBORHOOD_PATTERNS: [r"\bнивки\b"],
+            CONF_LOCALITY_PATTERNS: [r"\bнивки\b"],
             CONF_SOURCES: ["sensor.alerts"],
         }
     )
@@ -541,7 +541,7 @@ async def test_match_details_are_logged(
     entry = _entry(
         {
             CONF_REGION_PATTERNS: [area_pattern],
-            CONF_NEIGHBORHOOD_PATTERNS: [],
+            CONF_LOCALITY_PATTERNS: [],
             CONF_SOURCES: ["sensor.alerts"],
         }
     )
@@ -578,7 +578,7 @@ async def test_setup_rejects_invalid_stored_pattern(
     entry = _entry(
         {
             CONF_REGION_PATTERNS: ["("],
-            CONF_NEIGHBORHOOD_PATTERNS: [],
+            CONF_LOCALITY_PATTERNS: [],
             CONF_SOURCES: ["sensor.alerts"],
         }
     )
@@ -597,12 +597,12 @@ async def test_setup_rejects_invalid_stored_pattern(
     [
         {
             CONF_REGION_PATTERNS: [],
-            CONF_NEIGHBORHOOD_PATTERNS: [],
+            CONF_LOCALITY_PATTERNS: [],
             CONF_SOURCES: ["sensor.alerts"],
         },
         {
             CONF_REGION_PATTERNS: [r"\bкиїв\b"],
-            CONF_NEIGHBORHOOD_PATTERNS: [],
+            CONF_LOCALITY_PATTERNS: [],
             CONF_SOURCES: [],
         },
     ],

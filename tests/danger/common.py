@@ -8,7 +8,7 @@ REGION_PATTERNS = [
     r"наш(у|ої) област(ьі|і)?",
 ]
 
-NEIGHBORHOOD_PATTERNS = [
+LOCALITY_PATTERNS = [
     r"\bнив(ки|ками|ок)\b",
     r"\bсвятошин(а|у|ом|і|о)?\b",
     r"\bсвятошин(ський|ського)?\b",

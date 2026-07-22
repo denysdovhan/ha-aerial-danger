@@ -42,6 +42,9 @@ ordinary words.
 
 ## Decision
 
+- Rename the configuration and preset concept from `neighborhood` to
+  `locality`. A locality can be a neighborhood, village, city, landmark, or
+  other named alert zone.
 - Add 62 Kyiv city locality presets, nested under the Kyiv region and ordered
   by stable preset key.
 - Add Kyiv Oblast as a separate region preset without localities for now.
@@ -255,3 +258,8 @@ selecting Kyiv Oblast.
 2026-07-22: Review correction moved `Борік` from Бровари to a dedicated
 Бориспіль preset and removed Десна because it is outside Kyiv Oblast.
 `scripts/lint` passed; all 90 tests passed.
+
+2026-07-22: Renamed configuration keys, flow steps, preset types, translations,
+and documentation to `locality`. The previous term excluded valid alert areas
+such as villages, cities, and landmarks. No migration is provided during
+development; affected entries must be reconfigured.

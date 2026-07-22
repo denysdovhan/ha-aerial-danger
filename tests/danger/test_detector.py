@@ -11,7 +11,7 @@ from custom_components.aerial_danger.danger import (
     PatternMatch,
 )
 
-from .common import NEIGHBORHOOD_PATTERNS, REGION_PATTERNS
+from .common import LOCALITY_PATTERNS, REGION_PATTERNS
 
 NO_MATCH_CASES: list[str] = [
     "🛵Шахед на Мену.",
@@ -41,7 +41,7 @@ NO_MATCH_CASES: list[str] = [
 
 def test_validate_patterns() -> None:
     """Configured patterns compile independently from the detector."""
-    DangerDetector.validate_patterns(REGION_PATTERNS, NEIGHBORHOOD_PATTERNS)
+    DangerDetector.validate_patterns(REGION_PATTERNS, LOCALITY_PATTERNS)
 
     with pytest.raises(re.error):
         DangerDetector.validate_patterns(["("])
@@ -77,7 +77,7 @@ def test_match_helpers_return_pattern_matches() -> None:
 
 def test_non_matches() -> None:
     """Negative samples should not raise danger flags."""
-    detector = DangerDetector(REGION_PATTERNS, NEIGHBORHOOD_PATTERNS)
+    detector = DangerDetector(REGION_PATTERNS, LOCALITY_PATTERNS)
     for text in NO_MATCH_CASES:
         detection = detector.danger(text)
         assert detection.danger is False, text

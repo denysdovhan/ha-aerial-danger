@@ -12,8 +12,8 @@ from homeassistant.core import callback
 from homeassistant.helpers import selector
 
 from .const import (
-    CONF_NEIGHBORHOOD_PATTERNS,
-    CONF_NEIGHBORHOOD_PRESETS,
+    CONF_LOCALITY_PATTERNS,
+    CONF_LOCALITY_PRESETS,
     CONF_REGION_PATTERNS,
     CONF_REGION_PRESETS,
     CONF_SOURCES,
@@ -22,8 +22,8 @@ from .const import (
 )
 from .danger import DangerDetector
 from .danger.pattern_utils import (
-    neighborhood_ids,
-    resolve_neighborhood_patterns,
+    locality_ids,
+    resolve_locality_patterns,
     resolve_region_patterns,
 )
 from .danger.presets import PRESETS
@@ -80,19 +80,19 @@ def build_regions_schema(
     )
 
 
-def build_neighborhoods_schema(
+def build_localities_schema(
     region_presets: list[str],
     selected_presets: list[str],
     patterns: list[str],
 ) -> vol.Schema:
-    """Return the neighborhood step schema for selected regions."""
+    """Return the locality step schema for selected regions."""
     fields: dict[vol.Marker, object] = {}
-    available_neighborhoods = neighborhood_ids(region_presets)
-    if available_neighborhoods:
-        fields[vol.Optional(CONF_NEIGHBORHOOD_PRESETS, default=selected_presets)] = (
-            build_preset_selector(available_neighborhoods, "neighborhood_presets")
+    available_localities = locality_ids(region_presets)
+    if available_localities:
+        fields[vol.Optional(CONF_LOCALITY_PRESETS, default=selected_presets)] = (
+            build_preset_selector(available_localities, "locality_presets")
         )
-    fields[vol.Optional(CONF_NEIGHBORHOOD_PATTERNS, default=patterns)] = (
+    fields[vol.Optional(CONF_LOCALITY_PATTERNS, default=patterns)] = (
         selector.ObjectSelector()
     )
     return vol.Schema(fields)
@@ -161,7 +161,7 @@ class AerialDangerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             else:
                 self._region_presets = user_input.get(CONF_REGION_PRESETS, [])
                 self._region_patterns = patterns
-                return await self.async_step_neighborhoods()
+                return await self.async_step_localities()
 
         return self.async_show_form(
             step_id="regions",
@@ -171,39 +171,39 @@ class AerialDangerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors=errors,
         )
 
-    async def async_step_neighborhoods(
+    async def async_step_localities(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
-        """Collect neighborhood presets and custom patterns."""
+        """Collect locality presets and custom patterns."""
         errors: dict[str, str] = {}
-        selected_neighborhoods: list[str] = []
-        neighborhood_patterns: list[str] = []
+        selected_localities: list[str] = []
+        locality_patterns: list[str] = []
         if user_input is not None:
-            neighborhood_patterns_input = _validate_pattern_input(
-                user_input.get(CONF_NEIGHBORHOOD_PATTERNS)
+            locality_patterns_input = _validate_pattern_input(
+                user_input.get(CONF_LOCALITY_PATTERNS)
             )
-            if neighborhood_patterns_input is None:
+            if locality_patterns_input is None:
                 errors["base"] = "invalid_pattern_format"
-            elif not _patterns_are_valid(neighborhood_patterns_input):
+            elif not _patterns_are_valid(locality_patterns_input):
                 errors["base"] = "invalid_pattern"
             else:
-                neighborhood_patterns = neighborhood_patterns_input
-                allowed = set(neighborhood_ids(self._region_presets))
-                selected_neighborhoods = [
+                locality_patterns = locality_patterns_input
+                allowed = set(locality_ids(self._region_presets))
+                selected_localities = [
                     preset
-                    for preset in user_input.get(CONF_NEIGHBORHOOD_PRESETS, [])
+                    for preset in user_input.get(CONF_LOCALITY_PRESETS, [])
                     if preset in allowed
                 ]
                 regions = resolve_region_patterns(
                     self._region_patterns,
                     self._region_presets,
                 )
-                neighborhoods = resolve_neighborhood_patterns(
-                    neighborhood_patterns,
+                localities = resolve_locality_patterns(
+                    locality_patterns,
                     self._region_presets,
-                    selected_neighborhoods,
+                    selected_localities,
                 )
-                if not regions and not neighborhoods:
+                if not regions and not localities:
                     errors["base"] = "patterns_required"
                 else:
                     return self.async_create_entry(
@@ -212,15 +212,15 @@ class AerialDangerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                             CONF_SOURCES: self._sources,
                             CONF_REGION_PRESETS: self._region_presets,
                             CONF_REGION_PATTERNS: self._region_patterns,
-                            CONF_NEIGHBORHOOD_PRESETS: selected_neighborhoods,
-                            CONF_NEIGHBORHOOD_PATTERNS: neighborhood_patterns,
+                            CONF_LOCALITY_PRESETS: selected_localities,
+                            CONF_LOCALITY_PATTERNS: locality_patterns,
                         },
                     )
 
         return self.async_show_form(
-            step_id="neighborhoods",
-            data_schema=build_neighborhoods_schema(
-                self._region_presets, selected_neighborhoods, neighborhood_patterns
+            step_id="localities",
+            data_schema=build_localities_schema(
+                self._region_presets, selected_localities, locality_patterns
             ),
             errors=errors,
         )
@@ -282,7 +282,7 @@ class AerialDangerOptionsFlow(config_entries.OptionsFlow):
             else:
                 self._region_presets = current_presets
                 self._region_patterns = patterns
-                return await self.async_step_neighborhoods()
+                return await self.async_step_localities()
 
         return self.async_show_form(
             step_id="regions",
@@ -290,27 +290,25 @@ class AerialDangerOptionsFlow(config_entries.OptionsFlow):
             errors=errors,
         )
 
-    async def async_step_neighborhoods(
+    async def async_step_localities(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
-        """Collect neighborhood options and save them."""
-        allowed = set(neighborhood_ids(self._region_presets))
+        """Collect locality options and save them."""
+        allowed = set(locality_ids(self._region_presets))
         current_presets = [
             preset
-            for preset in _entry_value(self.config_entry, CONF_NEIGHBORHOOD_PRESETS)
+            for preset in _entry_value(self.config_entry, CONF_LOCALITY_PRESETS)
             if preset in allowed
         ]
-        current_patterns = _entry_value(self.config_entry, CONF_NEIGHBORHOOD_PATTERNS)
+        current_patterns = _entry_value(self.config_entry, CONF_LOCALITY_PATTERNS)
         errors: dict[str, str] = {}
         if user_input is not None:
             current_presets = [
                 preset
-                for preset in user_input.get(CONF_NEIGHBORHOOD_PRESETS, [])
+                for preset in user_input.get(CONF_LOCALITY_PRESETS, [])
                 if preset in allowed
             ]
-            patterns = _validate_pattern_input(
-                user_input.get(CONF_NEIGHBORHOOD_PATTERNS)
-            )
+            patterns = _validate_pattern_input(user_input.get(CONF_LOCALITY_PATTERNS))
             if patterns is None:
                 errors["base"] = "invalid_pattern_format"
             elif not _patterns_are_valid(patterns):
@@ -322,12 +320,12 @@ class AerialDangerOptionsFlow(config_entries.OptionsFlow):
                     self._region_patterns,
                     self._region_presets,
                 )
-                neighborhoods = resolve_neighborhood_patterns(
+                localities = resolve_locality_patterns(
                     current_patterns,
                     self._region_presets,
                     current_presets,
                 )
-                if not regions and not neighborhoods:
+                if not regions and not localities:
                     errors["base"] = "patterns_required"
                 else:
                     return self.async_create_entry(
@@ -336,14 +334,14 @@ class AerialDangerOptionsFlow(config_entries.OptionsFlow):
                             CONF_SOURCES: self._sources,
                             CONF_REGION_PRESETS: self._region_presets,
                             CONF_REGION_PATTERNS: self._region_patterns,
-                            CONF_NEIGHBORHOOD_PRESETS: current_presets,
-                            CONF_NEIGHBORHOOD_PATTERNS: current_patterns,
+                            CONF_LOCALITY_PRESETS: current_presets,
+                            CONF_LOCALITY_PATTERNS: current_patterns,
                         },
                     )
 
         return self.async_show_form(
-            step_id="neighborhoods",
-            data_schema=build_neighborhoods_schema(
+            step_id="localities",
+            data_schema=build_localities_schema(
                 self._region_presets, current_presets, current_patterns
             ),
             errors=errors,

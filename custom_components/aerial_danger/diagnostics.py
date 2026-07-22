@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 from homeassistant.components.diagnostics import async_redact_data
 
 from .const import (
-    CONF_NEIGHBORHOOD_PATTERNS,
+    CONF_LOCALITY_PATTERNS,
     CONF_REGION_PATTERNS,
     CONF_SOURCES,
 )
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from . import AerialDangerConfigEntry
 
 TO_REDACT = {
-    CONF_NEIGHBORHOOD_PATTERNS,
+    CONF_LOCALITY_PATTERNS,
     CONF_REGION_PATTERNS,
     CONF_SOURCES,
 }

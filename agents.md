@@ -56,7 +56,7 @@ This repository implements the Home Assistant custom integration **Aerial Danger
 
 ### How it works
 
-- Each config entry builds a detector from configured region and neighborhood regex patterns and subscribes to selected Home Assistant source entities.
+- Each config entry builds a detector from configured region and locality regex patterns and subscribes to selected Home Assistant source entities.
 - Changed source text is checked in order: IRBM, ballistic, cruise, drone, then generic danger. First match wins.
 - Runtime tracks active detections per source, so a safe message clears only that source. Binary sensors aggregate remaining detections, and the event entity records each new detection.
 - Source data collection stays outside this integration. The `danger/` library stays Home Assistant agnostic and logger-free.

@@ -25,23 +25,23 @@
           "region_patterns": "Optional. Add a YAML list where each item is one [regular expression](https://docs.python.org/3/library/re.html) in single quotes.\n\nExample YAML list:\n\n```yaml\n- '\\bки(їв|єва|єві|єву|євом)\\b'\n- '\\bстолиц(я|і|ю|ею)\\b'\n```"
         }
       },
-      "neighborhoods": {
-        "title": "Neighborhoods",
-        "description": "Select neighborhoods within the chosen regions. Neighborhoods are used to detect drones and all other threat types. You can select multiple neighborhoods.\n\nUse either option or combine both.",
+      "localities": {
+        "title": "Localities",
+        "description": "Select localities within the chosen regions. Localities are used to detect drones and all other threat types. You can select multiple localities.\n\nUse either option or combine both.",
         "data": {
-          "neighborhood_presets": "Neighborhood presets",
-          "neighborhood_patterns": "Custom neighborhood regex patterns (YAML list)"
+          "locality_presets": "Locality presets",
+          "locality_patterns": "Custom locality regex patterns (YAML list)"
         },
         "data_description": {
-          "neighborhood_presets": "Optional. Select one or more preset neighborhoods.\n\n**Tip:** Select your neighborhood and nearby neighborhoods to receive notifications about approaching targets.",
-          "neighborhood_patterns": "Optional. Add a YAML list where each item is one [regular expression](https://docs.python.org/3/library/re.html) in single quotes.\n\nExample YAML list:\n\n```yaml\n- '\\bнив(ки|ках|ками|ок)\\b'\n- '\\bвиноградар(а|і|ем)?\\b'\n```"
+          "locality_presets": "Optional. Select one or more preset localities.\n\n**Tip:** Select your locality and nearby localities to receive notifications about approaching targets.",
+          "locality_patterns": "Optional. Add a YAML list where each item is one [regular expression](https://docs.python.org/3/library/re.html) in single quotes.\n\nExample YAML list:\n\n```yaml\n- '\\bнив(ки|ках|ками|ок)\\b'\n- '\\bвиноградар(а|і|ем)?\\b'\n```"
         }
       }
     },
     "error": {
       "invalid_pattern_format": "Regex patterns must be a YAML list of strings.",
       "invalid_pattern": "One or more regex patterns are invalid.",
-      "patterns_required": "Enter at least one region or neighborhood pattern.",
+      "patterns_required": "Enter at least one region or locality pattern.",
       "sources_required": "Select at least one source entity."
     }
   },
@@ -69,23 +69,23 @@
           "region_patterns": "Optional. Add a YAML list where each item is one [regular expression](https://docs.python.org/3/library/re.html) in single quotes.\n\nExample YAML list:\n\n```yaml\n- '\\bки(їв|єва|єві|єву|євом)\\b'\n- '\\bстолиц(я|і|ю|ею)\\b'\n```"
         }
       },
-      "neighborhoods": {
-        "title": "Neighborhoods",
-        "description": "Select neighborhoods within the chosen regions. Neighborhoods are used to detect drones and all other threat types. You can select multiple neighborhoods.\n\nUse either option or combine both.",
+      "localities": {
+        "title": "Localities",
+        "description": "Select localities within the chosen regions. Localities are used to detect drones and all other threat types. You can select multiple localities.\n\nUse either option or combine both.",
         "data": {
-          "neighborhood_presets": "Neighborhood presets",
-          "neighborhood_patterns": "Custom neighborhood regex patterns (YAML list)"
+          "locality_presets": "Locality presets",
+          "locality_patterns": "Custom locality regex patterns (YAML list)"
         },
         "data_description": {
-          "neighborhood_presets": "Optional. Select one or more preset neighborhoods.\n\n**Tip:** Select your neighborhood and nearby neighborhoods to receive notifications about approaching targets.",
-          "neighborhood_patterns": "Optional. Add a YAML list where each item is one [regular expression](https://docs.python.org/3/library/re.html) in single quotes.\n\nExample YAML list:\n\n```yaml\n- '\\bнив(ки|ках|ками|ок)\\b'\n- '\\bвиноградар(а|і|ем)?\\b'\n```"
+          "locality_presets": "Optional. Select one or more preset localities.\n\n**Tip:** Select your locality and nearby localities to receive notifications about approaching targets.",
+          "locality_patterns": "Optional. Add a YAML list where each item is one [regular expression](https://docs.python.org/3/library/re.html) in single quotes.\n\nExample YAML list:\n\n```yaml\n- '\\bнив(ки|ках|ками|ок)\\b'\n- '\\bвиноградар(а|і|ем)?\\b'\n```"
         }
       }
     },
     "error": {
       "invalid_pattern_format": "Regex patterns must be a YAML list of strings.",
       "invalid_pattern": "One or more regex patterns are invalid.",
-      "patterns_required": "Enter at least one region or neighborhood pattern.",
+      "patterns_required": "Enter at least one region or locality pattern.",
       "sources_required": "Select at least one source entity."
     }
   },
@@ -96,7 +96,7 @@
         "kyiv_oblast": "Kyiv Oblast"
       }
     },
-    "neighborhood_presets": {
+    "locality_presets": {
       "options": {
         "kyiv_akademmistechko": "Akademmistechko",
         "kyiv_antonov": "Antonov",

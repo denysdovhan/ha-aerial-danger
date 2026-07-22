@@ -11,8 +11,8 @@ from homeassistant.helpers import selector
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.aerial_danger.const import (
-    CONF_NEIGHBORHOOD_PATTERNS,
-    CONF_NEIGHBORHOOD_PRESETS,
+    CONF_LOCALITY_PATTERNS,
+    CONF_LOCALITY_PRESETS,
     CONF_REGION_PATTERNS,
     CONF_REGION_PRESETS,
     CONF_SOURCES,
@@ -42,7 +42,7 @@ async def _config_regions(
     )
 
 
-async def _config_neighborhoods(
+async def _config_localities(
     hass: HomeAssistant,
     *,
     region_presets: list[str] | None = None,
@@ -85,21 +85,21 @@ async def test_config_preset_only_and_selector_shape(hass: HomeAssistant) -> Non
         result["flow_id"],
         {CONF_REGION_PRESETS: ["kyiv"], CONF_REGION_PATTERNS: {}},
     )
-    assert result["step_id"] == "neighborhoods"
-    neighborhood_selector = result["data_schema"].schema[CONF_NEIGHBORHOOD_PRESETS]
-    assert isinstance(neighborhood_selector, selector.SelectSelector)
-    assert neighborhood_selector.config["multiple"] is True
-    assert neighborhood_selector.config["mode"] == selector.SelectSelectorMode.DROPDOWN
+    assert result["step_id"] == "localities"
+    locality_selector = result["data_schema"].schema[CONF_LOCALITY_PRESETS]
+    assert isinstance(locality_selector, selector.SelectSelector)
+    assert locality_selector.config["multiple"] is True
+    assert locality_selector.config["mode"] == selector.SelectSelectorMode.DROPDOWN
     assert isinstance(
-        result["data_schema"].schema[CONF_NEIGHBORHOOD_PATTERNS],
+        result["data_schema"].schema[CONF_LOCALITY_PATTERNS],
         selector.ObjectSelector,
     )
 
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"],
         {
-            CONF_NEIGHBORHOOD_PRESETS: ["kyiv_nyvky"],
-            CONF_NEIGHBORHOOD_PATTERNS: {},
+            CONF_LOCALITY_PRESETS: ["kyiv_nyvky"],
+            CONF_LOCALITY_PATTERNS: {},
         },
     )
     assert result["type"] is FlowResultType.CREATE_ENTRY
@@ -108,8 +108,8 @@ async def test_config_preset_only_and_selector_shape(hass: HomeAssistant) -> Non
         CONF_SOURCES: ["sensor.alerts"],
         CONF_REGION_PRESETS: ["kyiv"],
         CONF_REGION_PATTERNS: [],
-        CONF_NEIGHBORHOOD_PRESETS: ["kyiv_nyvky"],
-        CONF_NEIGHBORHOOD_PATTERNS: [],
+        CONF_LOCALITY_PRESETS: ["kyiv_nyvky"],
+        CONF_LOCALITY_PATTERNS: [],
     }
 
 
@@ -117,47 +117,47 @@ async def test_config_preset_only_and_selector_shape(hass: HomeAssistant) -> Non
     (
         "region_presets",
         "region_patterns",
-        "neighborhood_presets",
-        "neighborhood_patterns",
+        "locality_presets",
+        "locality_patterns",
     ),
     [
-        ([], ["custom region", "second region"], [], ["custom neighborhood"]),
-        (["kyiv"], ["custom region"], ["kyiv_nyvky"], ["custom neighborhood"]),
+        ([], ["custom region", "second region"], [], ["custom locality"]),
+        (["kyiv"], ["custom region"], ["kyiv_nyvky"], ["custom locality"]),
         (["kyiv"], [], ["kyiv_nyvky", "kyiv_sviatoshyn"], []),
     ],
 )
-async def test_config_custom_combined_and_multiple_neighborhoods(
+async def test_config_custom_combined_and_multiple_localities(
     hass: HomeAssistant,
     region_presets: list[str],
     region_patterns: list[str],
-    neighborhood_presets: list[str],
-    neighborhood_patterns: list[str],
+    locality_presets: list[str],
+    locality_patterns: list[str],
 ) -> None:
-    """Test custom, combined, and multi-neighborhood configuration."""
-    result = await _config_neighborhoods(
+    """Test custom, combined, and multi-locality configuration."""
+    result = await _config_localities(
         hass, region_presets=region_presets, region_patterns=region_patterns
     )
-    user_input = {CONF_NEIGHBORHOOD_PATTERNS: neighborhood_patterns}
+    user_input = {CONF_LOCALITY_PATTERNS: locality_patterns}
     if region_presets:
-        user_input[CONF_NEIGHBORHOOD_PRESETS] = neighborhood_presets
+        user_input[CONF_LOCALITY_PRESETS] = locality_presets
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"], user_input
     )
     assert result["type"] is FlowResultType.CREATE_ENTRY
     assert result["data"][CONF_REGION_PATTERNS] == region_patterns
-    assert result["data"][CONF_NEIGHBORHOOD_PRESETS] == neighborhood_presets
+    assert result["data"][CONF_LOCALITY_PRESETS] == locality_presets
 
 
-async def test_config_no_region_omits_neighborhood_selector(
+async def test_config_no_region_omits_locality_selector(
     hass: HomeAssistant,
 ) -> None:
-    """Test custom neighborhoods work without a selected region."""
-    result = await _config_neighborhoods(hass)
+    """Test custom localities work without a selected region."""
+    result = await _config_localities(hass)
     schema = result["data_schema"].schema
-    assert CONF_NEIGHBORHOOD_PRESETS not in schema
-    assert isinstance(schema[CONF_NEIGHBORHOOD_PATTERNS], selector.ObjectSelector)
+    assert CONF_LOCALITY_PRESETS not in schema
+    assert isinstance(schema[CONF_LOCALITY_PATTERNS], selector.ObjectSelector)
     result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], {CONF_NEIGHBORHOOD_PATTERNS: ["custom neighborhood"]}
+        result["flow_id"], {CONF_LOCALITY_PATTERNS: ["custom locality"]}
     )
     assert result["type"] is FlowResultType.CREATE_ENTRY
 
@@ -185,17 +185,17 @@ async def test_config_validation(hass: HomeAssistant) -> None:
         result["flow_id"], {CONF_REGION_PATTERNS: []}
     )
     result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], {CONF_NEIGHBORHOOD_PATTERNS: {"pattern": "("}}
+        result["flow_id"], {CONF_LOCALITY_PATTERNS: {"pattern": "("}}
     )
-    assert result["step_id"] == "neighborhoods"
+    assert result["step_id"] == "localities"
     assert result["errors"] == {"base": "invalid_pattern_format"}
     result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], {CONF_NEIGHBORHOOD_PATTERNS: ["("]}
+        result["flow_id"], {CONF_LOCALITY_PATTERNS: ["("]}
     )
-    assert result["step_id"] == "neighborhoods"
+    assert result["step_id"] == "localities"
     assert result["errors"] == {"base": "invalid_pattern"}
     result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], {CONF_NEIGHBORHOOD_PATTERNS: []}
+        result["flow_id"], {CONF_LOCALITY_PATTERNS: []}
     )
     assert result["errors"] == {"base": "patterns_required"}
 
@@ -205,13 +205,13 @@ async def test_config_allows_multiple_entries(hass: HomeAssistant) -> None:
     _entry(
         {
             CONF_REGION_PATTERNS: ["existing"],
-            CONF_NEIGHBORHOOD_PATTERNS: [],
+            CONF_LOCALITY_PATTERNS: [],
             CONF_SOURCES: ["sensor.existing"],
         }
     ).add_to_hass(hass)
-    result = await _config_neighborhoods(hass, region_presets=["kyiv"])
+    result = await _config_localities(hass, region_presets=["kyiv"])
     result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], {CONF_NEIGHBORHOOD_PATTERNS: {}}
+        result["flow_id"], {CONF_LOCALITY_PATTERNS: {}}
     )
     assert result["type"] is FlowResultType.CREATE_ENTRY
 
@@ -224,7 +224,7 @@ async def test_options_prepopulation_and_old_entry_zero_presets(
         {
             CONF_REGION_PRESETS: {},
             CONF_REGION_PATTERNS: ["old region", "second region"],
-            CONF_NEIGHBORHOOD_PATTERNS: ["old neighborhood"],
+            CONF_LOCALITY_PATTERNS: ["old locality"],
             CONF_SOURCES: ["sensor.old"],
         }
     )
@@ -245,7 +245,7 @@ async def test_options_prepopulates_legacy_string_patterns(
     entry = _entry(
         {
             CONF_REGION_PATTERNS: "legacy region",
-            CONF_NEIGHBORHOOD_PATTERNS: "legacy neighborhood",
+            CONF_LOCALITY_PATTERNS: "legacy locality",
             CONF_SOURCES: ["sensor.old"],
         }
     )
@@ -259,24 +259,24 @@ async def test_options_prepopulates_legacy_string_patterns(
     result = await hass.config_entries.options.async_configure(
         result["flow_id"], {CONF_REGION_PATTERNS: ["legacy region"]}
     )
-    neighborhood_schema = result["data_schema"].schema
-    neighborhood_marker = next(
-        key for key in neighborhood_schema if key == CONF_NEIGHBORHOOD_PATTERNS
+    locality_schema = result["data_schema"].schema
+    locality_marker = next(
+        key for key in locality_schema if key == CONF_LOCALITY_PATTERNS
     )
-    assert isinstance(neighborhood_schema[neighborhood_marker], selector.ObjectSelector)
-    assert neighborhood_marker.default() == ["legacy neighborhood"]
+    assert isinstance(locality_schema[locality_marker], selector.ObjectSelector)
+    assert locality_marker.default() == ["legacy locality"]
 
 
 async def test_options_parent_deselection_prunes_children(
     hass: HomeAssistant,
 ) -> None:
-    """Test deselecting a region removes its neighborhood selections."""
+    """Test deselecting a region removes its locality selections."""
     entry = _entry(
         {
             CONF_REGION_PRESETS: ["kyiv"],
             CONF_REGION_PATTERNS: [],
-            CONF_NEIGHBORHOOD_PRESETS: ["kyiv_nyvky"],
-            CONF_NEIGHBORHOOD_PATTERNS: ["custom neighborhood"],
+            CONF_LOCALITY_PRESETS: ["kyiv_nyvky"],
+            CONF_LOCALITY_PATTERNS: ["custom locality"],
             CONF_SOURCES: ["sensor.old"],
         }
     )
@@ -286,11 +286,11 @@ async def test_options_parent_deselection_prunes_children(
         result["flow_id"],
         {CONF_REGION_PRESETS: [], CONF_REGION_PATTERNS: ["custom region"]},
     )
-    assert CONF_NEIGHBORHOOD_PRESETS not in result["data_schema"].schema
+    assert CONF_LOCALITY_PRESETS not in result["data_schema"].schema
     result = await hass.config_entries.options.async_configure(
-        result["flow_id"], {CONF_NEIGHBORHOOD_PATTERNS: ["custom neighborhood"]}
+        result["flow_id"], {CONF_LOCALITY_PATTERNS: ["custom locality"]}
     )
-    assert result["data"][CONF_NEIGHBORHOOD_PRESETS] == []
+    assert result["data"][CONF_LOCALITY_PRESETS] == []
 
 
 async def test_options_reloads_entry(hass: HomeAssistant) -> None:
@@ -298,7 +298,7 @@ async def test_options_reloads_entry(hass: HomeAssistant) -> None:
     entry = _entry(
         {
             CONF_REGION_PATTERNS: ["old"],
-            CONF_NEIGHBORHOOD_PATTERNS: [],
+            CONF_LOCALITY_PATTERNS: [],
             CONF_SOURCES: ["sensor.old"],
         }
     )
@@ -314,8 +314,8 @@ async def test_options_reloads_entry(hass: HomeAssistant) -> None:
     result = await hass.config_entries.options.async_configure(
         result["flow_id"],
         {
-            CONF_NEIGHBORHOOD_PRESETS: ["kyiv_nyvky"],
-            CONF_NEIGHBORHOOD_PATTERNS: [],
+            CONF_LOCALITY_PRESETS: ["kyiv_nyvky"],
+            CONF_LOCALITY_PATTERNS: [],
         },
     )
     await hass.async_block_till_done()
@@ -329,7 +329,7 @@ async def test_options_validation(hass: HomeAssistant) -> None:
     entry = _entry(
         {
             CONF_REGION_PATTERNS: ["old"],
-            CONF_NEIGHBORHOOD_PATTERNS: [],
+            CONF_LOCALITY_PATTERNS: [],
             CONF_SOURCES: ["sensor.old"],
         }
     )
@@ -354,14 +354,14 @@ async def test_options_validation(hass: HomeAssistant) -> None:
         result["flow_id"], {CONF_REGION_PATTERNS: []}
     )
     result = await hass.config_entries.options.async_configure(
-        result["flow_id"], {CONF_NEIGHBORHOOD_PATTERNS: {"pattern": "("}}
+        result["flow_id"], {CONF_LOCALITY_PATTERNS: {"pattern": "("}}
     )
     assert result["errors"] == {"base": "invalid_pattern_format"}
     result = await hass.config_entries.options.async_configure(
-        result["flow_id"], {CONF_NEIGHBORHOOD_PATTERNS: ["("]}
+        result["flow_id"], {CONF_LOCALITY_PATTERNS: ["("]}
     )
     assert result["errors"] == {"base": "invalid_pattern"}
     result = await hass.config_entries.options.async_configure(
-        result["flow_id"], {CONF_NEIGHBORHOOD_PATTERNS: []}
+        result["flow_id"], {CONF_LOCALITY_PATTERNS: []}
     )
     assert result["errors"] == {"base": "patterns_required"}
