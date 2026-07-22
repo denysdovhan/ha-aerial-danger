@@ -42,8 +42,11 @@ ordinary words.
 
 ## Decision
 
-- Add 62 Kyiv locality presets, nested under the Kyiv region and ordered by
-  stable preset key.
+- Add 62 Kyiv city locality presets, nested under the Kyiv region and ordered
+  by stable preset key.
+- Add Kyiv Oblast as a separate region preset without localities for now.
+- Add the reviewed Kyiv Oblast localities only under that region, preserving the
+  Kyiv city catalog.
 - Use Ukrainian canonical names. Translations provide localized dropdown labels.
 - Accept grammatical forms, observed spelling errors, and established alert
   shorthand where the reviewed evidence is sufficiently specific.
@@ -121,6 +124,32 @@ ordinary words.
 | Сирець            | Common grammatical forms.                                                                                                                                                                                               | [paired route](https://t.me/operinform/54722), [route correction](https://t.me/AerisRimor/76007)                                                                                        |
 | Теремки           | Plural grammatical forms.                                                                                                                                                                                               | [reactive-drone route](https://t.me/war_monitor/41136), [paired route](https://t.me/AerisRimor/74334)                                                                                   |
 | Чоколівка         | Common grammatical forms.                                                                                                                                                                                               | [Kyiv alert](https://t.me/war_monitor/41142)                                                                                                                                            |
+
+### Kyiv Oblast region
+
+| Region           | Matching explanation                                                                           | Evidence                                                                                                                                          |
+| ---------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Київська область | Kyivshchyna case forms and full inflected Kyiv Oblast phrases. It has no locality presets yet. | [Київщини](https://t.me/war_monitor/12271), [Київська область](https://t.me/operinform/13633), [Київській області](https://t.me/operinform/14852) |
+
+### Kyiv Oblast localities
+
+| Locality                                                                           | Matching explanation                                                            |
+| ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Бориспіль                                                                          | Standard singular case forms and the observed `Борік` shorthand.                |
+| Бровари                                                                            | Standard plural case forms.                                                     |
+| Буча, Вишгород, Вишневе, Ірпінь, Гостомель, Ворзель                                | Standard singular locality case forms.                                          |
+| Петропавлівська Борщагівка, Софіївська Борщагівка                                  | Both words match standard phrase case forms.                                    |
+| ЖК Софія                                                                           | Requires the `ЖК` prefix to avoid matching a person name or unrelated locality. |
+| Чайки, Проліски, Погреби, Петрівці                                                 | Standard plural locality case forms.                                            |
+| Коцюбинське, Гнідин, Козин, Обухів, Васильків, Українка, Димер, Зазим'я, Хотянівка | Standard Ukrainian locality case forms.                                         |
+
+Live monitoring-channel searches confirmed [Бровари](https://t.me/operinform/54348),
+[Борік](https://t.me/AerisRimor/45536),
+[Петропавлівська Борщагівка](https://t.me/kyiv_airdef/14855),
+[Софіївська Борщагівка](https://t.me/war_monitor/28401),
+[ЖК Софія](https://t.me/operinform/39385), and
+[Зазим'я](https://t.me/kyiv_monit0ring/9630).
+All remain nested under Kyiv Oblast.
 
 ### Deferred findings
 
@@ -215,3 +244,13 @@ plural case forms. The all-channel search returned no exact live-alert mention.
 
 2026-07-22: Merged Караваєві Дачі and Кардачі into one locality preset. The
 canonical name is Караваєві Дачі; `Кардачі` remains its live-route alias.
+
+2026-07-22: Added Kyiv Oblast as an independent region, with no locality
+presets. It matches Kyivshchyna forms and inflected full region phrases.
+
+2026-07-22: Added 24 user-directed Kyiv Oblast localities, including `Борік`
+for Бориспіль and a `ЖК`-scoped Софія pattern. They are available only after
+selecting Kyiv Oblast.
+
+2026-07-22: Review correction moved `Борік` from Бровари to a dedicated
+Бориспіль preset and removed Десна because it is outside Kyiv Oblast.

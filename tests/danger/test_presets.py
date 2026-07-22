@@ -19,16 +19,37 @@ from custom_components.aerial_danger.danger.presets import PRESETS
 
 def test_registry_ids_ownership_and_compilation() -> None:
     """Test stable IDs, nested ownership, and valid regexes."""
-    assert list(PRESETS) == ["kyiv"]
+    assert list(PRESETS) == ["kyiv", "kyiv_oblast"]
     assert neighborhood_ids([]) == []
-    region = PRESETS["kyiv"]
-    assert neighborhood_ids(["kyiv"]) == list(region.neighborhoods)
-    assert region.name == "Київ"
-    assert list(region.neighborhoods) == sorted(region.neighborhoods)
-    DangerDetector.validate_patterns(
-        region.patterns,
-        *(preset.patterns for preset in region.neighborhoods.values()),
+    for region_id, region in PRESETS.items():
+        assert neighborhood_ids([region_id]) == list(region.neighborhoods)
+    assert PRESETS["kyiv"].name == "Київ"
+    assert PRESETS["kyiv_oblast"].name == "Київська область"
+    for region in PRESETS.values():
+        assert list(region.neighborhoods) == sorted(region.neighborhoods)
+        DangerDetector.validate_patterns(
+            region.patterns,
+            *(preset.patterns for preset in region.neighborhoods.values()),
+        )
+
+
+@pytest.mark.parametrize("language", ["en", "uk"])
+def test_selector_translations_cover_regions(language: str) -> None:
+    """Test every region preset has a selector translation in registry order."""
+    translations_path = (
+        Path(__file__).parents[2]
+        / "custom_components"
+        / "aerial_danger"
+        / "translations"
+        / f"{language}.json"
     )
+    translations = json.loads(translations_path.read_text())
+    options = translations["selector"]["region_presets"]["options"]
+    assert list(options) == list(PRESETS)
+    if language == "uk":
+        assert options == {
+            preset_id: preset.name for preset_id, preset in PRESETS.items()
+        }
 
 
 @pytest.mark.parametrize("language", ["en", "uk"])
@@ -43,7 +64,11 @@ def test_selector_translations_cover_neighborhoods(language: str) -> None:
     )
     translations = json.loads(translations_path.read_text())
     options = translations["selector"]["neighborhood_presets"]["options"]
-    neighborhoods = PRESETS["kyiv"].neighborhoods
+    neighborhoods = {
+        preset_id: preset
+        for region in PRESETS.values()
+        for preset_id, preset in region.neighborhoods.items()
+    }
     assert list(options) == list(neighborhoods)
     if language == "uk":
         assert options == {
@@ -81,6 +106,40 @@ def test_researched_kyiv_variants(text: str) -> None:
     assert any(
         re.search(pattern, text, re.IGNORECASE | re.UNICODE)
         for pattern in PRESETS["kyiv"].patterns
+    )
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "Київщина",
+        "Київщини",
+        "Київщині",
+        "Київщину",
+        "Київщиною",
+        "Київська область",
+        "Київської області",
+        "Київській області",
+        "Київську область",
+        "Київською областю",
+    ],
+)
+def test_researched_kyiv_oblast_variants(text: str) -> None:
+    """Test researched Kyiv Oblast wording."""
+    assert any(
+        re.search(pattern, text, re.IGNORECASE | re.UNICODE)
+        for pattern in PRESETS["kyiv_oblast"].patterns
+    )
+
+
+@pytest.mark.parametrize(
+    "text", ["Бориспіль", "Борисполя", "Борисполю", "Борисполем", "Борисполі", "Борік"]
+)
+def test_boryspil_variants(text: str) -> None:
+    """Test Boryspil forms and its alert shorthand."""
+    patterns = PRESETS["kyiv_oblast"].neighborhoods["kyiv_oblast_boryspil"].patterns
+    assert any(
+        re.search(pattern, text, re.IGNORECASE | re.UNICODE) for pattern in patterns
     )
 
 

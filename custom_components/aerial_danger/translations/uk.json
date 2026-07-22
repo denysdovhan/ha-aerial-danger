@@ -92,7 +92,8 @@
   "selector": {
     "region_presets": {
       "options": {
-        "kyiv": "Київ"
+        "kyiv": "Київ",
+        "kyiv_oblast": "Київська область"
       }
     },
     "neighborhood_presets": {
@@ -158,7 +159,31 @@
         "kyiv_vydubychi": "Видубичі",
         "kyiv_vynohradar": "Виноградар",
         "kyiv_zhuliany": "Жуляни",
-        "kyiv_zvirynets": "Звіринець"
+        "kyiv_zvirynets": "Звіринець",
+        "kyiv_oblast_boryspil": "Бориспіль",
+        "kyiv_oblast_brovary": "Бровари",
+        "kyiv_oblast_bucha": "Буча",
+        "kyiv_oblast_chaiky": "Чайки",
+        "kyiv_oblast_dymer": "Димер",
+        "kyiv_oblast_hnidyn": "Гнідин",
+        "kyiv_oblast_hostomel": "Гостомель",
+        "kyiv_oblast_hotianivka": "Хотянівка",
+        "kyiv_oblast_irpin": "Ірпінь",
+        "kyiv_oblast_kotsiubynske": "Коцюбинське",
+        "kyiv_oblast_kozyn": "Козин",
+        "kyiv_oblast_obukhiv": "Обухів",
+        "kyiv_oblast_petrivtsi": "Петрівці",
+        "kyiv_oblast_petropavlivska_borshchahivka": "Петропавлівська Борщагівка",
+        "kyiv_oblast_pohreby": "Погреби",
+        "kyiv_oblast_prolisky": "Проліски",
+        "kyiv_oblast_sofiivska_borshchahivka": "Софіївська Борщагівка",
+        "kyiv_oblast_ukrainka": "Українка",
+        "kyiv_oblast_vasylkiv": "Васильків",
+        "kyiv_oblast_vorzel": "Ворзель",
+        "kyiv_oblast_vyshhorod": "Вишгород",
+        "kyiv_oblast_vyshneve": "Вишневе",
+        "kyiv_oblast_zazyma": "Зазим'я",
+        "kyiv_oblast_zhk_sofiia": "ЖК Софія"
       }
     }
   },

@@ -92,7 +92,8 @@
   "selector": {
     "region_presets": {
       "options": {
-        "kyiv": "Kyiv"
+        "kyiv": "Kyiv",
+        "kyiv_oblast": "Kyiv Oblast"
       }
     },
     "neighborhood_presets": {
@@ -158,7 +159,31 @@
         "kyiv_vydubychi": "Vydubychi",
         "kyiv_vynohradar": "Vynohradar",
         "kyiv_zhuliany": "Zhuliany",
-        "kyiv_zvirynets": "Zvirynets"
+        "kyiv_zvirynets": "Zvirynets",
+        "kyiv_oblast_boryspil": "Boryspil",
+        "kyiv_oblast_brovary": "Brovary",
+        "kyiv_oblast_bucha": "Bucha",
+        "kyiv_oblast_chaiky": "Chaiky",
+        "kyiv_oblast_dymer": "Dymer",
+        "kyiv_oblast_hnidyn": "Hnidyn",
+        "kyiv_oblast_hostomel": "Hostomel",
+        "kyiv_oblast_hotianivka": "Hotianivka",
+        "kyiv_oblast_irpin": "Irpin",
+        "kyiv_oblast_kotsiubynske": "Kotsiubynske",
+        "kyiv_oblast_kozyn": "Kozyn",
+        "kyiv_oblast_obukhiv": "Obukhiv",
+        "kyiv_oblast_petrivtsi": "Petrivtsi",
+        "kyiv_oblast_petropavlivska_borshchahivka": "Petropavlivska Borshchahivka",
+        "kyiv_oblast_pohreby": "Pohreby",
+        "kyiv_oblast_prolisky": "Prolisky",
+        "kyiv_oblast_sofiivska_borshchahivka": "Sofiivska Borshchahivka",
+        "kyiv_oblast_ukrainka": "Ukrainka",
+        "kyiv_oblast_vasylkiv": "Vasylkiv",
+        "kyiv_oblast_vorzel": "Vorzel",
+        "kyiv_oblast_vyshhorod": "Vyshhorod",
+        "kyiv_oblast_vyshneve": "Vyshneve",
+        "kyiv_oblast_zazyma": "Zazyma",
+        "kyiv_oblast_zhk_sofiia": "ZhK Sofiia"
       }
     }
   },

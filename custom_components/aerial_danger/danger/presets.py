@@ -276,5 +276,95 @@ PRESETS: Final = {
                 name="Звіринець", patterns=(r"\bзвірин(ець|ця|ці|цем)\b",)
             ),
         },
-    )
+    ),
+    "kyiv_oblast": RegionPreset(
+        name="Київська область",
+        patterns=(
+            r"\bкиївщин(а|и|і|у|ою)\b",
+            r"\bкиївськ(а|ої|ій|у|ою|і|их|им|ими) област(ь|і|ю|ей|ям|ями|ях)\b",
+        ),
+        neighborhoods={
+            "kyiv_oblast_boryspil": NeighborhoodPreset(
+                name="Бориспіль",
+                patterns=(
+                    r"\bборисп(іль|оля|олю|олем|олі)\b",
+                    r"\bборік\b",
+                ),
+            ),
+            "kyiv_oblast_brovary": NeighborhoodPreset(
+                name="Бровари",
+                patterns=(r"\bбровар(и|ів|ам|ами|ах)\b",),
+            ),
+            "kyiv_oblast_bucha": NeighborhoodPreset(
+                name="Буча", patterns=(r"\bбуч(а|і|у|ею)\b",)
+            ),
+            "kyiv_oblast_chaiky": NeighborhoodPreset(
+                name="Чайки", patterns=(r"\bчайк(и|ів|ам|ами|ах)\b",)
+            ),
+            "kyiv_oblast_dymer": NeighborhoodPreset(
+                name="Димер", patterns=(r"\bдимер(а|у|ом|і)?\b",)
+            ),
+            "kyiv_oblast_hnidyn": NeighborhoodPreset(
+                name="Гнідин", patterns=(r"\bгнідин(а|у|ом|і)?\b",)
+            ),
+            "kyiv_oblast_hostomel": NeighborhoodPreset(
+                name="Гостомель", patterns=(r"\bгостомел(ь|я|ю|ем|і)\b",)
+            ),
+            "kyiv_oblast_hotianivka": NeighborhoodPreset(
+                name="Хотянівка", patterns=(r"\bхотянівк(а|и|у|ою|ці)\b",)
+            ),
+            "kyiv_oblast_irpin": NeighborhoodPreset(
+                name="Ірпінь", patterns=(r"\bірп(інь|еня|еню|енем|ені)\b",)
+            ),
+            "kyiv_oblast_kotsiubynske": NeighborhoodPreset(
+                name="Коцюбинське", patterns=(r"\bкоцюбинськ(е|ого|ому|им|ім)\b",)
+            ),
+            "kyiv_oblast_kozyn": NeighborhoodPreset(
+                name="Козин", patterns=(r"\bкозин(а|у|ом|і)?\b",)
+            ),
+            "kyiv_oblast_obukhiv": NeighborhoodPreset(
+                name="Обухів", patterns=(r"\bобух(ів|ова|ову|овом|ові)\b",)
+            ),
+            "kyiv_oblast_petrivtsi": NeighborhoodPreset(
+                name="Петрівці", patterns=(r"\bпетрівц(і|ів|ям|ями|ях)\b",)
+            ),
+            "kyiv_oblast_petropavlivska_borshchahivka": NeighborhoodPreset(
+                name="Петропавлівська Борщагівка",
+                patterns=(
+                    r"\bпетропавлівськ(а|ої|ій|у|ою) борщагівк(а|и|і|у|ою|ці)\b",
+                ),
+            ),
+            "kyiv_oblast_pohreby": NeighborhoodPreset(
+                name="Погреби", patterns=(r"\bпогреб(и|ів|ам|ами|ах)\b",)
+            ),
+            "kyiv_oblast_prolisky": NeighborhoodPreset(
+                name="Проліски", patterns=(r"\bпроліс(ки|ків|кам|ками|ках)\b",)
+            ),
+            "kyiv_oblast_sofiivska_borshchahivka": NeighborhoodPreset(
+                name="Софіївська Борщагівка",
+                patterns=(r"\bсофіївськ(а|ої|ій|у|ою) борщагівк(а|и|і|у|ою|ці)\b",),
+            ),
+            "kyiv_oblast_ukrainka": NeighborhoodPreset(
+                name="Українка", patterns=(r"\bукраїнк(а|и|у|ою|ці)\b",)
+            ),
+            "kyiv_oblast_vasylkiv": NeighborhoodPreset(
+                name="Васильків", patterns=(r"\bвасильков(а|у|ом|і)?\b",)
+            ),
+            "kyiv_oblast_vorzel": NeighborhoodPreset(
+                name="Ворзель", patterns=(r"\bворзел(ь|я|ю|ем|і)\b",)
+            ),
+            "kyiv_oblast_vyshhorod": NeighborhoodPreset(
+                name="Вишгород", patterns=(r"\bвишгород(у|і|ом|а)?\b",)
+            ),
+            "kyiv_oblast_vyshneve": NeighborhoodPreset(
+                name="Вишневе", patterns=(r"\bвишнев(е|ого|ому|им|ім)\b",)
+            ),
+            "kyiv_oblast_zazyma": NeighborhoodPreset(
+                name="Зазим'я", patterns=(r"\bзазим['’ʼ]?(я|ї|ям)\b",)
+            ),
+            "kyiv_oblast_zhk_sofiia": NeighborhoodPreset(
+                name="ЖК Софія", patterns=(r"\bжк[. ]+[«\"]?софі(я|ї|ю|єю)\b",)
+            ),
+        },
+    ),
 }
