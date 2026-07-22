@@ -185,7 +185,7 @@ targets.
 - [x] Preset keys and selector translations stay in registry order.
 - [x] Focused spelling, shorthand, and boundary tests pass.
 - [x] `scripts/lint`
-- [x] `scripts/test` — 72 tests passed.
+- [x] `scripts/test` — 90 tests passed.
 
 ## Implementation Notes
 
@@ -254,3 +254,4 @@ selecting Kyiv Oblast.
 
 2026-07-22: Review correction moved `Борік` from Бровари to a dedicated
 Бориспіль preset and removed Десна because it is outside Kyiv Oblast.
+`scripts/lint` passed; all 90 tests passed.

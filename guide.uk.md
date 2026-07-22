@@ -96,6 +96,67 @@ entity_id:
 
 Щоб змінити джерела, регіони або місцевості, відкрийте запис Aerial Danger і виберіть **Налаштувати**. Для різних територій або груп каналів можна створити кілька окремих записів інтеграції.
 
+## 4. Надсилайте критичне сповіщення про небезпеку
+
+Цей приклад надсилає критичне сповіщення на iPhone через офіційний застосунок Home Assistant, коли загальний бінарний сенсор **Небезпека** переходить у стан `on`:
+
+```yaml
+alias: Критичне сповіщення про повітряну загрозу
+description: Сповіщає, коли Aerial Danger виявляє небезпеку
+triggers:
+  - trigger: state
+    entity_id: binary_sensor.aerial_danger_danger
+    to: "on"
+conditions: []
+actions:
+  - action: notify.mobile_app_your_phone
+    data:
+      title: Повітряна загроза
+      message: >-
+        {{ state_attr('binary_sensor.aerial_danger_danger', 'matched_area') }} —
+        {{ state_attr('binary_sensor.aerial_danger_danger', 'matched_message') }}
+      data:
+        push:
+          interruption-level: critical
+mode: single
+```
+
+Замініть:
+
+- `binary_sensor.aerial_danger_danger` — на фактичний ідентифікатор загального сенсора **Небезпека**;
+- `notify.mobile_app_your_phone` — на дію сповіщень свого телефона з розділу **Інструменти розробника → Дії**.
+
+Для Android використайте ту саму автоматизацію, але замініть блок `actions` на цей:
+
+```yaml
+actions:
+  - action: notify.mobile_app_your_phone
+    data:
+      title: Повітряна загроза
+      message: >-
+        {{ state_attr('binary_sensor.aerial_danger_danger', 'matched_area') }} —
+        {{ state_attr('binary_sensor.aerial_danger_danger', 'matched_message') }}
+      data:
+        ttl: 0
+        priority: high
+        channel: alarm_stream
+```
+
+На Android канал `alarm_stream` відтворює звук через потік будильника навіть у беззвучному режимі. На iOS рівень переривання `critical` дозволяє сповіщенню відтворити звук у беззвучному режимі та режимі «Не турбувати». Перевірте дозволи на критичні сповіщення у налаштуваннях телефона.
+
+### Порада: перевіряйте, чи ввімкнена повітряна тривога
+
+Щоб зменшити кількість хибних сповіщень, додайте офіційну інтеграцію Home Assistant [Ukraine Alarm](https://www.home-assistant.io/integrations/ukraine_alarm/), виберіть свій регіон і знайдіть створений нею бінарний сенсор **Air**.
+
+У наведеній вище автоматизації замініть блок `conditions` на такий:
+
+```yaml
+conditions:
+  - condition: state
+    entity_id: binary_sensor.air_alert
+    state: "on"
+```
+
 <!-- References -->
 [scrape-install-url]: https://my.home-assistant.io/redirect/config_flow_start?domain=scrape
 [scrape-install-image]: https://my.home-assistant.io/badges/config_flow_start.svg
