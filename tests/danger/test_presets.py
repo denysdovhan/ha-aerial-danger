@@ -2,7 +2,9 @@
 
 # ruff: noqa: S101
 
+import json
 import re
+from pathlib import Path
 
 import pytest
 
@@ -18,42 +20,53 @@ from custom_components.aerial_danger.danger.presets import PRESETS
 def test_registry_ids_ownership_and_compilation() -> None:
     """Test stable IDs, nested ownership, and valid regexes."""
     assert list(PRESETS) == ["kyiv"]
-    assert neighborhood_ids(["kyiv"]) == [
-        "kyiv_sviatoshyn",
-        "kyiv_akademmistechko",
-        "kyiv_antonov",
-        "kyiv_nyvky",
-        "kyiv_vynohradar",
-    ]
     assert neighborhood_ids([]) == []
     region = PRESETS["kyiv"]
-    assert region.name == "Kyiv"
-    assert [preset.name for preset in region.neighborhoods.values()] == [
-        "Sviatoshyn",
-        "Akademmistechko",
-        "Antonov",
-        "Nyvky",
-        "Vynohradar",
-    ]
+    assert neighborhood_ids(["kyiv"]) == list(region.neighborhoods)
+    assert region.name == "Київ"
+    assert list(region.neighborhoods) == sorted(region.neighborhoods)
     DangerDetector.validate_patterns(
         region.patterns,
         *(preset.patterns for preset in region.neighborhoods.values()),
     )
 
 
+@pytest.mark.parametrize("language", ["en", "uk"])
+def test_selector_translations_cover_neighborhoods(language: str) -> None:
+    """Test every preset has a selector translation in registry order."""
+    translations_path = (
+        Path(__file__).parents[2]
+        / "custom_components"
+        / "aerial_danger"
+        / "translations"
+        / f"{language}.json"
+    )
+    translations = json.loads(translations_path.read_text())
+    options = translations["selector"]["neighborhood_presets"]["options"]
+    neighborhoods = PRESETS["kyiv"].neighborhoods
+    assert list(options) == list(neighborhoods)
+    if language == "uk":
+        assert options == {
+            preset_id: preset.name for preset_id, preset in neighborhoods.items()
+        }
+
+
 @pytest.mark.parametrize(
     ("preset_id", "text"),
     [
-        ("kyiv_sviatoshyn", "Святошино"),
-        ("kyiv_akademmistechko", "Академ"),
         ("kyiv_akademmistechko", "Академмістечком"),
-        ("kyiv_antonov", "Антонова"),
-        ("kyiv_nyvky", "Нивках"),
-        ("kyiv_vynohradar", "Виноградарі"),
+        ("kyiv_darnytsia", "Дарницький масив"),
+        ("kyiv_lisovyi_masyv", "Лісовий"),
+        ("kyiv_livoberezhnyi_masyv", "Лівобережний"),
+        ("kyiv_minskyi_masyv", "Мінський"),
+        ("kyiv_sviatoshyn", "Святошино"),
+        ("kyiv_troieshchyna", "Троєщини"),
+        ("kyiv_vidradnyi", "Відрадний"),
+        ("kyiv_voskresenka", "Воскресенка"),
     ],
 )
-def test_researched_neighborhood_variants(preset_id: str, text: str) -> None:
-    """Test researched neighborhood wording."""
+def test_additional_neighborhood_variants(preset_id: str, text: str) -> None:
+    """Test additional aliases and spellings."""
     patterns = PRESETS["kyiv"].neighborhoods[preset_id].patterns
     assert any(
         re.search(pattern, text, re.IGNORECASE | re.UNICODE) for pattern in patterns

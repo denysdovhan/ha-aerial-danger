@@ -161,7 +161,7 @@ Here is a list of Telegram channels that report danger. You can use them to fetc
 - https://telegram.me/s/kpszsu
 - https://telegram.me/s/nebo_raketa (kyiv only)
 - https://telegram.me/s/kyiv_airdef (kyiv only)
-- https://telegram.me/s/kyivblabla (kyiv only)
+- https://telegram.me/s/kyiv_monit0ring (kyiv only)
 
 Kyiv only channels might omit Kyiv city or region in names, so keep that in mind.
 
