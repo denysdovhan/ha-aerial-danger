@@ -166,6 +166,31 @@ async def test_setup_seeds_source_state_without_firing_event(
     assert hass.states.get(_event_entity_id(hass, entry)).state == STATE_UNKNOWN
 
 
+async def test_setup_seeds_first_match_from_each_source(
+    hass: HomeAssistant,
+) -> None:
+    """Test setup keeps the first match from every active source."""
+    hass.states.async_set("sensor.channel_a", "Циркон на Київ!")
+    hass.states.async_set("sensor.channel_b", "Шахед на Нивки!")
+    entry = _entry(
+        {
+            CONF_REGION_PATTERNS: [r"\bкиїв\b"],
+            CONF_LOCALITY_PATTERNS: [r"\bнивки\b"],
+            CONF_SOURCES: ["sensor.channel_a", "sensor.channel_b"],
+        }
+    )
+    entry.add_to_hass(hass)
+
+    assert await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+
+    for key in ("ballistic", "drone", "danger"):
+        assert hass.states.get(_entity_id(hass, entry, key)).state == STATE_ON
+    for key in ("irbm", "cruise", "unknown"):
+        assert hass.states.get(_entity_id(hass, entry, key)).state == STATE_OFF
+    assert hass.states.get(_event_entity_id(hass, entry)).state == STATE_UNKNOWN
+
+
 async def test_entry_title_rename_updates_device_name(hass: HomeAssistant) -> None:
     """Test native entry rename updates the integration device name."""
     entry = _entry(
@@ -272,7 +297,7 @@ async def test_aggregate_attributes_use_latest_active_detection(
 async def test_multiple_sources_keep_aggregate_danger_on(
     hass: HomeAssistant,
 ) -> None:
-    """Test aggregate danger remains on while any source is dangerous."""
+    """Test first matches from every source keep aggregate danger on."""
     entry = _entry(
         {
             CONF_REGION_PATTERNS: [r"\bкиїв\b"],
@@ -286,23 +311,29 @@ async def test_multiple_sources_keep_aggregate_danger_on(
     await hass.async_block_till_done()
 
     ballistic_id = _entity_id(hass, entry, "ballistic")
+    cruise_id = _entity_id(hass, entry, "cruise")
     drone_id = _entity_id(hass, entry, "drone")
+    unknown_id = _entity_id(hass, entry, "unknown")
     danger_id = _entity_id(hass, entry, "danger")
 
-    hass.states.async_set("sensor.channel_a", "Київ швидкісна!")
+    hass.states.async_set("sensor.channel_a", "Циркон на Київ!")
     await hass.async_block_till_done()
-    hass.states.async_set("sensor.channel_b", "Нивки над вами БПЛА!")
+    hass.states.async_set("sensor.channel_b", "Шахед на Нивки!")
     await hass.async_block_till_done()
 
     assert hass.states.get(ballistic_id).state == STATE_ON
+    assert hass.states.get(cruise_id).state == STATE_OFF
     assert hass.states.get(drone_id).state == STATE_ON
+    assert hass.states.get(unknown_id).state == STATE_OFF
     assert hass.states.get(danger_id).state == STATE_ON
 
     hass.states.async_set("sensor.channel_a", "Все тихо")
     await hass.async_block_till_done()
 
     assert hass.states.get(ballistic_id).state == STATE_OFF
+    assert hass.states.get(cruise_id).state == STATE_OFF
     assert hass.states.get(drone_id).state == STATE_ON
+    assert hass.states.get(unknown_id).state == STATE_OFF
     assert hass.states.get(danger_id).state == STATE_ON
 
     hass.states.async_set("sensor.channel_b", "Все тихо")
