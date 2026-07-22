@@ -45,11 +45,18 @@ PRESETS: Final = {
             "kyiv_bilychi": NeighborhoodPreset(
                 name="Біличі", patterns=(r"\bбілич(і|ів|ах|ами)\b",)
             ),
+            "kyiv_borshchahivka": NeighborhoodPreset(
+                name="Борщагівка",
+                patterns=(r"\bборщаг(а|и|у|ою|івк(а|и|у|ою|ці)|івок)\b",),
+            ),
             "kyiv_bortnychi": NeighborhoodPreset(
                 name="Бортничі", patterns=(r"\bбортнич(і|ів|ах|ами)\b",)
             ),
             "kyiv_bykivnia": NeighborhoodPreset(
                 name="Биківня", patterns=(r"\bбиківн(я|і|ю|ею)\b",)
+            ),
+            "kyiv_center": NeighborhoodPreset(
+                name="Центр", patterns=(r"\bцентр(у|і|ом|а)?\b",)
             ),
             "kyiv_chokolivka": NeighborhoodPreset(
                 name="Чоколівка", patterns=(r"\bчоколівк(а|и|у|ою|ці)\b",)
@@ -64,7 +71,13 @@ PRESETS: Final = {
             "kyiv_demiivka": NeighborhoodPreset(
                 name="Деміївка", patterns=(r"\bдеміївк(а|и|у|ою|ці)\b",)
             ),
+            "kyiv_dorohzhychi": NeighborhoodPreset(
+                name="Дорогожичі", patterns=(r"\bдорогожич(і|ів|ам|ами|ах)\b",)
+            ),
             "kyiv_dvrz": NeighborhoodPreset(name="ДВРЗ", patterns=(r"\bдврз\b",)),
+            "kyiv_halahany": NeighborhoodPreset(
+                name="Галагани", patterns=(r"\bгалаган(и|ів|ам|ами|ах)?\b",)
+            ),
             "kyiv_hidropark": NeighborhoodPreset(
                 name="Гідропарк", patterns=(r"\bгідропарк(у|і|ом|а)?\b",)
             ),
@@ -73,6 +86,28 @@ PRESETS: Final = {
                 patterns=(
                     r"\bголосі(їв|єва|єві|єву|євом)\b",
                     r"\bголосіївськ(ий|ого|ому|им)\b",
+                    r"\bголос\b",
+                ),
+            ),
+            "kyiv_ipodrom": NeighborhoodPreset(
+                name="Іподром", patterns=(r"\bіподром(у|і|ом|а)?\b",)
+            ),
+            "kyiv_karavaievi_dachi": NeighborhoodPreset(
+                name="Караваєві Дачі",
+                patterns=(
+                    r"\bкараваєв(і дачі|их дач|им дачам|ими дачами|их дачах)\b",
+                    r"\bкардач(і|ів|ам|ами|ах)\b",
+                ),
+            ),
+            "kyiv_kharkivskyi_masyv": NeighborhoodPreset(
+                name="Харківський масив",
+                patterns=(r"\bхарківськ(ий|ого|ому|им)(?: масив(у|і|ом|а)?)?\b",),
+            ),
+            "kyiv_khutir": NeighborhoodPreset(
+                name="Червоний Хутір",
+                patterns=(
+                    r"\bчервон(ий|ого|ому|им) хут(ір|ор(а|у|і|ом|е))\b",
+                    r"\bхутір\b",
                 ),
             ),
             "kyiv_klov": NeighborhoodPreset(
@@ -80,10 +115,21 @@ PRESETS: Final = {
             ),
             "kyiv_koncha_zaspa": NeighborhoodPreset(
                 name="Конча-Заспа",
-                patterns=(r"\bконч(а|і)[ -]засп(а|и|і|у|ою)\b",),
+                patterns=(
+                    r"\bконч(а|і)[ -]засп(а|и|і|у|ою)\b",
+                    r"\bзасп(а|и|і|у|ою)\b",
+                ),
             ),
+            "kyiv_kpi": NeighborhoodPreset(name="КПІ", patterns=(r"\bкпі\b",)),
             "kyiv_kurenivka": NeighborhoodPreset(
                 name="Куренівка", patterns=(r"\bкуренівк(а|и|у|ою|ці)\b",)
+            ),
+            "kyiv_left_bank": NeighborhoodPreset(
+                name="Лівий берег",
+                patterns=(
+                    r"\bлів(ий|ого|ому|им) берег(а|у|ом|і)?\b",
+                    r"\bлівобережж(я|і|ю|ям)\b",
+                ),
             ),
             "kyiv_lisovyi_masyv": NeighborhoodPreset(
                 name="Лісовий масив",
@@ -110,6 +156,10 @@ PRESETS: Final = {
             ),
             "kyiv_mysholovka": NeighborhoodPreset(
                 name="Мишоловка", patterns=(r"\bмишоловк(а|и|у|ою|ці)\b",)
+            ),
+            "kyiv_nova_zabudova": NeighborhoodPreset(
+                name="Нова Забудова",
+                patterns=(r"\bнов(а|ої|ій|у|ою) забудов(а|и|і|у|ою)\b",),
             ),
             "kyiv_nyvky": NeighborhoodPreset(
                 name="Нивки", patterns=(r"\bнив(ки|ках|ками|ок)\b",)
@@ -156,6 +206,13 @@ PRESETS: Final = {
             "kyiv_rembaza": NeighborhoodPreset(
                 name="Рембаза", patterns=(r"\bрембаз(а|и|і|у|ою)\b",)
             ),
+            "kyiv_right_bank": NeighborhoodPreset(
+                name="Правий берег",
+                patterns=(
+                    r"\bправ(ий|ого|ому|им) берег(а|у|ом|і)?\b",
+                    r"\bправобережж(я|і|ю|ям)\b",
+                ),
+            ),
             "kyiv_rusanivka": NeighborhoodPreset(
                 name="Русанівка", patterns=(r"\bрусанів(ка|ки|ці|ку|кою)\b",)
             ),
@@ -165,6 +222,13 @@ PRESETS: Final = {
             ),
             "kyiv_shuliavka": NeighborhoodPreset(
                 name="Шулявка", patterns=(r"\bшулявк(а|и|у|ою|ці)\b",)
+            ),
+            "kyiv_solomianka": NeighborhoodPreset(
+                name="Солом'янка",
+                patterns=(
+                    r"\bсолом(а|['’ʼ]?янк(а|и|у|ою|ці))\b",
+                    r"\bсолом['’ʼ]?янськ(ий|ого|ому|им)\b",
+                ),
             ),
             "kyiv_sviatoshyn": NeighborhoodPreset(
                 name="Святошин",
