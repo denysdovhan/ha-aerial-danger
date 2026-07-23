@@ -86,7 +86,7 @@ MIT © [Denys Dovhan][denysdovhan]
 [gh-downloads-url]: https://github.com/denysdovhan/ha-aerial-danger/releases
 [gh-downloads-image]: https://img.shields.io/github/downloads/denysdovhan/ha-aerial-danger/total?style=flat-square
 [hacs-url]: https://github.com/hacs/integration
-[hacs-image]: https://img.shields.io/badge/hacs-default-orange.svg?style=flat-square
+[hacs-image]: https://img.shields.io/badge/hacs-custom-orange.svg?style=flat-square
 [gh-sponsors-url]: https://github.com/sponsors/denysdovhan
 [gh-sponsors-image]: https://img.shields.io/github/sponsors/denysdovhan?style=flat-square
 [buymeacoffee-url]: https://buymeacoffee.com/denysdovhan
