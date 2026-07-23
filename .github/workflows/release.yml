@@ -24,14 +24,14 @@ jobs:
         run: python scripts/bump_version ${{ github.ref_name }}
 
       - name: 📦 Create zip package
-        working-directory: custom_components/lun_misto_air
-        run: zip -r lun-misto-air.zip .
+        working-directory: custom_components/aerial_danger
+        run: zip -r aerial-danger.zip .
 
       - name: 📤  Upload zip to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: custom_components/lun_misto_air/lun-misto-air.zip
-          asset_name: lun-misto-air.zip
+          file: custom_components/aerial_danger/aerial-danger.zip
+          asset_name: aerial-danger.zip
           tag: ${{ github.ref }}
           overwrite: true
