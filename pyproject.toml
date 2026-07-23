@@ -3,11 +3,9 @@ name = "ha-aerial-danger"
 version = "0.0.0"
 description = "Home Assistant custom component: Aerial Danger"
 readme = "readme.md"
-requires-python = ">=3.13.2"
+requires-python = ">=3.14.2"
 authors = [{ name = "Denys Dovhan", email = "denysdovhan@gmail.com" }]
-dependencies = [
-  "homeassistant==2025.11.3",
-]
+dependencies = ["homeassistant==2026.7.2"]
 
 [dependency-groups]
 dev = [
@@ -24,14 +22,14 @@ target-version = "py313"
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
-    "ANN401",  # Dynamically typed expressions (typing.Any) are disallowed
-    "D203",    # no-blank-line-before-class (incompatible with formatter)
-    "D212",    # multi-line-summary-first-line (incompatible with formatter)
-    "COM812",  # incompatible with formatter
-    "ISC001",  # incompatible with formatter
-    "FIX002",  # Line contains TODO, consider resolving an issue
-    "TD003",   # Missing issue link on the line following this TODO
-    "RUF001",  # Cyrillic text intentionally used
+  "ANN401", # Dynamically typed expressions (typing.Any) are disallowed
+  "D203", # no-blank-line-before-class (incompatible with formatter)
+  "D212", # multi-line-summary-first-line (incompatible with formatter)
+  "COM812", # incompatible with formatter
+  "ISC001", # incompatible with formatter
+  "FIX002", # Line contains TODO, consider resolving an issue
+  "TD003", # Missing issue link on the line following this TODO
+  "RUF001", # Cyrillic text intentionally used
 ]
 
 [tool.ruff.lint.flake8-pytest-style]
