@@ -1,9 +1,14 @@
 [![SWUbanner](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner-direct-single.svg)](https://stand-with-ukraine.pp.ua/)
 
-<!-- markdownlint-disable-next-line no-inline-html -->
-<img alt="HA Aerial Danger Logo" src="./assets/logo.png" width="250px">
+<!-- markdownlint-disable no-inline-html -->
+<h1 align="center">
+  <img alt="HA Aerial Danger Logo" src="./assets/logo.png" width="250px">
+  <br />
+  💥 HA Aerial Danger — Моніторинг повітряних загроз
+</h1>
+<!-- markdownlint-enable no-inline-html -->
 
-# 💥 HA Aerial Danger
+<!-- # 💥 HA Aerial Danger -->
 
 [![GitHub Release][gh-release-image]][gh-release-url]
 [![GitHub Downloads][gh-downloads-image]][gh-downloads-url]
