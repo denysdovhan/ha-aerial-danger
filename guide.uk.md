@@ -23,10 +23,10 @@ Aerial Danger аналізує текстові повідомлення про 
 2. Створіть ресурс із URL каналу у форматі `https://telegram.me/s/CHANNEL`, наприклад `https://telegram.me/s/war_monitor`.
 3. У створеному записі Scrape додайте сенсор із такими параметрами:
 
-   | Параметр        | Значення                                              |
+   | Параметр | Значення |
    | --------------- | ----------------------------------------------------- | ---- | ----------------------------------- |
-   | Назва           | Наприклад, `Telegram — War Monitor`                   |
-   | CSS-селектор    | `.js-widget_message_wrap:last-child .js-message_text` |
+   | Назва | Наприклад, `Telegram — War Monitor` |
+   | CSS-селектор | `.js-widget_message_wrap:last-child .js-message_text` |
    | Шаблон значення | `{{ value                                             | trim | truncate(255, end='', leeway=0) }}` |
 
 Шаблон прибирає зайві пробіли та обмежує стан сенсора до 255 символів — максимальної довжини стану сутності Home Assistant.
