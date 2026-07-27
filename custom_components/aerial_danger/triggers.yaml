@@ -1,0 +1,30 @@
+danger:
+  target:
+    entity:
+      integration: aerial_danger
+      domain: event
+irbm:
+  target:
+    entity:
+      integration: aerial_danger
+      domain: event
+ballistic:
+  target:
+    entity:
+      integration: aerial_danger
+      domain: event
+cruise:
+  target:
+    entity:
+      integration: aerial_danger
+      domain: event
+drone:
+  target:
+    entity:
+      integration: aerial_danger
+      domain: event
+unknown:
+  target:
+    entity:
+      integration: aerial_danger
+      domain: event

@@ -2,6 +2,9 @@
 # https://www.home-assistant.io/integrations/default_config/
 default_config:
 
+# UI-managed automations
+automation: !include automations.yaml
+
 # Remote Python Debugger
 # https://www.home-assistant.io/integrations/debugpy/
 debugpy:

@@ -29,5 +29,25 @@
         "default": "mdi:crosshairs-question"
       }
     }
+  },
+  "triggers": {
+    "danger": {
+      "trigger": "mdi:alert-decagram"
+    },
+    "irbm": {
+      "trigger": "mdi:rocket"
+    },
+    "ballistic": {
+      "trigger": "mdi:rocket-launch"
+    },
+    "cruise": {
+      "trigger": "mdi:airplane-landing"
+    },
+    "drone": {
+      "trigger": "mdi:drone"
+    },
+    "unknown": {
+      "trigger": "mdi:crosshairs-question"
+    }
   }
 }

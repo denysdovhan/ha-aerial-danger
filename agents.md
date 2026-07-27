@@ -49,9 +49,11 @@ This repository implements the Home Assistant custom integration **Aerial Danger
 - `entity.py` — shared runtime and device setup for integration entities.
 - `binary_sensor.py` — safety binary sensors for IRBM, ballistic, cruise, drone, unknown, and aggregate danger; all expose stable matched-message, area, danger, and source attributes.
 - `event.py` — native Home Assistant event entity for IRBM, ballistic, cruise, drone, and unknown detections.
+- `trigger.py` — target-based automation triggers for aggregate danger and each native danger event type.
+- `triggers.yaml` — target definitions for automation triggers.
 - `diagnostics.py` — provides redacted config-entry diagnostics and privacy-safe runtime state details.
 - `danger/` — logger-free, Home Assistant agnostic danger detection library, keyword templates, and data models; detections preserve exact matched text and regex patterns.
-- `translations/` — English and Ukrainian strings for the basic flow.
+- `translations/` — English and Ukrainian strings for configuration, entities, and triggers.
 - `manifest.json` — Home Assistant manifest pointing to this repo.
 
 ### How it works
@@ -59,6 +61,7 @@ This repository implements the Home Assistant custom integration **Aerial Danger
 - Each config entry builds a detector from configured region and locality regex patterns and subscribes to selected Home Assistant source entities.
 - Changed source text is checked in order: IRBM, ballistic, cruise, drone, then generic danger. First match wins.
 - Runtime tracks active detections per source, so a safe message clears only that source. Binary sensors aggregate remaining detections, and the event entity records each new detection.
+- Target-based triggers fire for aggregate danger or filter event-entity updates by danger type, including repeated detections.
 - Source data collection stays outside this integration. The `danger/` library stays Home Assistant agnostic and logger-free.
 
 ### Parsing data

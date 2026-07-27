@@ -74,6 +74,12 @@ The first built-in region is Kyiv, with Sviatoshyn, Akademmistechko, Antonov, Ny
 
 The integration creates a binary sensor for each supported danger type, an aggregate **Danger** binary sensor, and a **Danger detected** event entity. Repeat the setup to monitor different providers, areas, or source groups independently.
 
+To trigger an automation when a danger is detected, add a trigger and select the
+Aerial Danger device. Then choose either **Any danger** or a trigger for a
+specific danger type: IRBM, ballistic, cruise missile, drone, or unknown. Each
+trigger fires for every matching detection, including repeated detections of the
+same type.
+
 ## Development
 
 Want to contribute to the project?

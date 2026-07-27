@@ -187,6 +187,32 @@
       }
     }
   },
+  "triggers": {
+    "danger": {
+      "name": "Any danger detected",
+      "description": "Triggers when any danger is detected."
+    },
+    "irbm": {
+      "name": "Intermediate-range ballistic missile danger detected",
+      "description": "Triggers when intermediate-range ballistic missile danger is detected."
+    },
+    "ballistic": {
+      "name": "Ballistic danger detected",
+      "description": "Triggers when a ballistic target is detected in your direction."
+    },
+    "cruise": {
+      "name": "Cruise missile danger detected",
+      "description": "Triggers when approaching cruise missiles are detected."
+    },
+    "drone": {
+      "name": "Drone danger detected",
+      "description": "Triggers when approaching drones are detected."
+    },
+    "unknown": {
+      "name": "Unknown danger detected",
+      "description": "Triggers when an unknown danger is detected (without a danger description)."
+    }
+  },
   "entity": {
     "event": {
       "danger": {

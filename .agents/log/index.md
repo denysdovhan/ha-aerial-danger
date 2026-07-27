@@ -1,5 +1,6 @@
 | Date       | Name                                                                             | Status |
 | ---------- | -------------------------------------------------------------------------------- | ------ |
+| 2026-07-23 | [Target-based danger triggers](2026-07-23-target-danger-triggers.md)             | done   |
 | 2026-07-22 | [Kyiv locality research](2026-07-22-kyiv-locality-research.md)                   | wip    |
 | 2026-07-21 | [Kyiv area presets](2026-07-21-area-presets.md)                                  | done   |
 | 2026-07-21 | [IRBM danger detection](2026-07-21-irbm-danger-detection.md)                     | done   |
