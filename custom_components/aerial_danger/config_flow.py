@@ -131,6 +131,8 @@ class AerialDangerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             if self._sources:
                 return await self.async_step_regions()
             errors[CONF_SOURCES] = "sources_required"
+        else:
+            self._name = self.hass.config.location_name
 
         return self.async_show_form(
             step_id="user",

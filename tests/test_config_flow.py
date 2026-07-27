@@ -69,6 +69,15 @@ async def _options_regions(hass: HomeAssistant, entry: MockConfigEntry) -> FlowR
     )
 
 
+async def test_config_name_defaults_to_home_name(hass: HomeAssistant) -> None:
+    """Test the entry name defaults to the Home Assistant home name."""
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN, context={"source": SOURCE_USER}
+    )
+    name_marker = next(key for key in result["data_schema"].schema if key == CONF_NAME)
+    assert name_marker.default() == hass.config.location_name
+
+
 async def test_config_preset_only_and_selector_shape(hass: HomeAssistant) -> None:
     """Test preset-only configuration and dependent selectors."""
     result = await _config_regions(hass, name="Kyiv alerts")
