@@ -28,6 +28,20 @@
       "unknown": {
         "default": "mdi:crosshairs-question"
       }
+    },
+    "sensor": {
+      "matched_message": {
+        "default": "mdi:message-text"
+      },
+      "matched_area": {
+        "default": "mdi:map-marker"
+      },
+      "matched_danger": {
+        "default": "mdi:alert"
+      },
+      "matched_source": {
+        "default": "mdi:shape"
+      }
     }
   },
   "triggers": {

@@ -349,6 +349,33 @@
           }
         }
       }
+    },
+    "sensor": {
+      "matched_message": {
+        "name": "Зіставлене повідомлення",
+        "state": {
+          "clear": "Немає"
+        }
+      },
+      "matched_area": {
+        "name": "Збіг області",
+        "state": {
+          "clear": "Немає",
+          "nationwide": "Вся країна"
+        }
+      },
+      "matched_danger": {
+        "name": "Збіг небезпеки",
+        "state": {
+          "clear": "Немає"
+        }
+      },
+      "matched_source": {
+        "name": "Сутність-джерело",
+        "state": {
+          "clear": "Немає"
+        }
+      }
     }
   }
 }

@@ -349,6 +349,33 @@
           }
         }
       }
+    },
+    "sensor": {
+      "matched_message": {
+        "name": "Matched message",
+        "state": {
+          "clear": "Clear"
+        }
+      },
+      "matched_area": {
+        "name": "Matched area",
+        "state": {
+          "clear": "Clear",
+          "nationwide": "Nationwide"
+        }
+      },
+      "matched_danger": {
+        "name": "Matched danger",
+        "state": {
+          "clear": "Clear"
+        }
+      },
+      "matched_source": {
+        "name": "Matched source",
+        "state": {
+          "clear": "Clear"
+        }
+      }
     }
   }
 }

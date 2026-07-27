@@ -20,7 +20,7 @@
 > [!NOTE]
 > A [Home Assistant][home-assistant] integration that detects aerial danger alerts for your configured areas from text published by selected entities.
 
-Aerial Danger monitors entities containing Ukrainian alert messages, matches them against your area patterns, and provides binary sensors and events for use in dashboards and automations.
+Aerial Danger monitors entities containing Ukrainian alert messages, matches them against your area patterns, and provides binary sensors, diagnostic sensors, and events for use in dashboards and automations.
 
 It detects intermediate-range ballistic missiles, ballistic missiles, cruise missiles, drones, and unknown aerial dangers. A separate **Danger** sensor indicates when any supported danger is active.
 
@@ -72,7 +72,7 @@ Configure the integration with:
 
 The first built-in region is Kyiv, with Sviatoshyn, Akademmistechko, Antonov, Nyvky, and Vynohradar localities. At least one effective region or locality pattern and one source entity are required. You can change sources, presets, and custom patterns later from the integration options. Rename the entry through Home Assistant's native entry rename action.
 
-The integration creates a binary sensor for each supported danger type, an aggregate **Danger** binary sensor, and a **Danger detected** event entity. Repeat the setup to monitor different providers, areas, or source groups independently.
+The integration creates a binary sensor for each supported danger type, an aggregate **Danger** binary sensor, diagnostic sensors for the matched message, area, danger, and source, and a **Danger detected** event entity. Diagnostic sensors show **Clear** when no danger is active; the matched area shows **Nationwide** for IRBM danger. Repeat the setup to monitor different providers, areas, or source groups independently.
 
 To trigger an automation when a danger is detected, add a trigger and select the
 Aerial Danger device. Then choose either **Any danger** or a trigger for a

@@ -38,7 +38,7 @@ At the end of each plan, give me a list of unresolved questions to answer, if an
 
 ## Project Overview
 
-This repository implements the Home Assistant custom integration **Aerial Danger**. It detects aerial danger messages from user-selected Home Assistant source entities and exposes safety binary sensors and danger events. The integration code lives in `custom_components/aerial_danger`.
+This repository implements the Home Assistant custom integration **Aerial Danger**. It detects aerial danger messages from user-selected Home Assistant source entities and exposes safety binary sensors, diagnostic match sensors, and danger events. The integration code lives in `custom_components/aerial_danger`.
 
 ### Code structure (current)
 
@@ -48,6 +48,7 @@ This repository implements the Home Assistant custom integration **Aerial Danger
 - `const.py` — grouped configuration, attribute, state, event, logger, and integration constants.
 - `entity.py` — shared runtime and device setup for integration entities.
 - `binary_sensor.py` — safety binary sensors for IRBM, ballistic, cruise, drone, unknown, and aggregate danger; all expose stable matched-message, area, danger, and source attributes.
+- `sensor.py` — diagnostic sensors mirroring the aggregate matched message, area, danger, and friendly source name; inactive sensors show clear and IRBM area shows nationwide.
 - `event.py` — native Home Assistant event entity for IRBM, ballistic, cruise, drone, and unknown detections.
 - `trigger.py` — target-based automation triggers for aggregate danger and each native danger event type.
 - `triggers.yaml` — target definitions for automation triggers.
@@ -61,6 +62,7 @@ This repository implements the Home Assistant custom integration **Aerial Danger
 - Each config entry builds a detector from configured region and locality regex patterns and subscribes to selected Home Assistant source entities.
 - Changed source text is checked in order: IRBM, ballistic, cruise, drone, then generic danger. First match wins.
 - Runtime tracks active detections per source, so a safe message clears only that source. Binary sensors aggregate remaining detections, and the event entity records each new detection.
+- Diagnostic sensors mirror the latest active aggregate detection and return to clear when no danger remains.
 - Target-based triggers fire for aggregate danger or filter event-entity updates by danger type, including repeated detections.
 - Source data collection stays outside this integration. The `danger/` library stays Home Assistant agnostic and logger-free.
 
