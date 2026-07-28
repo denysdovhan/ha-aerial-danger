@@ -11,6 +11,7 @@ from .keywords import (
     DRONE_DANGER,
     GENERIC_DANGER,
     IRBM_DANGER,
+    SAFETY,
 )
 from .models import DangerType, Detection, PatternMatch
 
@@ -35,6 +36,7 @@ class DangerDetector:
         """Initialize detector with region and locality regexes."""
         self._regions = list(regions)
         self._localities = list(localities)
+        self._safety_patterns = self.compile_patterns(SAFETY)
 
         self._ballistic_patterns = self.compile_patterns(
             self.map_areas(BALLISTIC_DANGER, self._regions + self._localities)
@@ -93,6 +95,9 @@ class DangerDetector:
         match_areas: bool = True,
     ) -> Detection:
         """Shared detection helper used by danger-specific methods."""
+        if self.match_first(self._safety_patterns, message):
+            return Detection(danger=False, message=message)
+
         danger_match = self.match_first(patterns, message)
         if danger_match is None:
             return Detection(danger=False, message=message)

@@ -85,7 +85,7 @@ async def test_config_entry_diagnostics_redacts_user_data_only(
             STATE_DANGER: True,
         },
         "active_detection_types": [STATE_BALLISTIC],
-        "entity_count": 6,
+        "entity_count": 10,
         "event_entity_available": True,
         "state_listener_active": True,
     }

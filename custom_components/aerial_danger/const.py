@@ -9,7 +9,7 @@ from homeassistant.const import Platform
 DOMAIN: Final = "aerial_danger"
 NAME: Final = "Aerial Danger"
 DEFAULT_NAME: Final = "Aerial Danger"
-PLATFORMS: Final = [Platform.BINARY_SENSOR, Platform.EVENT]
+PLATFORMS: Final = [Platform.BINARY_SENSOR, Platform.EVENT, Platform.SENSOR]
 LOGGER: Final = logging.getLogger(__package__)
 
 # Configuration
@@ -26,16 +26,24 @@ ERROR_MISSING_SOURCES: Final = "At least one source entity is required"
 
 # Entity states
 STATE_BALLISTIC: Final = "ballistic"
+STATE_CLEAR: Final = "clear"
 STATE_CRUISE: Final = "cruise"
 STATE_DANGER: Final = "danger"
 STATE_DRONE: Final = "drone"
 STATE_IRBM: Final = "irbm"
+STATE_NATIONWIDE: Final = "nationwide"
 STATE_UNKNOWN_DANGER: Final = "unknown"
 
+# Entity keys
+MATCHED_AREA: Final = "matched_area"
+MATCHED_DANGER: Final = "matched_danger"
+MATCHED_MESSAGE: Final = "matched_message"
+MATCHED_SOURCE: Final = "matched_source"
+
 # Entity attributes
-ATTR_MATCHED_AREA: Final = "matched_area"
-ATTR_MATCHED_DANGER: Final = "matched_danger"
-ATTR_MATCHED_MESSAGE: Final = "matched_message"
+ATTR_MATCHED_AREA: Final = MATCHED_AREA
+ATTR_MATCHED_DANGER: Final = MATCHED_DANGER
+ATTR_MATCHED_MESSAGE: Final = MATCHED_MESSAGE
 ATTR_SOURCE_ENTITY_ID: Final = "source_entity_id"
 ATTR_TIMESTAMP: Final = "timestamp"
 

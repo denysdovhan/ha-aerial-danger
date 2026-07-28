@@ -43,32 +43,32 @@ class AerialDangerBinarySensorEntityDescription(BinarySensorEntityDescription):
 SENSOR_TYPES: tuple[AerialDangerBinarySensorEntityDescription, ...] = (
     AerialDangerBinarySensorEntityDescription(
         key=STATE_IRBM,
-        translation_key="irbm",
+        translation_key=STATE_IRBM,
         danger_type=DangerType.IRBM,
     ),
     AerialDangerBinarySensorEntityDescription(
         key=STATE_BALLISTIC,
-        translation_key="ballistic",
+        translation_key=STATE_BALLISTIC,
         danger_type=DangerType.BALLISTIC,
     ),
     AerialDangerBinarySensorEntityDescription(
         key=STATE_CRUISE,
-        translation_key="cruise",
+        translation_key=STATE_CRUISE,
         danger_type=DangerType.CRUISE,
     ),
     AerialDangerBinarySensorEntityDescription(
         key=STATE_DRONE,
-        translation_key="drone",
+        translation_key=STATE_DRONE,
         danger_type=DangerType.DRONE,
     ),
     AerialDangerBinarySensorEntityDescription(
         key=STATE_UNKNOWN_DANGER,
-        translation_key="unknown",
+        translation_key=STATE_UNKNOWN_DANGER,
         danger_type=DangerType.GENERIC,
     ),
     AerialDangerBinarySensorEntityDescription(
         key=STATE_DANGER,
-        translation_key="danger",
+        translation_key=STATE_DANGER,
     ),
 )
 
