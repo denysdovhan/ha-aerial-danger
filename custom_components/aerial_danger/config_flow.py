@@ -18,6 +18,7 @@ from .const import (
     CONF_REGION_PRESETS,
     CONF_SOURCES,
     DEFAULT_NAME,
+    DEFAULT_REGION_PATTERNS,
     DOMAIN,
 )
 from .danger import DangerDetector
@@ -118,7 +119,7 @@ class AerialDangerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self._name = DEFAULT_NAME
         self._sources: list[str] = []
         self._region_presets: list[str] = []
-        self._region_patterns: list[str] = []
+        self._region_patterns = list(DEFAULT_REGION_PATTERNS)
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None

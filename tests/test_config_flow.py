@@ -82,6 +82,13 @@ async def test_config_preset_only_and_selector_shape(hass: HomeAssistant) -> Non
     """Test preset-only configuration and dependent selectors."""
     result = await _config_regions(hass, name="Kyiv alerts")
     assert result["step_id"] == "regions"
+    region_pattern_marker = next(
+        key for key in result["data_schema"].schema if key == CONF_REGION_PATTERNS
+    )
+    assert region_pattern_marker.default() == [
+        r"(до|на) нас",
+        r"наш(у|ої) област(ьі|і)?",
+    ]
     region_selector = result["data_schema"].schema[CONF_REGION_PRESETS]
     assert isinstance(region_selector, selector.SelectSelector)
     assert region_selector.config["multiple"] is True

@@ -18,6 +18,10 @@ CONF_LOCALITY_PATTERNS: Final = "locality_patterns"
 CONF_REGION_PRESETS: Final = "region_presets"
 CONF_LOCALITY_PRESETS: Final = "locality_presets"
 CONF_SOURCES: Final = "sources"
+DEFAULT_REGION_PATTERNS: Final = [
+    r"(до|на) нас",
+    r"наш(у|ої) област(ь|і)?",
+]
 
 # Errors
 ERROR_INVALID_PATTERN: Final = "Invalid regex"

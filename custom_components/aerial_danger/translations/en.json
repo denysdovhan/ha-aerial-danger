@@ -3,7 +3,7 @@
   "config": {
     "step": {
       "user": {
-        "description": "Name this monitoring entry and select the entities whose states the integration will check for danger messages.\n\nYou can create these entities with the [Scrape integration](https://www.home-assistant.io/integrations/scrape) for Telegram channels such as:\n\n- [Air Force of the Armed Forces of Ukraine](https://telegram.me/s/kpszsu)\n- [War Monitor](https://telegram.me/war_monitor)\n\n**‼️ Important:** This integration can make mistakes, miss messages, or detect them late.\nDo not use it as your only or official alert source. Always follow official alerts and their instructions. During an air-raid alert, immediately go to the nearest shelter and remain there until the official all-clear.\nThe integration is provided “as is.” The author does not guarantee the accuracy, completeness, or timeliness of its data and is not responsible for users’ safety, decisions made, or consequences arising from use of the integration.",
+        "description": "Name this monitoring entry and select the entities whose states the integration will check for danger messages.\n\nYou can create these entities with the [Scrape integration](https://www.home-assistant.io/integrations/scrape) for Telegram channels such as:\n\n- [Air Force of the Armed Forces of Ukraine](https://telegram.me/s/kpszsu)\n- [War Monitor](https://telegram.me/war_monitor)\n\n**‼️ Important:** This integration can make mistakes, miss messages, or detect them late. Do not use it as your only or official alert source. Always follow official alerts and their instructions. During an air-raid alert, immediately go to the nearest shelter and remain there until the official all-clear. The integration is provided “as is.” The author does not guarantee the accuracy, completeness, or timeliness of its data and is not responsible for users’ safety, decisions made, or consequences arising from use of the integration.",
         "data": {
           "name": "Name",
           "sources": "Danger message sources"
@@ -22,7 +22,7 @@
         },
         "data_description": {
           "region_presets": "Optional. Select one or more preset regions.",
-          "region_patterns": "Optional. Add a YAML list where each item is one [regular expression](https://docs.python.org/3/library/re.html) in single quotes.\n\nExample YAML list:\n\n```yaml\n- '\\bки(їв|єва|єві|єву|євом)\\b'\n- '\\bстолиц(я|і|ю|ею)\\b'\n```"
+          "region_patterns": "Optional. Add a YAML list where each item is one [regular expression](https://docs.python.org/3/library/re.html).\n\nExample YAML list:\n\n```yaml\n- \\bки(їв|єва|єві|єву|євом)\\b\n- \\bстолиц(я|і|ю|ею)\\b\n```"
         }
       },
       "localities": {
@@ -34,7 +34,7 @@
         },
         "data_description": {
           "locality_presets": "Optional. Select one or more preset localities.\n\n**Tip:** Select your locality and nearby localities to receive notifications about approaching targets.",
-          "locality_patterns": "Optional. Add a YAML list where each item is one [regular expression](https://docs.python.org/3/library/re.html) in single quotes.\n\nExample YAML list:\n\n```yaml\n- '\\bнив(ки|ках|ками|ок)\\b'\n- '\\bвиноградар(а|і|ем)?\\b'\n```"
+          "locality_patterns": "Optional. Add a YAML list where each item is one [regular expression](https://docs.python.org/3/library/re.html).\n\nExample YAML list:\n\n```yaml\n- \\bнив(ки|ках|ками|ок)\\b\n- \\bвиноградар(а|і|ем)?\\b\n```"
         }
       }
     },
@@ -66,7 +66,7 @@
         },
         "data_description": {
           "region_presets": "Optional. Select one or more preset regions.",
-          "region_patterns": "Optional. Add a YAML list where each item is one [regular expression](https://docs.python.org/3/library/re.html) in single quotes.\n\nExample YAML list:\n\n```yaml\n- '\\bки(їв|єва|єві|єву|євом)\\b'\n- '\\bстолиц(я|і|ю|ею)\\b'\n```"
+          "region_patterns": "Optional. Add a YAML list where each item is one [regular expression](https://docs.python.org/3/library/re.html).\n\nExample YAML list:\n\n```yaml\n- \\bки(їв|єва|єві|єву|євом)\\b\n- \\bстолиц(я|і|ю|ею)\\b\n```"
         }
       },
       "localities": {
@@ -78,7 +78,7 @@
         },
         "data_description": {
           "locality_presets": "Optional. Select one or more preset localities.\n\n**Tip:** Select your locality and nearby localities to receive notifications about approaching targets.",
-          "locality_patterns": "Optional. Add a YAML list where each item is one [regular expression](https://docs.python.org/3/library/re.html) in single quotes.\n\nExample YAML list:\n\n```yaml\n- '\\bнив(ки|ках|ками|ок)\\b'\n- '\\bвиноградар(а|і|ем)?\\b'\n```"
+          "locality_patterns": "Optional. Add a YAML list where each item is one [regular expression](https://docs.python.org/3/library/re.html).\n\nExample YAML list:\n\n```yaml\n- \\bнив(ки|ках|ками|ок)\\b\n- \\bвиноградар(а|і|ем)?\\b\n```"
         }
       }
     },

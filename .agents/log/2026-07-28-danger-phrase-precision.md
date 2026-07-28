@@ -1,7 +1,7 @@
 ---
 title: Danger phrase precision
 date: 2026-07-28
-status: wip
+status: done
 related_paths:
   - custom_components/aerial_danger/danger/danger.py
   - custom_components/aerial_danger/danger/keywords.py
