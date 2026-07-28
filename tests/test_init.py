@@ -464,11 +464,11 @@ async def test_latest_active_source_supplies_attributes(
     ballistic_id = _entity_id(hass, entry, "ballistic")
     hass.states.async_set("sensor.channel_a", "Київ швидкісна!")
     await hass.async_block_till_done()
-    hass.states.async_set("sensor.channel_b", "Київ є ЦІЛЬ!")
+    hass.states.async_set("sensor.channel_b", "Київ спуск!")
     await hass.async_block_till_done()
 
     state = hass.states.get(ballistic_id)
-    assert state.attributes[ATTR_MATCHED_MESSAGE] == "Київ є ЦІЛЬ!"
+    assert state.attributes[ATTR_MATCHED_MESSAGE] == "Київ спуск!"
     assert state.attributes[ATTR_SOURCE_ENTITY_ID] == "sensor.channel_b"
 
     hass.states.async_set("sensor.channel_b", "Все тихо")
@@ -580,7 +580,7 @@ async def test_same_type_detection_refreshes_attributes(
     assert event_state.attributes[ATTR_SOURCE_ENTITY_ID] == "sensor.alerts"
     assert ATTR_TIMESTAMP in event_state.attributes
 
-    hass.states.async_set("sensor.alerts", "Київ є ЦІЛЬ!")
+    hass.states.async_set("sensor.alerts", "Київ спуск!")
     await hass.async_block_till_done()
 
     assert hass.states.get("binary_sensor.aerial_danger_ballistic_danger").state == (
@@ -591,7 +591,7 @@ async def test_same_type_detection_refreshes_attributes(
         hass.states.get("binary_sensor.aerial_danger_ballistic_danger").attributes[
             ATTR_MATCHED_MESSAGE
         ]
-        == "Київ є ЦІЛЬ!"
+        == "Київ спуск!"
     )
     assert (
         hass.states.get("binary_sensor.aerial_danger_ballistic_danger").attributes[
@@ -601,7 +601,7 @@ async def test_same_type_detection_refreshes_attributes(
     )
     event_state = hass.states.get(event_entity_id)
     assert event_state.attributes[ATTR_EVENT_TYPE] == EVENT_TYPE_BALLISTIC
-    assert event_state.attributes[ATTR_MATCHED_MESSAGE] == "Київ є ЦІЛЬ!"
+    assert event_state.attributes[ATTR_MATCHED_MESSAGE] == "Київ спуск!"
 
 
 @pytest.mark.parametrize(

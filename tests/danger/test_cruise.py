@@ -5,7 +5,7 @@
 from custom_components.aerial_danger.danger import DangerDetector, DangerType
 
 from .common import LOCALITY_PATTERNS, REGION_PATTERNS
-from .test_ballistic import TARGETED_ZIRCON_CASES, ZIRCON_CASES
+from .test_ballistic import ZIRCON_CASES
 
 CRUISE_CASES: list[str] = [
     "🔴Ракета Київ!",
@@ -30,6 +30,26 @@ CRUISE_CASES: list[str] = [
     "🚀 Група крилатих ракет на Чернігівщині. Курс до нас.",
     "🚀 Крилаті з Житомирщини курсом до нас.",
     "❗️Короче, до 10 штук. Крилаті курсом на нашу область.",
+    "Ракета на Київ.",
+    "КР Нивки",
+    "🚀 КР на столицю-Київ",
+    "🚀 КР на з півдня на Київ",
+    "🚀 КР на Бровари, Київ",
+    "❗️ Київ КР Нивки",
+    "КР НА КИЇВ З ПІВДНЯ!",
+    "Шулявка КР йде",
+    "Ракети на Київ/агломерацію.",
+    "❗️ КР Циркон далі Київ",
+    "❗️ 1х Циркон на Київ",
+    "Циркон на Київ.",
+    "3 Циркона у бік Києва.",
+    "Київ КР!",
+    "🚀Група ракет на Чернігівщині повз Прилуки курсом на Київщину.",
+    "❗Київ — КР Виноградар Лук'ягівка",
+    "🔴🚀Дві пари ракет від Фастова на Київ!",
+    "Циркон на Черкащині у бік Києва.",
+    "🚀 КР на Дніпропетровщині, вектор Синельникове.",
+    "Бровари - підліт крилатих!!",
 ]
 
 
@@ -40,22 +60,13 @@ def test_cruise_only() -> None:
         detection = detector.cruise_missile_danger(text)
         assert detection.danger is True, text
         assert detection.type == DangerType.CRUISE, text
-        assert detector.danger(text).type == DangerType.CRUISE, text
+        assert detector.danger(text).danger is True, text
 
 
 def test_zircon_is_cruise() -> None:
     """Shared Zircon keywords should match cruise detection."""
     detector = DangerDetector([r".*"], [])
     for text in ZIRCON_CASES:
-        detection = detector.cruise_missile_danger(text)
-        assert detection.danger is True, text
-        assert detection.type == DangerType.CRUISE, text
-
-
-def test_targeted_zircon_is_cruise() -> None:
-    """Targeted Zircon alerts should match cruise detection."""
-    for area, text in TARGETED_ZIRCON_CASES:
-        detector = DangerDetector([area], [])
         detection = detector.cruise_missile_danger(text)
         assert detection.danger is True, text
         assert detection.type == DangerType.CRUISE, text

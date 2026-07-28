@@ -11,17 +11,28 @@ DRONE_CASES: list[tuple[str, str]] = [
     (DRONE_DANGER[10], "🛵 У бік Нивок."),
     (DRONE_DANGER[10], "🛵 Нивки, може бути гучно!"),
     (DRONE_DANGER[10], "🛵 Курс на Нивки/Святошино."),
-    (DRONE_DANGER[10], "Святошино/Нивки 🛵"),
-    (DRONE_DANGER[13], "Нивки над вами БПЛА!"),
-    (DRONE_DANGER[18], "❗️ Київ — 1х Академ/Коцюбинське."),
+    (DRONE_DANGER[11], "Святошино/Нивки 🛵"),
+    (DRONE_DANGER[14], "Нивки над вами БПЛА!"),
+    (DRONE_DANGER[21], "❗️ Київ — 1х Академ/Коцюбинське."),
     (
-        DRONE_DANGER[18],
+        DRONE_DANGER[21],
         "Київ:\n 1х Нивки/Сирець\n 2х Жуляни\n \n 1х ДВРЗ/Березняки",
     ),
-    (DRONE_DANGER[18], "❗️ Київ — 1х Нивки Сирець"),
-    (DRONE_DANGER[19], "Київ: \n 2х Куренівка Нивки \n 1х Бортничі"),
-    (DRONE_DANGER[19], "❗️ Київ — 1х на Святошин."),
-    (DRONE_DANGER[23], "Антонов йде!"),
+    (DRONE_DANGER[21], "❗️ Київ — 1х Нивки Сирець"),
+    (DRONE_DANGER[22], "Київ: \n 2х Куренівка Нивки \n 1х Бортничі"),
+    (DRONE_DANGER[22], "❗️ Київ — 1х на Святошин."),
+    (DRONE_DANGER[31], "Антонов йде!"),
+]
+
+DRONE_MESSAGE_CASES: list[str] = [
+    "Нивки увага БПЛА!",
+    "🛵 Шахед на Академмістечко.",
+    "🛵 Нивки!",
+    "🛵На Святошино йде!",
+    "🛵 Шулявка/Солома.",
+    "🛵 Нивки – шахед.",
+    "🟡🛵Академмістечко!",
+    "🟡🛵 Шахед на Біличі/Берестейський проспект!",
 ]
 
 REACTIVE_DRONE_CASES: list[tuple[str, str, str]] = [
@@ -122,6 +133,16 @@ def test_drone_only() -> None:
         assert detection.danger_pattern == danger_template.replace(
             "{area}", detection.area_pattern
         ), text
+        assert detector.danger(text).type == DangerType.DRONE, text
+
+
+def test_drone_messages() -> None:
+    """Drone messages should match their configured locality."""
+    detector = DangerDetector(REGION_PATTERNS, LOCALITY_PATTERNS)
+    for text in DRONE_MESSAGE_CASES:
+        detection = detector.drone_danger(text)
+        assert detection.danger is True, text
+        assert detection.type == DangerType.DRONE, text
         assert detector.danger(text).type == DangerType.DRONE, text
 
 
