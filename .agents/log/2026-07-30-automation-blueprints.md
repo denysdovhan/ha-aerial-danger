@@ -6,6 +6,7 @@ related_paths:
   - .pre-commit-config.yaml
   - blueprints/aerial_danger_critical_notification.yaml
   - blueprints/telegram_scrape_refresh.yaml
+  - readme.md
 ---
 
 # Automation blueprints
@@ -32,6 +33,8 @@ critical danger notifications without excessive repeat alerts.
 - Accept an optional list of Ukraine Alarm safety binary sensors and refresh
   while any selected sensor is `on`.
 - Use `homeassistant.update_entity` with `restart` mode.
+- Place My Home Assistant import buttons beside the corresponding Scrape
+  refresh and critical-notification instructions in `readme.md`.
 - Disable YAML Language Server schema validation because Home Assistant has no
   official public blueprint JSON schema and SchemaStore selects Torque.
 
@@ -66,3 +69,6 @@ choices so the automation does not trigger every second. Excluded `blueprints/`
 from generic `check-yaml`; Home Assistant's loader validates its custom `!input`
 tags instead. Home Assistant 2026.7.2 accepted default and configured inputs;
 lint passed; 111 tests passed.
+
+2026-07-30: Published the blueprints and added their My Home Assistant import
+buttons to the matching README sections.

@@ -126,7 +126,13 @@ This integrations has full English localization. Below is a Ukrainian setup guid
 
 Scrape за замовчуванням опитує ресурс кожні 600 секунд (10 хвилин). В умовах повітряної тривоги цього недостатньо.
 
-Щоб примусово оновлювати джерела кожні 5 секунд, створіть автоматизацію:
+Імпортуйте готовий blueprint і створіть із нього автоматизацію:
+
+[![Імпортувати blueprint для оновлення Telegram-сенсорів][blueprint-install-image]][telegram-scrape-blueprint-install-url]
+
+Виберіть створені Scrape-сенсори, інтервал 5 або 10 секунд і, за потреби, сенсори Ukraine Alarm.
+
+Або створіть автоматизацію вручну:
 
 ```yaml
 alias: Оновлення Telegram-сенсорів кожні 5 секунд
@@ -213,6 +219,14 @@ max_exceeded: silent
 
 Основна мета інтеграції — запускати автоматизації та критичні сповіщення при виявленні загрози.
 
+### Критичні сповіщення
+
+Імпортуйте готовий blueprint і створіть із нього автоматизацію:
+
+[![Імпортувати blueprint критичних сповіщень][blueprint-install-image]][critical-notification-blueprint-install-url]
+
+Виберіть пристрій Aerial Danger, телефон із застосунком Home Assistant і затримку між повторними сповіщеннями.
+
 ### Вбудовані тригери
 
 У редакторі автоматизації виберіть пристрій Aerial Danger, а потім один із тригерів:
@@ -288,4 +302,7 @@ max_exceeded: silent
 [ukraine-alarm-url]: https://www.home-assistant.io/integrations/ukraine_alarm/
 [aerial-danger-install-image]: https://my.home-assistant.io/badges/config_flow_start.svg
 [aerial-danger-install-url]: https://my.home-assistant.io/redirect/config_flow_start/?domain=aerial_danger
+[blueprint-install-image]: https://my.home-assistant.io/badges/blueprint_import.svg
+[telegram-scrape-blueprint-install-url]: https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fdenysdovhan%2Fha-aerial-danger%2Fblob%2Fmain%2Fblueprints%2Ftelegram_scrape_refresh.yaml
+[critical-notification-blueprint-install-url]: https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fdenysdovhan%2Fha-aerial-danger%2Fblob%2Fmain%2Fblueprints%2Faerial_danger_critical_notification.yaml
 [python-regex-url]: https://docs.python.org/3/library/re.html
