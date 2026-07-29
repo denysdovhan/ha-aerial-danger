@@ -2,13 +2,11 @@
 
 <!-- markdownlint-disable no-inline-html -->
 <h1 align="center">
-  <img alt="HA Aerial Danger Logo" src="./assets/logo.png" width="250px">
+  <img alt="HA Aerial Danger logo" src="./assets/logo.png" width="250px">
   <br />
-  💥 HA Aerial Danger — Моніторинг повітряних загроз
+  💥 HA Aerial Danger
 </h1>
 <!-- markdownlint-enable no-inline-html -->
-
-<!-- # 💥 HA Aerial Danger -->
 
 [![GitHub Release][gh-release-image]][gh-release-url]
 [![GitHub Downloads][gh-downloads-image]][gh-downloads-url]
@@ -18,77 +16,250 @@
 [![Twitter][twitter-image]][twitter-url]
 
 > [!NOTE]
-> A [Home Assistant][home-assistant] integration that detects aerial danger alerts for your configured areas from text published by selected entities.
+> A [Home Assistant][home-assistant] integration for detecting aerial danger affecting configured Ukrainian regions and localities.
 
-Aerial Danger monitors entities containing Ukrainian alert messages, matches them against your area patterns, and provides binary sensors, diagnostic sensors, and events for use in dashboards and automations.
+**Aerial Danger** analyzes text from selected Home Assistant entities and exposes safety sensors, events, and automation triggers.
 
-It detects intermediate-range ballistic missiles, ballistic missiles, cruise missiles, drones, and unknown aerial dangers. A separate **Danger** sensor indicates when any supported danger is active.
+It recognizes: intermediate-range ballistic missiles, ballistic missiles, cruise missiles, drones, unknown/generic aerial threats.
+
+This integrations has full English localization. Below is a Ukrainian setup guide, since Ukrainians suffering from attacks are the main target audience of this integration.
+
+---
+
+## Про інтеграцію
+
+**Aerial Danger** аналізує повідомлення про повітряні загрози та визначає, чи стосуються вони вибраного регіону або місцевості.
+
+Інтеграція не отримує повідомлення самостійно. Їй потрібні інші сутності Home Assistant, стан яких містить текст для аналізу. Наприклад, такі сутності можна створити за допомогою інтеграції [Scrape](https://www.home-assistant.io/integrations/scrape) для публічних Telegram-каналів.
 
 > [!CAUTION]
-> This integration can make mistakes and may miss or detect messages late. Do not use it as your only or official alert source. Always follow official alerts and instructions. When an air-raid alert is issued, immediately go to the nearest shelter and remain there until the official all-clear.
+> **Інтеграція може помилятися, пропускати повідомлення або виявляти їх із запізненням.**
 >
-> The integration is provided “as is.” Its author and maintainer do not guarantee the accuracy, completeness, or timeliness of its data and are not responsible for users’ safety, decisions made, or consequences arising from its use.
+> Не використовуйте її як єдине чи офіційне джерело сповіщень.
+>
+> Завжди стежте за офіційними сповіщеннями та виконуйте їхні вказівки. Під час повітряної тривоги негайно прямуйте до найближчого укриття та залишайтеся там до офіційного відбою.
+>
+> Інтеграція надається «як є». Автор не гарантує точність, повноту чи своєчасність даних і не несе відповідальності за безпеку користувачів, ухвалені рішення або наслідки використання інтеграції.
 
-## Sponsorship
+## Підтримати проєкт
 
-Your generosity will help me maintain and develop more projects like this one.
+Ваша підтримка допомагає розвивати цей та інші українські проєкти для Home Assistant.
 
-- 💖 [Sponsor on GitHub][gh-sponsors-url]
+- 💖 [GitHub Sponsors][gh-sponsors-url]
 - ☕️ [Buy Me A Coffee][buymeacoffee-url]
 - Bitcoin: `bc1q7lfx6de8jrqt8mcds974l6nrsguhd6u30c6sg8`
 - Ethereum: `0x6aF39C917359897ae6969Ad682C14110afe1a0a1`
 
-## Installation
+## Встановлення
 
-The quickest way to install this integration is via [HACS][hacs-url] by clicking the button below:
+Найпростіший спосіб встановити інтеграцію — через [HACS][hacs-url]:
 
-[![Add to HACS via My Home Assistant][hacs-install-image]][hasc-install-url]
+[![Додати до HACS через My Home Assistant][hacs-install-image]][hacs-install-url]
 
-If it doesn't work, add this repository to HACS manually by using this URL:
+<details>
+  <summary>Якщо кнопка не працює, додайте репозиторій вручну</summary>
 
-1. Visit **HACS** → **Integrations** → **...** (in the top right) → **Custom repositories**
-2. Click **Add**
-3. Paste `https://github.com/denysdovhan/ha-aerial-danger` into the **URL** field
-4. Choose **Integration** as the **Category**
-5. **Aerial Danger** will appear in the list of available integrations. Install it normally.
+1. Відкрийте **HACS → Інтеграції**.
+2. Відкрийте меню **⋮ → Користувацькі репозиторії**.
+3. Вставте `https://github.com/denysdovhan/ha-aerial-danger`.
+4. Виберіть категорію **Integration** і натисніть **Add**.
+5. Знайдіть **Aerial Danger**, встановіть інтеграцію та перезапустіть Home Assistant.
 
-## Usage
+</details>
 
-Before setup, create or choose a Home Assistant entity whose state contains incoming alert text. You can create these entities with the [Scrape integration](https://www.home-assistant.io/integrations/scrape) for public Telegram channels such as:
+## Налаштування джерел повідомлень
 
-- [Air Force of the Armed Forces of Ukraine](https://telegram.me/s/kpszsu)
-- [War Monitor](https://telegram.me/war_monitor)
+Для роботи Aerial Danger потрібне джерело повідомлень про загрози.
 
-Choose the resulting sensors as source entities when configuring Aerial Danger.
+Джерелом можуть слугувати будь-які сутності Home Assistant, стан яких містить актуальний текст повідомлення, наприклад: `input_text`, `sensor`, `text`.
 
-This integration is configurable via UI. On the **Devices and Services** page, click **Add Integration** and search for **Aerial Danger**.
+> [!WARNING]
+> Користувачі самостійно обирають джерела повідомлень. Інтеграція не перевіряє достовірність або повноту даних і не гарантує своєчасність сповіщень.
 
-Configure the integration with:
+В якості джерел повідомлень про загрози можна використовувати моніторингові Телеграм-канал, наприклад:
 
-- **Name** — the name of the detection entry and device.
-- **Source entities** — entities whose state contains alert messages.
-- **Regions** — select built-in region presets, add a YAML list of custom Python regular expressions, or combine both.
-- **Localities** — select presets belonging to the chosen regions, add a YAML list of custom regular expressions, or combine both.
+| Канал                                                             | Адреса                              |
+| ----------------------------------------------------------------- | ----------------------------------- |
+| [Повітряні Сили ЗСУ](https://telegram.me/s/kpszsu)                | `https://telegram.me/s/kpszsu`      |
+| [War Monitor](https://telegram.me/s/war_monitor)                  | `https://telegram.me/s/war_monitor` |
+| [Aeris Rimor](https://telegram.me/s/AerisRimor)                   | `https://telegram.me/s/AerisRimor`  |
+| [Оперативний інформ](https://telegram.me/s/operinform)            | `https://telegram.me/s/operinform`  |
+| [Kyiv Air Defence](https://telegram.me/s/kyiv_airdef) (лише Київ) | `https://telegram.me/s/kyiv_airdef` |
 
-The first built-in region is Kyiv, with Sviatoshyn, Akademmistechko, Antonov, Nyvky, and Vynohradar localities. At least one effective region or locality pattern and one source entity are required. You can change sources, presets, and custom patterns later from the integration options. Rename the entry through Home Assistant's native entry rename action.
+Читати повідомлення з Telegram-каналів можна за допомогою інтеграції [Scrape][scrape-url].
 
-The integration creates a binary sensor for each supported danger type, an aggregate **Danger** binary sensor, diagnostic sensors for the matched message, area, danger, and source, and a **Danger detected** event entity. Diagnostic sensors show **Clear** when no danger is active; the matched area shows **Nationwide** for IRBM danger. Repeat the setup to monitor different providers, areas, or source groups independently.
+### Створіть Scrape-сенсор для читання Telegram-каналів
 
-To trigger an automation when a danger is detected, add a trigger and select the
-Aerial Danger device. Then choose either **Any danger** or a trigger for a
-specific danger type: IRBM, ballistic, cruise missile, drone, or unknown. Each
-trigger fires for every matching detection, including repeated detections of the
-same type.
+Додайте запис інтеграції [Scrape][scrape-url] для кожного потрібного каналу. Натисніть на кнопку, щоб налаштувати запис:
 
-## Development
+[![Додати інтеграцію Scrape][scrape-install-image]][scrape-install-url]
 
-Want to contribute to the project?
+<details>
+  <summary>Якщо кнопка не працює, налаштуйте запис вручну</summary>
 
-First, thanks! Check the [contributing guideline](./contributing.md) for more information.
+1. Відкрийте **Налаштування → Пристрої та служби → Додати інтеграцію** та виберіть **Scrape**.
+2. Створіть ресурс із URL каналу у форматі `https://telegram.me/s/CHANNEL`.
+3. У створеному записі Scrape додайте сенсор із параметрами нижче.
 
-## License
+</details>
 
-MIT © [Denys Dovhan][denysdovhan]
+Заповніть параметри за прикладом (приклад для каналу Повітряних сил ЗСУ):
+
+| Параметр | Значення                       |
+| -------- | ------------------------------ |
+| Ресурс   | `https://telegram.me/s/kpszsu` |
+| Метод    | `GET`                          |
+
+На наступному кроці додайте сенсор із параметрами нижче:
+
+| Параметр                                 | Значення                                                 |
+| ---------------------------------------- | -------------------------------------------------------- |
+| Назва                                    | `Повітряні Сили ЗСУ Telegram`                            |
+| CSS-селектор                             | `.js-widget_message_wrap:last-child .js-message_text`    |
+| Додаткові налаштування → Шаблон значення | `{{ value \| trim \| truncate(255, end='', leeway=0) }}` |
+
+Шаблон прибирає зайві пробіли та обмежує стан сенсора до 255 символів — максимальної довжини стану сутності Home Assistant.
+
+Повторіть налаштування для кожного потрібного каналу.
+
+### Оновлюйте дані створених сенсорів частіше
+
+Scrape за замовчуванням опитує ресурс кожні 600 секунд (10 хвилин). В умовах повітряної тривоги цього недостатньо.
+
+Щоб примусово оновлювати джерела кожні 5 секунд, створіть автоматизацію:
+
+```yaml
+alias: Оновлення Telegram-сенсорів кожні 5 секунд
+description: Примусово оновлює джерела повідомлень для Aerial Danger
+triggers:
+  - trigger: time_pattern
+    seconds: "/5"
+conditions: []
+actions:
+  - action: homeassistant.update_entity
+    target:
+      entity_id:
+        - sensor.telegram_kpszsu
+mode: single
+max_exceeded: silent
+```
+
+> [!IMPORTANT]
+> Замініть `sensor.telegram_kpszsu` на фактичний ідентифікатор свого сенсора. Для кількох каналів додайте всі сутності до списку `entity_id`.
+
+> [!TIP]
+> Щоб зменшити інтенсивність опитування, можна примусово оновлювати сенсори лише під час активної повітряної тривоги. Для цього додайте умову перевірки стану офіційного сенсора [Ukraine Alarm][ukraine-alarm-url] у блоці `conditions` автоматизації.
+
+## Налаштування Aerial Danger
+
+Додайте запис інтеграції **Aerial Danger (Повітряна загроза)** натиснувши на кнопку:
+
+[![Налаштувати Aerial Danger][aerial-danger-install-image]][aerial-danger-install-url]
+
+<details>
+  <summary>Якщо кнопка не працює, налаштуйте інтеграцію вручну</summary>
+
+1. Відкрийте **Налаштування → Пристрої та служби → Додати інтеграцію**.
+2. Знайдіть **Aerial Danger**.
+
+</details>
+
+Налаштуйте імʼя запису (за замовчування імʼя вашого дому) та вкажіть джерела повідомлень про загрози.
+
+### Налаштування регіонів та місцевостей
+
+**Регіони** використовуються для виявлення балістичних, крилатих та інших швидкісних загроз.
+
+**Місцевості** використовуються для дронів і всіх інших типів загроз.
+
+> [!TIP]
+> Рекомендуємо обрати свою та сусідні місцевості, щоб отримувати повідомлення про наближення цілей.
+
+Готові пресети можна поєднувати з власними Python-сумісними регулярними виразами у форматі списку YAML:
+
+```yaml
+- (до|на) нас
+- наш(у|ої) област(ь|і)?
+```
+
+> [!IMPORTANT]
+> Потрібно вибрати щонайменше одне джерело та додати щонайменше один регіон або одну місцевість.
+
+Для різних територій, провайдерів або груп каналів можна створити кілька незалежних записів інтеграції.
+
+## Створені сутності
+
+Кожен запис інтеграції створює такі сутності:
+
+| Тип               | Сутності                                                              | Призначення                                      |
+| ----------------- | --------------------------------------------------------------------- | ------------------------------------------------ |
+| Сенсори небезпеки | БРСД[^1], балістика, крилаті ракети, дрони, невідома небезпека        | Показують активну загрозу відповідного типу      |
+| Загальний сенсор  | **Небезпека**                                                         | Увімкнений, доки активна хоча б один тим загрози |
+| Додаткові сенсори | Останнє повідомлення про небезпеку, область, тип небезпеки та джерело | Показують дані останнього активного виявлення    |
+| Сутність подій    | **Виявлена небезпека**                                                | Реєструє кожне нове виявлення для автоматизацій  |
+
+Усі бінарні сенсори мають стабільні атрибути:
+
+| Атрибут            | Значення                                                             |
+| ------------------ | -------------------------------------------------------------------- |
+| `matched_message`  | Повний текст повідомлення, у якому знайдено загрозу                  |
+| `matched_area`     | Частина повідомлення, що відповідає вибраному регіону або місцевості |
+| `matched_danger`   | Частина повідомлення, що відповідає типу загрози                     |
+| `source_entity_id` | Ідентифікатор сутності, з якої надійшло повідомлення                 |
+
+Для загрози БРСД[^1] область показує **Вся країна**, оскільки такі повідомлення вважаються загальнонаціональними.
+
+## Автоматизації та сповіщення
+
+Основна мета інтеграції — запускати автоматизації та критичні сповіщення при виявленні загрози.
+
+### Вбудовані тригери
+
+У редакторі автоматизації виберіть пристрій Aerial Danger, а потім один із тригерів:
+
+- **Виявлено будь-яку небезпеку**
+- **Виявлено небезпеку балістики середньої дальності**
+- **Виявлено балістичну небезпеку**
+- **Виявлено небезпеку крилатих ракет**
+- **Виявлено небезпеку дронів**
+- **Виявлено невстановлену небезпеку**
+
+> [!IMPORTANT]
+> Тригери спрацьовують для кожного відповідного виявлення, зокрема для повторних повідомлень того самого типу.
+
+## Як працює виявлення
+
+1. Інтеграція реагує на зміну текстового стану кожної вибраної сутності; зовнішні дані самостійно не опитує.
+2. Кожне повідомлення перевіряється на наявність ключових слів, що відповідають типам загроз, а також на наявність згадки вибраного регіону або місцевості.
+3. Для одного джерела зберігається перший знайдений тип небезпеки.
+   1. БРСД[^1] не потребує згадки місцевості чи регіону.
+   2. Дрони потребують лише назви місцевості.
+   3. Решта типів загроз — або регіону, або місцевості.
+4. Стан залишається активним, доки не надійде нове повідомлення, що не містить інформації без загрози.
+5. Джерела обробляються незалежно: безпечне повідомлення очищає стан лише свого джерела.
+6. Кожне нове виявлення оновлює сутність подій і діагностичні дані про виявлену небезпеку.
+7. Повторне повідомлення того самого типу також створює нову подію про виявлення небезпеки.
+
+## Усунення проблем
+
+- **Джерело порожнє або `unavailable`:** перевірте URL, CSS-селектор і доступність публічного каналу без авторизації.
+- **Загроза не виявляється:** перевірте, чи стан джерела містить повний текст, а повідомлення згадує вибраний регіон або місцевість.
+- **Надто багато запитів:** збільште інтервал оновлення Scrape до 10 секунд і залиште лише потрібні канали.
+- **Потрібно змінити території:** відкрийте **Налаштування** запису інтеграції та оновіть пресети або власні регулярні вирази. r
+
+## Розробка
+
+Хочете допомогти проєкту? Дякуємо! Перегляньте [настанови для учасників](./contributing.md).
+
+## License / Ліцензія
+
+**English:** [MIT License](./license.md) © [Denys Dovhan][denysdovhan].
+
+**Українською:** [Ліцензія MIT](./license.md) © [Денис Довгань][denysdovhan].
+
+<!-- Footnotes -->
+
+[^1]: БРСД — Балістика середньої дальності
 
 <!-- Badges -->
 
@@ -109,5 +280,11 @@ MIT © [Denys Dovhan][denysdovhan]
 
 [home-assistant]: https://www.home-assistant.io/
 [denysdovhan]: https://github.com/denysdovhan
-[hasc-install-url]: https://my.home-assistant.io/redirect/hacs_repository/?owner=denysdovhan&repository=ha-aerial-danger&category=integration
+[hacs-install-url]: https://my.home-assistant.io/redirect/hacs_repository/?owner=denysdovhan&repository=ha-aerial-danger&category=integration
 [hacs-install-image]: https://my.home-assistant.io/badges/hacs_repository.svg
+[scrape-url]: https://www.home-assistant.io/integrations/scrape/
+[scrape-install-url]: https://my.home-assistant.io/redirect/config_flow_start?domain=scrape
+[scrape-install-image]: https://my.home-assistant.io/badges/config_flow_start.svg
+[ukraine-alarm-url]: https://www.home-assistant.io/integrations/ukraine_alarm/
+[aerial-danger-install-image]: https://my.home-assistant.io/badges/config_flow_start.svg
+[aerial-danger-install-url]: https://my.home-assistant.io/redirect/config_flow_start/?domain=aerial_danger
