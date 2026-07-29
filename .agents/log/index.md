@@ -1,5 +1,6 @@
 | Date       | Name                                                                             | Status |
 | ---------- | -------------------------------------------------------------------------------- | ------ |
+| 2026-07-29 | [Text source selector](2026-07-29-text-source-selector.md)                       | wip    |
 | 2026-07-28 | [Default region patterns](2026-07-28-default-region-patterns.md)                 | wip    |
 | 2026-07-28 | [Danger phrase precision](2026-07-28-danger-phrase-precision.md)                 | wip    |
 | 2026-07-27 | [Diagnostic match sensors](2026-07-27-diagnostic-match-sensors.md)               | done   |

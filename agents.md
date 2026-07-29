@@ -44,7 +44,7 @@ This repository implements the Home Assistant custom integration **Aerial Danger
 
 - `__init__.py` — sets up/unloads each config entry and listens to source state changes.
 - `runtime.py` — defines typed direct-push `ConfigEntry.runtime_data` and derives aggregate state from active detections per source.
-- `config_flow.py` — multi-entry config flow with user-defined entry titles and options for area regex patterns and source entities; requires patterns and sources and rejects invalid regex patterns.
+- `config_flow.py` — multi-entry config flow with user-defined entry titles and options for area regex patterns and text-state source entities; requires patterns and sources and rejects invalid regex patterns.
 - `const.py` — grouped configuration, attribute, state, event, logger, and integration constants.
 - `entity.py` — shared runtime and device setup for integration entities.
 - `binary_sensor.py` — safety binary sensors for IRBM, ballistic, cruise, drone, unknown, and aggregate danger; all expose stable matched-message, area, danger, and source attributes.

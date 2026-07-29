@@ -18,7 +18,7 @@ that also work outside Kyiv.
 ## Decision
 
 - Prefill new entries with `(до|на) нас` and
-  `наш(у|ої) област(ьі|і)?`.
+  `наш(у|ої) област(ь|і)?`.
 - Keep the Kyiv regexes as translated documentation examples only.
 - Keep the values editable and removable.
 - Do not apply these defaults to existing entries or the options flow.

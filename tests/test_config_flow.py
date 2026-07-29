@@ -78,6 +78,35 @@ async def test_config_name_defaults_to_home_name(hass: HomeAssistant) -> None:
     assert name_marker.default() == hass.config.location_name
 
 
+async def test_source_selectors_filter_text_state_domains(
+    hass: HomeAssistant,
+) -> None:
+    """Test config and options source selectors show text-state domains."""
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN, context={"source": SOURCE_USER}
+    )
+    source_selector = result["data_schema"].schema[CONF_SOURCES]
+    assert isinstance(source_selector, selector.EntitySelector)
+    assert source_selector.config["filter"] == [
+        {"domain": ["input_text", "sensor", "text"]}
+    ]
+
+    entry = _entry(
+        {
+            CONF_REGION_PATTERNS: ["region"],
+            CONF_LOCALITY_PATTERNS: [],
+            CONF_SOURCES: ["sensor.alerts"],
+        }
+    )
+    entry.add_to_hass(hass)
+    result = await hass.config_entries.options.async_init(entry.entry_id)
+    source_selector = result["data_schema"].schema[CONF_SOURCES]
+    assert isinstance(source_selector, selector.EntitySelector)
+    assert source_selector.config["filter"] == [
+        {"domain": ["input_text", "sensor", "text"]}
+    ]
+
+
 async def test_config_preset_only_and_selector_shape(hass: HomeAssistant) -> None:
     """Test preset-only configuration and dependent selectors."""
     result = await _config_regions(hass, name="Kyiv alerts")
@@ -87,7 +116,7 @@ async def test_config_preset_only_and_selector_shape(hass: HomeAssistant) -> Non
     )
     assert region_pattern_marker.default() == [
         r"(до|на) нас",
-        r"наш(у|ої) област(ьі|і)?",
+        r"наш(у|ої) област(ь|і)?",
     ]
     region_selector = result["data_schema"].schema[CONF_REGION_PRESETS]
     assert isinstance(region_selector, selector.SelectSelector)

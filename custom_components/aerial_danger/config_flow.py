@@ -32,6 +32,8 @@ from .danger.presets import PRESETS
 if TYPE_CHECKING:
     from homeassistant.data_entry_flow import FlowResult
 
+SOURCE_ENTITY_DOMAINS = ["input_text", "sensor", "text"]
+
 
 def _validate_pattern_input(value: Any) -> list[str] | None:
     """Validate YAML pattern input."""
@@ -61,6 +63,16 @@ def build_preset_selector(
             multiple=True,
             mode=selector.SelectSelectorMode.DROPDOWN,
             translation_key=translation_key,
+        )
+    )
+
+
+def build_source_selector() -> selector.EntitySelector:
+    """Create a selector for entities whose state can contain message text."""
+    return selector.EntitySelector(
+        selector.EntitySelectorConfig(
+            filter=selector.EntityFilterSelectorConfig(domain=SOURCE_ENTITY_DOMAINS),
+            multiple=True,
         )
     )
 
@@ -142,9 +154,7 @@ class AerialDangerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     vol.Optional(CONF_NAME, default=self._name): str,
                     vol.Required(
                         CONF_SOURCES, default=self._sources
-                    ): selector.EntitySelector(
-                        selector.EntitySelectorConfig(multiple=True)
-                    ),
+                    ): build_source_selector(),
                 }
             ),
             errors=errors,
@@ -259,9 +269,7 @@ class AerialDangerOptionsFlow(config_entries.OptionsFlow):
                 {
                     vol.Required(
                         CONF_SOURCES, default=current_sources
-                    ): selector.EntitySelector(
-                        selector.EntitySelectorConfig(multiple=True)
-                    )
+                    ): build_source_selector()
                 }
             ),
             errors=errors,
