@@ -1,0 +1,58 @@
+# No official public HA blueprint schema exists; SchemaStore selects Torque.
+# yaml-language-server: $schema=none
+
+blueprint:
+  name: Aerial Danger critical notification
+  description: >-
+    Send a critical mobile notification for every danger detected by an
+    Aerial Danger device. Requires critical notification permission on iOS.
+  domain: automation
+  author: Denys Dovhan
+  source_url: >-
+    https://github.com/denysdovhan/ha-aerial-danger/blob/main/blueprints/aerial_danger_critical_notification.yaml
+  homeassistant:
+    min_version: "2026.7.0"
+  input:
+    aerial_danger_device:
+      name: Aerial Danger device
+      selector:
+        device:
+          filter:
+            - integration: aerial_danger
+    mobile_device:
+      name: Mobile phone
+      selector:
+        device:
+          filter:
+            - integration: mobile_app
+    notification_cooldown:
+      name: Notification cooldown
+      description: Ignore new danger triggers for this duration after notifying.
+      default:
+        minutes: 5
+      selector:
+        duration: {}
+
+triggers:
+  - trigger: aerial_danger.danger
+    target:
+      device_id: !input aerial_danger_device
+
+actions:
+  - device_id: !input mobile_device
+    domain: mobile_app
+    type: notify
+    title: Aerial danger
+    message: >-
+      {{ trigger.to_state.attributes.matched_area }} —
+      {{ trigger.to_state.attributes.matched_message }}
+    data:
+      push:
+        interruption-level: critical
+      ttl: 0
+      priority: high
+      channel: alarm_stream
+  - delay: !input notification_cooldown
+
+mode: single
+max_exceeded: silent

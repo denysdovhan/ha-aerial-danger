@@ -1,0 +1,71 @@
+# No official public HA blueprint schema exists; SchemaStore selects Torque.
+# yaml-language-server: $schema=none
+
+blueprint:
+  name: Telegram Scrape sensor refresh
+  description: >-
+    Force selected Scrape sensors to refresh every 5 or 10 seconds. Optionally
+    refresh only while a selected Ukraine Alarm safety sensor is active.
+  domain: automation
+  author: Denys Dovhan
+  source_url: >-
+    https://github.com/denysdovhan/ha-aerial-danger/blob/main/blueprints/telegram_scrape_refresh.yaml
+  homeassistant:
+    min_version: "2024.10.0"
+  input:
+    scrape_sensors:
+      name: Telegram Scrape sensors
+      description: Select one or more Scrape sensors that read Telegram channels.
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - integration: scrape
+              domain: sensor
+    refresh_interval:
+      name: Refresh interval
+      description: How often to refresh the selected Scrape sensors.
+      default: "/5"
+      selector:
+        select:
+          options:
+            - label: Every 5 seconds
+              value: "/5"
+            - label: Every 10 seconds
+              value: "/10"
+    ukraine_alarm_sensors:
+      name: Ukraine Alarm sensors
+      description: >-
+        Optional. Select the Air safety sensor for each Ukraine Alarm region.
+        Refreshing runs while at least one selected sensor is active.
+      default: []
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - integration: ukraine_alarm
+              domain: binary_sensor
+              device_class: safety
+
+variables:
+  ukraine_alarm_sensors: !input ukraine_alarm_sensors
+
+triggers:
+  - trigger: time_pattern
+    seconds: !input refresh_interval
+
+conditions:
+  - condition: template
+    value_template: >-
+      {{ not ukraine_alarm_sensors
+         or expand(ukraine_alarm_sensors)
+           | selectattr('state', 'eq', 'on')
+           | list
+           | count > 0 }}
+
+actions:
+  - action: homeassistant.update_entity
+    target:
+      entity_id: !input scrape_sensors
+
+mode: restart

@@ -1,5 +1,6 @@
 | Date       | Name                                                                             | Status |
 | ---------- | -------------------------------------------------------------------------------- | ------ |
+| 2026-07-30 | [Automation blueprints](2026-07-30-automation-blueprints.md)                     | wip    |
 | 2026-07-29 | [Text source selector](2026-07-29-text-source-selector.md)                       | wip    |
 | 2026-07-28 | [Default region patterns](2026-07-28-default-region-patterns.md)                 | wip    |
 | 2026-07-28 | [Danger phrase precision](2026-07-28-danger-phrase-precision.md)                 | wip    |
