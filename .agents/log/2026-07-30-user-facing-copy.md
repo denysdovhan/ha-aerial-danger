@@ -34,6 +34,7 @@ or do not explain how to fix invalid input.
 - Use «Джерело повідомлень» consistently in Ukrainian source labels.
 - Make errors explain the corrective action.
 - Keep translation keys and preset names unchanged.
+- Keep external links in translated flow copy via description placeholders.
 
 ## Verification
 
@@ -41,6 +42,7 @@ or do not explain how to fix invalid input.
 - [x] JSON, Markdown, links, and YAML examples validate
 - [x] `scripts/lint`
 - [x] `scripts/test`
+- [ ] Hassfest accepts translated external-link placeholders
 
 ## Implementation Notes
 
@@ -55,3 +57,9 @@ and all English "Matched" labels, restored the original Ukrainian entry/device
 name description, standardized Ukrainian source labels on «Джерело
 повідомлень», and removed diagnostic sensors from the English introduction.
 Lint passed and all 111 tests passed after the revisions.
+
+2026-07-30: Hassfest rejected literal URLs in five English flow strings.
+Replaced them with config and options flow description placeholders while
+keeping the links in both supported locales. Added flow-result regression
+coverage; lint passed and all 112 tests passed. Exact Hassfest recheck remains
+pending because the local Docker daemon is unavailable.

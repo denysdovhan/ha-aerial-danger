@@ -107,6 +107,64 @@ async def test_source_selectors_filter_text_state_domains(
     ]
 
 
+async def test_description_placeholders(hass: HomeAssistant) -> None:
+    """Test config and options flows provide external-link placeholders."""
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN, context={"source": SOURCE_USER}
+    )
+    assert result["description_placeholders"] == {
+        "scrape_url": "https://www.home-assistant.io/integrations/scrape",
+        "air_force_url": "https://telegram.me/s/kpszsu",
+        "war_monitor_url": "https://telegram.me/s/war_monitor",
+    }
+
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"],
+        {
+            CONF_NAME: DEFAULT_NAME,
+            CONF_SOURCES: ["sensor.alerts"],
+        },
+    )
+    assert result["description_placeholders"] == {
+        "regex_url": "https://docs.python.org/3/library/re.html"
+    }
+
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"],
+        {
+            CONF_REGION_PRESETS: ["kyiv"],
+            CONF_REGION_PATTERNS: [],
+        },
+    )
+    assert result["description_placeholders"] == {
+        "regex_url": "https://docs.python.org/3/library/re.html"
+    }
+
+    entry = _entry(
+        {
+            CONF_REGION_PATTERNS: ["region"],
+            CONF_LOCALITY_PATTERNS: [],
+            CONF_SOURCES: ["sensor.alerts"],
+        }
+    )
+    entry.add_to_hass(hass)
+    result = await _options_regions(hass, entry)
+    assert result["description_placeholders"] == {
+        "regex_url": "https://docs.python.org/3/library/re.html"
+    }
+
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"],
+        {
+            CONF_REGION_PRESETS: ["kyiv"],
+            CONF_REGION_PATTERNS: [],
+        },
+    )
+    assert result["description_placeholders"] == {
+        "regex_url": "https://docs.python.org/3/library/re.html"
+    }
+
+
 async def test_config_preset_only_and_selector_shape(hass: HomeAssistant) -> None:
     """Test preset-only configuration and dependent selectors."""
     result = await _config_regions(hass, name="Kyiv alerts")

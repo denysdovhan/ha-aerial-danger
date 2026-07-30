@@ -33,6 +33,14 @@ if TYPE_CHECKING:
     from homeassistant.data_entry_flow import FlowResult
 
 SOURCE_ENTITY_DOMAINS = ["input_text", "sensor", "text"]
+SOURCE_DESCRIPTION_PLACEHOLDERS = {
+    "scrape_url": "https://www.home-assistant.io/integrations/scrape",
+    "air_force_url": "https://telegram.me/s/kpszsu",
+    "war_monitor_url": "https://telegram.me/s/war_monitor",
+}
+REGEX_DESCRIPTION_PLACEHOLDERS = {
+    "regex_url": "https://docs.python.org/3/library/re.html"
+}
 
 
 def _validate_pattern_input(value: Any) -> list[str] | None:
@@ -158,6 +166,7 @@ class AerialDangerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 }
             ),
             errors=errors,
+            description_placeholders=SOURCE_DESCRIPTION_PLACEHOLDERS,
         )
 
     async def async_step_regions(
@@ -182,6 +191,7 @@ class AerialDangerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 self._region_presets, self._region_patterns
             ),
             errors=errors,
+            description_placeholders=REGEX_DESCRIPTION_PLACEHOLDERS,
         )
 
     async def async_step_localities(
@@ -236,6 +246,7 @@ class AerialDangerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 self._region_presets, selected_localities, locality_patterns
             ),
             errors=errors,
+            description_placeholders=REGEX_DESCRIPTION_PLACEHOLDERS,
         )
 
     @staticmethod
@@ -299,6 +310,7 @@ class AerialDangerOptionsFlow(config_entries.OptionsFlow):
             step_id="regions",
             data_schema=build_regions_schema(current_presets, current_patterns),
             errors=errors,
+            description_placeholders=REGEX_DESCRIPTION_PLACEHOLDERS,
         )
 
     async def async_step_localities(
@@ -356,4 +368,5 @@ class AerialDangerOptionsFlow(config_entries.OptionsFlow):
                 self._region_presets, current_presets, current_patterns
             ),
             errors=errors,
+            description_placeholders=REGEX_DESCRIPTION_PLACEHOLDERS,
         )

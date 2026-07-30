@@ -3,7 +3,7 @@
   "config": {
     "step": {
       "user": {
-        "description": "Name this monitoring entry and select the Home Assistant entities whose states contain danger messages.\n\nTo create source entities from public Telegram channels, use the [Scrape integration](https://www.home-assistant.io/integrations/scrape). Example channels:\n\n- [Air Force of the Armed Forces of Ukraine](https://telegram.me/s/kpszsu)\n- [War Monitor](https://telegram.me/s/war_monitor)\n\n**Important:** Aerial Danger can make mistakes, miss messages, or detect them late. Do not use it as your only or official alert source. Always follow official alerts and instructions. During an air-raid alert, go to the nearest shelter immediately and remain there until the official all-clear. The integration is provided “as is.” The author does not guarantee data accuracy, completeness, or timeliness and is not responsible for users’ safety, decisions, or consequences arising from its use.",
+        "description": "Name this monitoring entry and select the Home Assistant entities whose states contain danger messages.\n\nTo create source entities from public Telegram channels, use the [Scrape integration]({scrape_url}). Example channels:\n\n- [Air Force of the Armed Forces of Ukraine]({air_force_url})\n- [War Monitor]({war_monitor_url})\n\n**Important:** Aerial Danger can make mistakes, miss messages, or detect them late. Do not use it as your only or official alert source. Always follow official alerts and instructions. During an air-raid alert, go to the nearest shelter immediately and remain there until the official all-clear. The integration is provided “as is.” The author does not guarantee data accuracy, completeness, or timeliness and is not responsible for users’ safety, decisions, or consequences arising from its use.",
         "data": {
           "name": "Name",
           "sources": "Danger message sources"
@@ -22,7 +22,7 @@
         },
         "data_description": {
           "region_presets": "Optional: select one or more built-in regions.",
-          "region_patterns": "Optional: enter a YAML list with one [regular expression](https://docs.python.org/3/library/re.html) per item.\n\nExample:\n\n```yaml\n- \\bки(їв|єва|єві|єву|євом)\\b\n- \\bстолиц(я|і|ю|ею)\\b\n```"
+          "region_patterns": "Optional: enter a YAML list with one [regular expression]({regex_url}) per item.\n\nExample:\n\n```yaml\n- \\bки(їв|єва|єві|єву|євом)\\b\n- \\bстолиц(я|і|ю|ею)\\b\n```"
         }
       },
       "localities": {
@@ -34,7 +34,7 @@
         },
         "data_description": {
           "locality_presets": "Optional: select one or more built-in localities.\n\n**Tip:** Select your locality and nearby localities to receive notifications about approaching targets.",
-          "locality_patterns": "Optional: enter a YAML list with one [regular expression](https://docs.python.org/3/library/re.html) per item.\n\nExample:\n\n```yaml\n- \\bнив(ки|ках|ками|ок)\\b\n- \\bвиноградар(а|і|ем)?\\b\n```"
+          "locality_patterns": "Optional: enter a YAML list with one [regular expression]({regex_url}) per item.\n\nExample:\n\n```yaml\n- \\bнив(ки|ках|ками|ок)\\b\n- \\bвиноградар(а|і|ем)?\\b\n```"
         }
       }
     },
@@ -66,7 +66,7 @@
         },
         "data_description": {
           "region_presets": "Optional: select one or more built-in regions.",
-          "region_patterns": "Optional: enter a YAML list with one [regular expression](https://docs.python.org/3/library/re.html) per item.\n\nExample:\n\n```yaml\n- \\bки(їв|єва|єві|єву|євом)\\b\n- \\bстолиц(я|і|ю|ею)\\b\n```"
+          "region_patterns": "Optional: enter a YAML list with one [regular expression]({regex_url}) per item.\n\nExample:\n\n```yaml\n- \\bки(їв|єва|єві|єву|євом)\\b\n- \\bстолиц(я|і|ю|ею)\\b\n```"
         }
       },
       "localities": {
@@ -78,7 +78,7 @@
         },
         "data_description": {
           "locality_presets": "Optional: select one or more built-in localities.\n\n**Tip:** Select your locality and nearby localities to receive notifications about approaching targets.",
-          "locality_patterns": "Optional: enter a YAML list with one [regular expression](https://docs.python.org/3/library/re.html) per item.\n\nExample:\n\n```yaml\n- \\bнив(ки|ках|ками|ок)\\b\n- \\bвиноградар(а|і|ем)?\\b\n```"
+          "locality_patterns": "Optional: enter a YAML list with one [regular expression]({regex_url}) per item.\n\nExample:\n\n```yaml\n- \\bнив(ки|ках|ками|ок)\\b\n- \\bвиноградар(а|і|ем)?\\b\n```"
         }
       }
     },
