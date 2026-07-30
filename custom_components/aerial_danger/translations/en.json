@@ -3,45 +3,45 @@
   "config": {
     "step": {
       "user": {
-        "description": "Name this monitoring entry and select the entities whose states the integration will check for danger messages.\n\nYou can create these entities with the [Scrape integration](https://www.home-assistant.io/integrations/scrape) for Telegram channels such as:\n\n- [Air Force of the Armed Forces of Ukraine](https://telegram.me/s/kpszsu)\n- [War Monitor](https://telegram.me/war_monitor)\n\n**‼️ Important:** This integration can make mistakes, miss messages, or detect them late. Do not use it as your only or official alert source. Always follow official alerts and their instructions. During an air-raid alert, immediately go to the nearest shelter and remain there until the official all-clear. The integration is provided “as is.” The author does not guarantee the accuracy, completeness, or timeliness of its data and is not responsible for users’ safety, decisions made, or consequences arising from use of the integration.",
+        "description": "Name this monitoring entry and select the Home Assistant entities whose states contain danger messages.\n\nTo create source entities from public Telegram channels, use the [Scrape integration](https://www.home-assistant.io/integrations/scrape). Example channels:\n\n- [Air Force of the Armed Forces of Ukraine](https://telegram.me/s/kpszsu)\n- [War Monitor](https://telegram.me/s/war_monitor)\n\n**Important:** Aerial Danger can make mistakes, miss messages, or detect them late. Do not use it as your only or official alert source. Always follow official alerts and instructions. During an air-raid alert, go to the nearest shelter immediately and remain there until the official all-clear. The integration is provided “as is.” The author does not guarantee data accuracy, completeness, or timeliness and is not responsible for users’ safety, decisions, or consequences arising from its use.",
         "data": {
           "name": "Name",
           "sources": "Danger message sources"
         },
         "data_description": {
-          "name": "Name used for the Aerial Danger monitoring entry and device.",
-          "sources": "Select one or more entities whose state contains messages for danger monitoring."
+          "name": "This name identifies the monitoring entry and its Home Assistant device.",
+          "sources": "Select one or more entities whose state contains danger message text."
         }
       },
       "regions": {
         "title": "Regions",
-        "description": "Select regions.\n\nRegions are used to detect ballistic missiles, cruise missiles, and other fast threats that may approach your location.\n\nUse either option or combine both.",
+        "description": "Choose the regions to monitor. Region matches are used for ballistic missiles, cruise missiles, and other fast threats approaching your location.\n\nSelect built-in regions, enter custom patterns, or use both.",
         "data": {
-          "region_presets": "Region presets",
-          "region_patterns": "Custom region regex patterns (YAML list)"
+          "region_presets": "Built-in regions",
+          "region_patterns": "Custom region patterns (YAML list)"
         },
         "data_description": {
-          "region_presets": "Optional. Select one or more preset regions.",
-          "region_patterns": "Optional. Add a YAML list where each item is one [regular expression](https://docs.python.org/3/library/re.html).\n\nExample YAML list:\n\n```yaml\n- \\bки(їв|єва|єві|єву|євом)\\b\n- \\bстолиц(я|і|ю|ею)\\b\n```"
+          "region_presets": "Optional: select one or more built-in regions.",
+          "region_patterns": "Optional: enter a YAML list with one [regular expression](https://docs.python.org/3/library/re.html) per item.\n\nExample:\n\n```yaml\n- \\bки(їв|єва|єві|єву|євом)\\b\n- \\bстолиц(я|і|ю|ею)\\b\n```"
         }
       },
       "localities": {
         "title": "Localities",
-        "description": "Select localities within the chosen regions. Localities are used to detect drones and all other threat types. You can select multiple localities.\n\nUse either option or combine both.",
+        "description": "Choose localities within the selected regions. Locality matches are required for drones and can also match every other threat type.\n\nSelect built-in localities, enter custom patterns, or use both.",
         "data": {
-          "locality_presets": "Locality presets",
-          "locality_patterns": "Custom locality regex patterns (YAML list)"
+          "locality_presets": "Built-in localities",
+          "locality_patterns": "Custom locality patterns (YAML list)"
         },
         "data_description": {
-          "locality_presets": "Optional. Select one or more preset localities.\n\n**Tip:** Select your locality and nearby localities to receive notifications about approaching targets.",
-          "locality_patterns": "Optional. Add a YAML list where each item is one [regular expression](https://docs.python.org/3/library/re.html).\n\nExample YAML list:\n\n```yaml\n- \\bнив(ки|ках|ками|ок)\\b\n- \\bвиноградар(а|і|ем)?\\b\n```"
+          "locality_presets": "Optional: select one or more built-in localities.\n\n**Tip:** Select your locality and nearby localities to receive notifications about approaching targets.",
+          "locality_patterns": "Optional: enter a YAML list with one [regular expression](https://docs.python.org/3/library/re.html) per item.\n\nExample:\n\n```yaml\n- \\bнив(ки|ках|ками|ок)\\b\n- \\bвиноградар(а|і|ем)?\\b\n```"
         }
       }
     },
     "error": {
-      "invalid_pattern_format": "Regex patterns must be a YAML list of strings.",
-      "invalid_pattern": "One or more regex patterns are invalid.",
-      "patterns_required": "Enter at least one region or locality pattern.",
+      "invalid_pattern_format": "Enter regular expressions as a YAML list of text values.",
+      "invalid_pattern": "Check each regular expression and fix invalid values.",
+      "patterns_required": "Select or enter at least one region or locality.",
       "sources_required": "Select at least one source entity."
     }
   },
@@ -49,43 +49,43 @@
     "step": {
       "init": {
         "title": "Aerial Danger options",
-        "description": "Select the entities whose states the integration will check for danger messages.",
+        "description": "Select the Home Assistant entities whose states contain danger messages.",
         "data": {
           "sources": "Danger message sources"
         },
         "data_description": {
-          "sources": "Select one or more entities whose state contains messages for danger monitoring."
+          "sources": "Select one or more entities whose state contains danger message text."
         }
       },
       "regions": {
         "title": "Regions",
-        "description": "Select regions.\n\nRegions are used to detect ballistic missiles, cruise missiles, and other fast threats that may approach your location.\n\nUse either option or combine both.",
+        "description": "Choose the regions to monitor. Region matches are used for ballistic missiles, cruise missiles, and other fast threats approaching your location.\n\nSelect built-in regions, enter custom patterns, or use both.",
         "data": {
-          "region_presets": "Region presets",
-          "region_patterns": "Custom region regex patterns (YAML list)"
+          "region_presets": "Built-in regions",
+          "region_patterns": "Custom region patterns (YAML list)"
         },
         "data_description": {
-          "region_presets": "Optional. Select one or more preset regions.",
-          "region_patterns": "Optional. Add a YAML list where each item is one [regular expression](https://docs.python.org/3/library/re.html).\n\nExample YAML list:\n\n```yaml\n- \\bки(їв|єва|єві|єву|євом)\\b\n- \\bстолиц(я|і|ю|ею)\\b\n```"
+          "region_presets": "Optional: select one or more built-in regions.",
+          "region_patterns": "Optional: enter a YAML list with one [regular expression](https://docs.python.org/3/library/re.html) per item.\n\nExample:\n\n```yaml\n- \\bки(їв|єва|єві|єву|євом)\\b\n- \\bстолиц(я|і|ю|ею)\\b\n```"
         }
       },
       "localities": {
         "title": "Localities",
-        "description": "Select localities within the chosen regions. Localities are used to detect drones and all other threat types. You can select multiple localities.\n\nUse either option or combine both.",
+        "description": "Choose localities within the selected regions. Locality matches are required for drones and can also match every other threat type.\n\nSelect built-in localities, enter custom patterns, or use both.",
         "data": {
-          "locality_presets": "Locality presets",
-          "locality_patterns": "Custom locality regex patterns (YAML list)"
+          "locality_presets": "Built-in localities",
+          "locality_patterns": "Custom locality patterns (YAML list)"
         },
         "data_description": {
-          "locality_presets": "Optional. Select one or more preset localities.\n\n**Tip:** Select your locality and nearby localities to receive notifications about approaching targets.",
-          "locality_patterns": "Optional. Add a YAML list where each item is one [regular expression](https://docs.python.org/3/library/re.html).\n\nExample YAML list:\n\n```yaml\n- \\bнив(ки|ках|ками|ок)\\b\n- \\bвиноградар(а|і|ем)?\\b\n```"
+          "locality_presets": "Optional: select one or more built-in localities.\n\n**Tip:** Select your locality and nearby localities to receive notifications about approaching targets.",
+          "locality_patterns": "Optional: enter a YAML list with one [regular expression](https://docs.python.org/3/library/re.html) per item.\n\nExample:\n\n```yaml\n- \\bнив(ки|ках|ками|ок)\\b\n- \\bвиноградар(а|і|ем)?\\b\n```"
         }
       }
     },
     "error": {
-      "invalid_pattern_format": "Regex patterns must be a YAML list of strings.",
-      "invalid_pattern": "One or more regex patterns are invalid.",
-      "patterns_required": "Enter at least one region or locality pattern.",
+      "invalid_pattern_format": "Enter regular expressions as a YAML list of text values.",
+      "invalid_pattern": "Check each regular expression and fix invalid values.",
+      "patterns_required": "Select or enter at least one region or locality.",
       "sources_required": "Select at least one source entity."
     }
   },
@@ -190,27 +190,27 @@
   "triggers": {
     "danger": {
       "name": "Any danger detected",
-      "description": "Triggers when any danger is detected."
+      "description": "Triggers when the integration detects any danger type."
     },
     "irbm": {
       "name": "Intermediate-range ballistic missile danger detected",
-      "description": "Triggers when intermediate-range ballistic missile danger is detected."
+      "description": "Triggers when the integration detects an intermediate-range ballistic missile threat."
     },
     "ballistic": {
       "name": "Ballistic danger detected",
-      "description": "Triggers when a ballistic target is detected in your direction."
+      "description": "Triggers when the integration detects a ballistic threat approaching the monitored area."
     },
     "cruise": {
       "name": "Cruise missile danger detected",
-      "description": "Triggers when approaching cruise missiles are detected."
+      "description": "Triggers when the integration detects cruise missiles approaching the monitored area."
     },
     "drone": {
       "name": "Drone danger detected",
-      "description": "Triggers when approaching drones are detected."
+      "description": "Triggers when the integration detects drones approaching a monitored locality."
     },
     "unknown": {
       "name": "Unknown danger detected",
-      "description": "Triggers when an unknown danger is detected (without a danger description)."
+      "description": "Triggers when a message indicates danger but does not identify a supported threat type."
     }
   },
   "entity": {
