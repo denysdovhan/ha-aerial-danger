@@ -172,6 +172,22 @@ Kyiv only channels might omit Kyiv city or region in names, so keep that in mind
 
 When authoring area presets, research the relevant listed Telegram histories. Use live, actionable alert wording and exclude aftermath or summary wording.
 
+### Telegram research workflow
+
+- Open public histories in Browser and search with `https://telegram.me/s/<channel>?q=<term>`.
+- Search weapon names, abbreviations, euphemisms, likely misspellings, and word stems; repeat with area names to find terse alerts.
+- Open each result in its channel and read neighboring messages before classifying it as an active alert, forecast, analysis, aftermath, or all-clear.
+- Use `war_monitor` and `AerisRimor` for precise live wording, `kpszsu` for official terminology, and Kyiv-only channels for terse locality forms.
+- Preserve exact spelling, punctuation, emojis, line breaks, and word order in test messages. Do not retain channel names or message IDs in tests.
+
+### Danger matcher authoring
+
+- Start from observed live messages. Require `{area}` except for explicit nationwide IRBM alerts; channel context alone must not bypass area gating.
+- Prefer multiple simple one-line regexes for different word orders. Join only equivalent spellings, inflections, or terms with `(|)`.
+- Use the smallest observed bounded gap, such as `.{0,48}`, instead of `.*`; do not cross lines unless an observed alert requires it.
+- Keep weapon wording in its domain list, target/vector wording in `GENERIC_DANGER`, and resolved or retrospective wording in `SAFETY`. Do not infer a weapon type from an area or target count alone.
+- Add exact strings to the matching domain test, use shared region/locality patterns from `tests/danger/common.py`, deduplicate cases that differ only by area, and add aftermath or forecast examples as safety negatives.
+
 ## Commit messages
 
 When generating commit messages, always use this format:
