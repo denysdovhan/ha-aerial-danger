@@ -2,10 +2,10 @@
 # yaml-language-server: $schema=none
 
 blueprint:
-  name: Telegram Scrape sensor refresh
+  name: Оновлення Telegram-сенсорів Scrape
   description: >-
-    Force selected Scrape sensors to refresh every 5 or 10 seconds. Optionally
-    refresh only while a selected Ukraine Alarm safety sensor is active.
+    Примусово оновлює вибрані сенсори Scrape кожні 5 або 10 секунд. За бажанням
+    оновлює їх лише під час активної небезпеки за даними Ukraine Alarm.
   domain: automation
   author: Denys Dovhan
   source_url: >-
@@ -14,8 +14,9 @@ blueprint:
     min_version: "2024.10.0"
   input:
     scrape_sensors:
-      name: Telegram Scrape sensors
-      description: Select one or more Scrape sensors that read Telegram channels.
+      name: Telegram-сенсори Scrape
+      description: >-
+        Виберіть один або кілька сенсорів Scrape, які читають Telegram-канали.
       selector:
         entity:
           multiple: true
@@ -23,21 +24,22 @@ blueprint:
             - integration: scrape
               domain: sensor
     refresh_interval:
-      name: Refresh interval
-      description: How often to refresh the selected Scrape sensors.
+      name: Інтервал оновлення
+      description: Як часто оновлювати вибрані сенсори Scrape.
       default: "/5"
       selector:
         select:
           options:
-            - label: Every 5 seconds
+            - label: Кожні 5 секунд
               value: "/5"
-            - label: Every 10 seconds
+            - label: Кожні 10 секунд
               value: "/10"
     ukraine_alarm_sensors:
-      name: Ukraine Alarm sensors
+      name: Сенсори Ukraine Alarm
       description: >-
-        Optional. Select the Air safety sensor for each Ukraine Alarm region.
-        Refreshing runs while at least one selected sensor is active.
+        Необов’язково. Виберіть сенсор безпеки «Повітряна тривога» для кожного
+        регіону Ukraine Alarm. Оновлення виконуватиметься, доки хоча б один
+        вибраний сенсор активний.
       default: []
       selector:
         entity:

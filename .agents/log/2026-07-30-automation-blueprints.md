@@ -37,6 +37,9 @@ critical danger notifications without excessive repeat alerts.
   refresh and critical-notification instructions in `readme.md`.
 - Disable YAML Language Server schema validation because Home Assistant has no
   official public blueprint JSON schema and SchemaStore selects Torque.
+- Keep all user-visible blueprint metadata, input labels, descriptions, and
+  notification titles in Ukrainian.
+- Keep technical YAML comments in English.
 
 Ukraine Alarm devices expose separate safety binary sensors rather than one
 device-level danger state. Users should select each region's Air sensor.
@@ -72,3 +75,13 @@ lint passed; 111 tests passed.
 
 2026-07-30: Published the blueprints and added their My Home Assistant import
 buttons to the matching README sections.
+
+2026-07-30: Translated all user-facing blueprint text to Ukrainian without
+changing input keys, URLs, selectors, or automation behavior. Home Assistant
+2026.7.2 accepted both rendered automations, including `/5` and `/10` intervals.
+Lint passed; 111 tests passed.
+
+2026-07-30: Review renamed the Aerial Danger picker to «Пристрій Повітряної
+загрози», renamed and described the notification device picker, and restored
+technical YAML comments to English. Both blueprints passed Home Assistant schema
+validation; lint passed; 111 tests passed.

@@ -2,10 +2,10 @@
 # yaml-language-server: $schema=none
 
 blueprint:
-  name: Aerial Danger critical notification
+  name: Критичне сповіщення про повітряну загрозу
   description: >-
-    Send a critical mobile notification for every danger detected by an
-    Aerial Danger device. Requires critical notification permission on iOS.
+    Надсилає критичне мобільне сповіщення про кожну небезпеку, виявлену
+    пристроєм Повітряної загрози. На iOS потрібен дозвіл на критичні сповіщення.
   domain: automation
   author: Denys Dovhan
   source_url: >-
@@ -14,20 +14,23 @@ blueprint:
     min_version: "2026.7.0"
   input:
     aerial_danger_device:
-      name: Aerial Danger device
+      name: Пристрій Повітряної загрози
       selector:
         device:
           filter:
             - integration: aerial_danger
     mobile_device:
-      name: Mobile phone
+      name: Пристрій для сповіщення
+      description: Виберіть пристрій для отримання критичних сповіщень.
       selector:
         device:
           filter:
             - integration: mobile_app
     notification_cooldown:
-      name: Notification cooldown
-      description: Ignore new danger triggers for this duration after notifying.
+      name: Затримка між сповіщеннями
+      description: >-
+        Ігнорувати нові спрацювання протягом цього часу після надсилання
+        сповіщення.
       default:
         minutes: 5
       selector:
@@ -42,7 +45,7 @@ actions:
   - device_id: !input mobile_device
     domain: mobile_app
     type: notify
-    title: Aerial danger
+    title: Повітряна загроза
     message: >-
       {{ trigger.to_state.attributes.matched_area }} —
       {{ trigger.to_state.attributes.matched_message }}
