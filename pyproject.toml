@@ -10,7 +10,7 @@ dependencies = ["homeassistant==2026.7.2"]
 [dependency-groups]
 dev = [
   "pre-commit>=3.7.1",
-  "ruff==0.14.6",
+  "ruff==0.16.0",
   "pytest>=8.3.0",
   "pytest-homeassistant-custom-component>=0.13.297",
   "colorlog==6.10.1",
