@@ -7,19 +7,14 @@ from custom_components.aerial_danger.danger import DangerDetector, DangerType
 from .common import LOCALITY_PATTERNS, REGION_PATTERNS
 
 MLRS_CASES: list[str] = [
-    "⚠ Увага!\nОбстріл РСЗВ прикордонних населених пунктів на Харківщині.",
-    "⚠ Чернігівщина під обстрілом РСЗВ з півночі.",
     "🔴❗️ РСЗВ на Харків!",
     "Суми обстріл РСЗВ.",
     "Запоріжжя РСЗВ!",
     "Західні околиці Харкова почули вибух. Працює РСЗВ.",
     "❗️ Ведеться обстріл Шосткинського району Сумщини з РСЗВ.",
-    "❗️ Повторні виходи РСЗВ на Миколаївщину.",
     "❗️ Уточнення: виходи РСЗВ у напрямку Запоріжжя.",
     "РСЗВ працює по передмістю Запоріжжя",
     "РСЗВ працює по району Очакова.\nБПЛА мандрує у Південне.",
-    "На Сумщині працює РСЗВ, не панікуєм.",
-    "Обстріл з РСЗВ прикордоння Харківщини, корегує ворожий БПЛА.",
     "Саме зараз відбувається обстріл з РСЗВ «Град» Миропілля на Сумщині.",
     "Купʼянськ на Харківщині під атакою ворожою РСЗВ.",
     (
@@ -27,7 +22,6 @@ MLRS_CASES: list[str] = [
         "🟡❗️ Загроза повторного удару актуальна до відбою повітряної тривоги."
     ),
     "🚀 Працює ворожа РСЗВ по ЛБЗ на Сумщині в сектор н.п. Варачине.",
-    "сумщина\nРСЗВ по прикордонню",
 ]
 
 MLRS_NO_MATCH_CASES: list[str] = [
@@ -36,6 +30,15 @@ MLRS_NO_MATCH_CASES: list[str] = [
     "РСЗВ на Суми, поки чисто.",
     "Підсумуємо: Харківщина зазнала удару РСЗВ.",
     "Пояснюємо, чим РСЗВ небезпечна для Харкова.",
+]
+
+MLRS_REGION_CASES: list[str] = [
+    "⚠ Увага!\nОбстріл РСЗВ прикордонних населених пунктів на Харківщині.",
+    "⚠ Чернігівщина під обстрілом РСЗВ з півночі.",
+    "❗️ Повторні виходи РСЗВ на Миколаївщину.",
+    "На Сумщині працює РСЗВ, не панікуєм.",
+    "Обстріл з РСЗВ прикордоння Харківщини, корегує ворожий БПЛА.",
+    "сумщина\nРСЗВ по прикордонню",
 ]
 
 
@@ -59,11 +62,15 @@ def test_mlrs_non_actionable_does_not_match() -> None:
         assert detector.is_safe(text) is False, text
 
 
-def test_mlrs_requires_configured_area() -> None:
-    """MLRS wording without a configured area should stay inactive."""
-    detector = DangerDetector([r"\bкиїв\b"], [])
+def test_mlrs_requires_configured_locality() -> None:
+    """Region patterns should not activate the MLRS danger type."""
+    detector = DangerDetector([r"\bхарків\b", *REGION_PATTERNS], [])
 
     detection = detector.danger("РСЗВ на Харків!")
 
-    assert detection.danger is False
-    assert detection.type is None
+    assert detection.type is not DangerType.MLRS
+
+    for text in MLRS_REGION_CASES:
+        detection = detector.mlrs_danger(text)
+        assert detection.danger is False, text
+        assert detection.type is None, text

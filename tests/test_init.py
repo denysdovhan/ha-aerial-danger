@@ -313,8 +313,8 @@ async def test_new_danger_types_update_binary_sensors(
     """Test new danger messages update their binary sensors."""
     entry = _entry(
         {
-            CONF_REGION_PATTERNS: [r"\bхарків\b"],
-            CONF_LOCALITY_PATTERNS: [],
+            CONF_REGION_PATTERNS: [],
+            CONF_LOCALITY_PATTERNS: [r"\bхарків\b"],
             CONF_SOURCES: ["sensor.alerts"],
         }
     )
@@ -330,6 +330,35 @@ async def test_new_danger_types_update_binary_sensors(
     assert state.attributes[ATTR_MATCHED_MESSAGE] == message
     assert state.attributes[ATTR_MATCHED_AREA] == "Харків"
     assert state.attributes[ATTR_SOURCE_ENTITY_ID] == "sensor.alerts"
+
+
+@pytest.mark.parametrize(
+    ("message", "sensor_key"),
+    [
+        ("🔴❗️ РСЗВ на Харків!", "mlrs"),
+    ],
+)
+async def test_new_danger_types_ignore_region_patterns(
+    hass: HomeAssistant,
+    message: str,
+    sensor_key: str,
+) -> None:
+    """Test new danger sensors require locality patterns."""
+    entry = _entry(
+        {
+            CONF_REGION_PATTERNS: [r"\bхарків\b"],
+            CONF_LOCALITY_PATTERNS: [],
+            CONF_SOURCES: ["sensor.alerts"],
+        }
+    )
+    entry.add_to_hass(hass)
+
+    assert await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    hass.states.async_set("sensor.alerts", message)
+    await hass.async_block_till_done()
+
+    assert hass.states.get(_entity_id(hass, entry, sensor_key)).state == STATE_OFF
 
 
 async def test_diagnostic_sensors_mirror_aggregate_detection(
@@ -665,8 +694,8 @@ async def test_event_entity_maps_danger_types(
     """Test danger detections publish the expected native event type."""
     entry = _entry(
         {
-            CONF_REGION_PATTERNS: [r"\bкиїв\b", r"\bхарків\b"],
-            CONF_LOCALITY_PATTERNS: [r"\bнивки\b"],
+            CONF_REGION_PATTERNS: [r"\bкиїв\b"],
+            CONF_LOCALITY_PATTERNS: [r"\bнивки\b", r"\bхарків\b"],
             CONF_SOURCES: ["sensor.alerts"],
         }
     )

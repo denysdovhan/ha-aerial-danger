@@ -44,7 +44,7 @@ class DangerDetector:
         )
         self._irbm_patterns = self.compile_patterns(IRBM_DANGER)
         self._mlrs_patterns = self.compile_patterns(
-            self.map_areas(MLRS_DANGER, self._regions + self._localities)
+            self.map_areas(MLRS_DANGER, self._localities)
         )
         self._cruise_patterns = self.compile_patterns(
             self.map_areas(CRUISE_DANGER, self._regions + self._localities)
@@ -148,7 +148,7 @@ class DangerDetector:
         return self.detect(
             danger_type=DangerType.MLRS,
             patterns=self._mlrs_patterns,
-            areas=self._regions + self._localities,
+            areas=self._localities,
             message=message,
         )
 

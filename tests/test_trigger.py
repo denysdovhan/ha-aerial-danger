@@ -41,8 +41,8 @@ async def _setup_entry(hass: HomeAssistant) -> str:
         domain=DOMAIN,
         title="Kyiv alerts",
         data={
-            CONF_REGION_PATTERNS: [r"\bкиїв\b", r"\bхарків\b"],
-            CONF_LOCALITY_PATTERNS: [r"\bнивки\b"],
+            CONF_REGION_PATTERNS: [r"\bкиїв\b"],
+            CONF_LOCALITY_PATTERNS: [r"\bнивки\b", r"\bхарків\b"],
             CONF_SOURCES: ["sensor.alerts"],
         },
     )
