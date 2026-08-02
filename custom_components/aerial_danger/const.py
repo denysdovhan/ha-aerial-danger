@@ -35,6 +35,7 @@ STATE_CRUISE: Final = "cruise"
 STATE_DANGER: Final = "danger"
 STATE_DRONE: Final = "drone"
 STATE_IRBM: Final = "irbm"
+STATE_MLRS: Final = "mlrs"
 STATE_NATIONWIDE: Final = "nationwide"
 STATE_UNKNOWN_DANGER: Final = "unknown"
 
@@ -58,9 +59,11 @@ EVENT_TYPE_BALLISTIC: Final = "ballistic"
 EVENT_TYPE_CRUISE: Final = "cruise"
 EVENT_TYPE_DRONE: Final = "drone"
 EVENT_TYPE_IRBM: Final = "irbm"
+EVENT_TYPE_MLRS: Final = "mlrs"
 EVENT_TYPE_UNKNOWN: Final = "unknown"
 EVENT_TYPES: Final = [
     EVENT_TYPE_IRBM,
+    EVENT_TYPE_MLRS,
     EVENT_TYPE_BALLISTIC,
     EVENT_TYPE_CRUISE,
     EVENT_TYPE_DRONE,

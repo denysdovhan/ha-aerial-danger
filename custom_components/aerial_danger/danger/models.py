@@ -12,6 +12,7 @@ class DangerType(str, Enum):
     DRONE = "drone"
     GENERIC = "generic"
     IRBM = "irbm"
+    MLRS = "mlrs"
 
 
 @dataclass

@@ -196,6 +196,10 @@
       "name": "Intermediate-range ballistic missile danger detected",
       "description": "Triggers when the integration detects an intermediate-range ballistic missile threat."
     },
+    "mlrs": {
+      "name": "MLRS danger detected",
+      "description": "Triggers when the integration detects an MLRS attack affecting the monitored area."
+    },
     "ballistic": {
       "name": "Ballistic danger detected",
       "description": "Triggers when the integration detects a ballistic threat approaching the monitored area."
@@ -237,6 +241,7 @@
             "name": "Event type",
             "state": {
               "irbm": "Intermediate-range ballistic missile danger",
+              "mlrs": "MLRS danger",
               "ballistic": "Ballistic danger",
               "cruise": "Cruise missile danger",
               "drone": "Drone danger",
@@ -249,6 +254,23 @@
     "binary_sensor": {
       "irbm": {
         "name": "Intermediate-range ballistic missile danger",
+        "state_attributes": {
+          "matched_message": {
+            "name": "Matched message"
+          },
+          "matched_area": {
+            "name": "Matched area"
+          },
+          "matched_danger": {
+            "name": "Matched danger"
+          },
+          "source_entity_id": {
+            "name": "Source entity"
+          }
+        }
+      },
+      "mlrs": {
+        "name": "MLRS danger",
         "state_attributes": {
           "matched_message": {
             "name": "Matched message"

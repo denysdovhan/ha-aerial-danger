@@ -11,6 +11,7 @@ from .keywords import (
     DRONE_DANGER,
     GENERIC_DANGER,
     IRBM_DANGER,
+    MLRS_DANGER,
     SAFETY,
 )
 from .models import DangerType, Detection, PatternMatch
@@ -42,6 +43,9 @@ class DangerDetector:
             self.map_areas(BALLISTIC_DANGER, self._regions + self._localities)
         )
         self._irbm_patterns = self.compile_patterns(IRBM_DANGER)
+        self._mlrs_patterns = self.compile_patterns(
+            self.map_areas(MLRS_DANGER, self._regions + self._localities)
+        )
         self._cruise_patterns = self.compile_patterns(
             self.map_areas(CRUISE_DANGER, self._regions + self._localities)
         )
@@ -85,6 +89,10 @@ class DangerDetector:
                 return PatternMatch(text=match.group(0), pattern=pattern.pattern)
         return None
 
+    def is_safe(self, message: str) -> bool:
+        """Return whether a message explicitly clears danger."""
+        return self.match_first(self._safety_patterns, message) is not None
+
     def detect(
         self,
         *,
@@ -95,7 +103,7 @@ class DangerDetector:
         match_areas: bool = True,
     ) -> Detection:
         """Shared detection helper used by danger-specific methods."""
-        if self.match_first(self._safety_patterns, message):
+        if self.is_safe(message):
             return Detection(danger=False, message=message)
 
         danger_match = self.match_first(patterns, message)
@@ -135,6 +143,15 @@ class DangerDetector:
             match_areas=False,
         )
 
+    def mlrs_danger(self, message: str) -> Detection:
+        """Detect MLRS danger; returns first match or a negative detection."""
+        return self.detect(
+            danger_type=DangerType.MLRS,
+            patterns=self._mlrs_patterns,
+            areas=self._regions + self._localities,
+            message=message,
+        )
+
     def cruise_missile_danger(self, message: str) -> Detection:
         """Detect cruise-missile danger; returns first match or a negative detection."""
         return self.detect(
@@ -163,9 +180,10 @@ class DangerDetector:
         )
 
     def danger(self, message: str) -> Detection:
-        """Composite detector: IRBM → ballistic → cruise → drone → generic."""
+        """Return the first specific match, then fall back to generic."""
         for checker in (
             self.irbm_danger,
+            self.mlrs_danger,
             self.ballistic_danger,
             self.cruise_missile_danger,
             self.drone_danger,

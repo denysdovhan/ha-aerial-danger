@@ -81,11 +81,12 @@ async def test_config_entry_diagnostics_redacts_user_data_only(
             "cruise": False,
             "drone": False,
             "irbm": False,
+            "mlrs": False,
             "unknown": False,
             STATE_DANGER: True,
         },
         "active_detection_types": [STATE_BALLISTIC],
-        "entity_count": 10,
+        "entity_count": 11,
         "event_entity_available": True,
         "state_listener_active": True,
     }
