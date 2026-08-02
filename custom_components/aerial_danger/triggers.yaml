@@ -13,6 +13,11 @@ mlrs:
     entity:
       integration: aerial_danger
       domain: event
+guided_bomb:
+  target:
+    entity:
+      integration: aerial_danger
+      domain: event
 ballistic:
   target:
     entity:

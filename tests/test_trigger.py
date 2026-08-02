@@ -133,6 +133,7 @@ async def test_trigger_fires_for_selected_danger(
     [
         pytest.param("Загроза БРСД.", id="irbm"),
         pytest.param("🔴❗️ РСЗВ на Харків!", id="mlrs"),
+        pytest.param("💣 КАБ у напрямку Харків.", id="guided_bomb"),
         pytest.param("Київ швидкісна!", id="ballistic"),
         pytest.param("Київ увага КР!!", id="cruise"),
         pytest.param("Нивки над вами БПЛА!", id="drone"),

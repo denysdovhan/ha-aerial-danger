@@ -20,6 +20,7 @@ from .const import (
     STATE_CRUISE,
     STATE_DANGER,
     STATE_DRONE,
+    STATE_GUIDED_BOMB,
     STATE_IRBM,
     STATE_MLRS,
     STATE_UNKNOWN_DANGER,
@@ -51,6 +52,11 @@ SENSOR_TYPES: tuple[AerialDangerBinarySensorEntityDescription, ...] = (
         key=STATE_MLRS,
         translation_key=STATE_MLRS,
         danger_type=DangerType.MLRS,
+    ),
+    AerialDangerBinarySensorEntityDescription(
+        key=STATE_GUIDED_BOMB,
+        translation_key=STATE_GUIDED_BOMB,
+        danger_type=DangerType.GUIDED_BOMB,
     ),
     AerialDangerBinarySensorEntityDescription(
         key=STATE_BALLISTIC,

@@ -11,6 +11,7 @@ class DangerType(str, Enum):
     CRUISE = "cruise"
     DRONE = "drone"
     GENERIC = "generic"
+    GUIDED_BOMB = "guided_bomb"
     IRBM = "irbm"
     MLRS = "mlrs"
 

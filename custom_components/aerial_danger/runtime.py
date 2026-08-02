@@ -10,6 +10,7 @@ from .const import (
     STATE_CRUISE,
     STATE_DANGER,
     STATE_DRONE,
+    STATE_GUIDED_BOMB,
     STATE_IRBM,
     STATE_MLRS,
     STATE_UNKNOWN_DANGER,
@@ -28,6 +29,7 @@ if TYPE_CHECKING:
 DANGER_TYPE_STATE_KEYS = {
     DangerType.IRBM: STATE_IRBM,
     DangerType.MLRS: STATE_MLRS,
+    DangerType.GUIDED_BOMB: STATE_GUIDED_BOMB,
     DangerType.BALLISTIC: STATE_BALLISTIC,
     DangerType.CRUISE: STATE_CRUISE,
     DangerType.DRONE: STATE_DRONE,
@@ -69,6 +71,7 @@ def derive_danger_state(
     states = {
         STATE_IRBM: False,
         STATE_MLRS: False,
+        STATE_GUIDED_BOMB: False,
         STATE_BALLISTIC: False,
         STATE_CRUISE: False,
         STATE_DRONE: False,
@@ -78,6 +81,7 @@ def derive_danger_state(
     last_detection: dict[DangerType, SourceDetection | None] = {
         DangerType.IRBM: None,
         DangerType.MLRS: None,
+        DangerType.GUIDED_BOMB: None,
         DangerType.BALLISTIC: None,
         DangerType.CRUISE: None,
         DangerType.DRONE: None,

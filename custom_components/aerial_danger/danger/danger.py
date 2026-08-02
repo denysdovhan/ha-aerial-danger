@@ -10,6 +10,7 @@ from .keywords import (
     CRUISE_DANGER,
     DRONE_DANGER,
     GENERIC_DANGER,
+    GUIDED_BOMB_DANGER,
     IRBM_DANGER,
     MLRS_DANGER,
     SAFETY,
@@ -45,6 +46,9 @@ class DangerDetector:
         self._irbm_patterns = self.compile_patterns(IRBM_DANGER)
         self._mlrs_patterns = self.compile_patterns(
             self.map_areas(MLRS_DANGER, self._localities)
+        )
+        self._guided_bomb_patterns = self.compile_patterns(
+            self.map_areas(GUIDED_BOMB_DANGER, self._localities)
         )
         self._cruise_patterns = self.compile_patterns(
             self.map_areas(CRUISE_DANGER, self._regions + self._localities)
@@ -152,6 +156,15 @@ class DangerDetector:
             message=message,
         )
 
+    def guided_bomb_danger(self, message: str) -> Detection:
+        """Detect guided-bomb danger; returns first match or a negative detection."""
+        return self.detect(
+            danger_type=DangerType.GUIDED_BOMB,
+            patterns=self._guided_bomb_patterns,
+            areas=self._localities,
+            message=message,
+        )
+
     def cruise_missile_danger(self, message: str) -> Detection:
         """Detect cruise-missile danger; returns first match or a negative detection."""
         return self.detect(
@@ -184,6 +197,7 @@ class DangerDetector:
         for checker in (
             self.irbm_danger,
             self.mlrs_danger,
+            self.guided_bomb_danger,
             self.ballistic_danger,
             self.cruise_missile_danger,
             self.drone_danger,

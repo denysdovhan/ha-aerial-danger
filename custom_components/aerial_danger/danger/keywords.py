@@ -2,12 +2,19 @@
 
 _CYRILLIC_LETTERS = "а-яіїєґ"
 _ORESHNIK = r"[«“\"]?ор[єе]шн[іи]к"
+_GUIDED_BOMB = (
+    r"(?:каб(?:[-‑]?(?:ами|ів|ам|ом|а|и|у))?|"
+    r"керован\w* (?:авіабомб\w*|авіаційн\w* бомб\w*))"
+)
 
 # Wording that clears a source or vetoes broader legacy danger matches.
 SAFETY = [
     r"\bвідбій\b",
     r"\bатака завершена\b",
-    r"\b(?:ракет[аи]|ціл[іь]) припинил(?:а|и) своє існування\b",
+    (
+        rf"\b(?:ракет[аи]|ціл[іь]|(?:\d+х\s+)?{_GUIDED_BOMB}) "
+        r"припини(?:ла|ли|в) своє існування\b"
+    ),
     r"\bціл(?:і|ей) (?:зникл[аи]?|більше немає|вже немає|немає)\b",
     r"\b(?:без цілей|локаційно чисто)\b",
     r"\b(?:наразі )?загроз[аи] [^\n]{0,48}\bнемає\b",
@@ -129,6 +136,40 @@ MLRS_DANGER = [
     r"{area}[ \t]*\n[ \t]*\bрсзв\b[^\n]{0,24}\bпо\b",
 ]
 
+# Guided bomb phrases.
+GUIDED_BOMB_DANGER = [
+    (
+        rf"^\W*(?:(?:ще й|\d+х)\s+)?\b{_GUIDED_BOMB}\b[^\n]{{0,24}}"
+        rf"\b(?:на|у напрямку)\s+{{area}}"
+    ),
+    (
+        rf"^\W*\b{_GUIDED_BOMB}\b[^\n]{{0,24}}\bна\s+"
+        rf"[^()\n]{{1,32}}\(\s*{{area}}\s*\)"
+    ),
+    (
+        rf"^\W*(?:повторні\s+)?пуски?\b[^\n]{{0,24}}\b{_GUIDED_BOMB}\b"
+        rf"[^\n]{{0,64}}{{area}}"
+    ),
+    (
+        rf"^\W*\bнаближення\b[^\n]{{0,16}}\b{_GUIDED_BOMB}\b"
+        rf"[^\n]{{0,16}}\bдо\s+{{area}}"
+    ),
+    rf"^\W*\b{_GUIDED_BOMB}\b[^\n]{{0,16}}\bйде\b[^\n]{{0,48}}{{area}}",
+    rf"^\W*\b{_GUIDED_BOMB}\b[^\n]{{0,24}}\bоколиці\s+{{area}}",
+    (
+        rf"{{area}}[^\n]{{0,32}}\b(?:увага|повтор)\b[^\n]{{0,16}}"
+        rf"\b{_GUIDED_BOMB}\b"
+    ),
+    (
+        rf"{{area}}[^\n]{{0,16}}\b{_GUIDED_BOMB}\b[^\n]{{0,16}}"
+        r"\b(?:поки )?йде\b"
+    ),
+    (
+        rf"^\W*\bфіксується\b[^\n]{{0,64}}\b{_GUIDED_BOMB}\b"
+        rf"[^\n]{{0,16}}\bна\s+{{area}}"
+    ),
+]
+
 # Ballistic-oriented phrases.
 BALLISTIC_DANGER = [
     *_ZIRCON_DANGER,
@@ -207,6 +248,7 @@ __all__ = [
     "CRUISE_DANGER",
     "DRONE_DANGER",
     "GENERIC_DANGER",
+    "GUIDED_BOMB_DANGER",
     "IRBM_DANGER",
     "MLRS_DANGER",
     "SAFETY",

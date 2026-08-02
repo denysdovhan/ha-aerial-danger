@@ -200,6 +200,10 @@
       "name": "MLRS danger detected",
       "description": "Triggers when the integration detects an MLRS attack affecting the monitored area."
     },
+    "guided_bomb": {
+      "name": "Guided bomb danger detected",
+      "description": "Triggers when the integration detects guided bombs approaching the monitored area."
+    },
     "ballistic": {
       "name": "Ballistic danger detected",
       "description": "Triggers when the integration detects a ballistic threat approaching the monitored area."
@@ -242,6 +246,7 @@
             "state": {
               "irbm": "Intermediate-range ballistic missile danger",
               "mlrs": "MLRS danger",
+              "guided_bomb": "Guided bomb danger",
               "ballistic": "Ballistic danger",
               "cruise": "Cruise missile danger",
               "drone": "Drone danger",
@@ -271,6 +276,23 @@
       },
       "mlrs": {
         "name": "MLRS danger",
+        "state_attributes": {
+          "matched_message": {
+            "name": "Matched message"
+          },
+          "matched_area": {
+            "name": "Matched area"
+          },
+          "matched_danger": {
+            "name": "Matched danger"
+          },
+          "source_entity_id": {
+            "name": "Source entity"
+          }
+        }
+      },
+      "guided_bomb": {
+        "name": "Guided bomb danger",
         "state_attributes": {
           "matched_message": {
             "name": "Matched message"

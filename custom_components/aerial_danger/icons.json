@@ -22,6 +22,9 @@
       "mlrs": {
         "default": "mdi:fire-truck"
       },
+      "guided_bomb": {
+        "default": "mdi:bomb"
+      },
       "cruise": {
         "default": "mdi:airplane-landing"
       },
@@ -56,6 +59,9 @@
     },
     "mlrs": {
       "trigger": "mdi:fire-truck"
+    },
+    "guided_bomb": {
+      "trigger": "mdi:bomb"
     },
     "ballistic": {
       "trigger": "mdi:rocket-launch"
