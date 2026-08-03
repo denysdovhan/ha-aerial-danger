@@ -92,12 +92,30 @@
   "selector": {
     "region_presets": {
       "options": {
+        "dnipropetrovsk_oblast": "Dnipropetrovsk Oblast",
+        "kharkiv_oblast": "Kharkiv Oblast",
         "kyiv": "Kyiv",
-        "kyiv_oblast": "Kyiv Oblast"
+        "kyiv_oblast": "Kyiv Oblast",
+        "odesa_oblast": "Odesa Oblast",
+        "zaporizhzhia_oblast": "Zaporizhzhia Oblast"
       }
     },
     "locality_presets": {
       "options": {
+        "dnipropetrovsk_oblast_dnipro": "Dnipro",
+        "dnipropetrovsk_oblast_kamianske": "Kamianske",
+        "dnipropetrovsk_oblast_kryvyi_rih": "Kryvyi Rih",
+        "dnipropetrovsk_oblast_pavlohrad": "Pavlohrad",
+        "kharkiv_oblast_balakliia": "Balakliia",
+        "kharkiv_oblast_bohodukhiv": "Bohodukhiv",
+        "kharkiv_oblast_derzhprom": "Derzhprom",
+        "kharkiv_oblast_kharkiv": "Kharkiv",
+        "kharkiv_oblast_khtz": "KhTZ",
+        "kharkiv_oblast_kozacha_lopan": "Kozacha Lopan",
+        "kharkiv_oblast_kulynychi": "Kulynychi",
+        "kharkiv_oblast_kupiansk": "Kupiansk",
+        "kharkiv_oblast_piatykhatky": "Piatykhatky",
+        "kharkiv_oblast_saltivka": "Saltivka",
         "kyiv_akademmistechko": "Akademmistechko",
         "kyiv_antonov": "Antonov",
         "kyiv_berezniaky": "Berezniaky",
@@ -183,7 +201,21 @@
         "kyiv_oblast_vyshhorod": "Vyshhorod",
         "kyiv_oblast_vyshneve": "Vyshneve",
         "kyiv_oblast_zazyma": "Zazyma",
-        "kyiv_oblast_zhk_sofiia": "ZhK Sofiia"
+        "kyiv_oblast_zhk_sofiia": "ZhK Sofiia",
+        "odesa_oblast_arkadiia": "Arcadia",
+        "odesa_oblast_bilhorod_dnistrovskyi": "Bilhorod-Dnistrovskyi",
+        "odesa_oblast_chornomorsk": "Chornomorsk",
+        "odesa_oblast_karolino_buhaz": "Karolino-Buhaz",
+        "odesa_oblast_khadzhybeiskyi_raion": "Khadzhybeiskyi District",
+        "odesa_oblast_odesa": "Odesa",
+        "odesa_oblast_odesa_port": "Odesa Port",
+        "odesa_oblast_ovidiopol": "Ovidiopol",
+        "odesa_oblast_peresyp": "Peresyp",
+        "odesa_oblast_zatoka": "Zatoka",
+        "zaporizhzhia_oblast_komyshuvakha": "Komyshuvakha",
+        "zaporizhzhia_oblast_orikhiv": "Orikhiv",
+        "zaporizhzhia_oblast_vilniansk": "Vilniansk",
+        "zaporizhzhia_oblast_zaporizhzhia": "Zaporizhzhia"
       }
     }
   },

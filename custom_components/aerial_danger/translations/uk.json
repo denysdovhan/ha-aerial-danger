@@ -92,12 +92,30 @@
   "selector": {
     "region_presets": {
       "options": {
+        "dnipropetrovsk_oblast": "Дніпропетровська область",
+        "kharkiv_oblast": "Харківська область",
         "kyiv": "Київ",
-        "kyiv_oblast": "Київська область"
+        "kyiv_oblast": "Київська область",
+        "odesa_oblast": "Одеська область",
+        "zaporizhzhia_oblast": "Запорізька область"
       }
     },
     "locality_presets": {
       "options": {
+        "dnipropetrovsk_oblast_dnipro": "Дніпро",
+        "dnipropetrovsk_oblast_kamianske": "Камʼянське",
+        "dnipropetrovsk_oblast_kryvyi_rih": "Кривий Ріг",
+        "dnipropetrovsk_oblast_pavlohrad": "Павлоград",
+        "kharkiv_oblast_balakliia": "Балаклія",
+        "kharkiv_oblast_bohodukhiv": "Богодухів",
+        "kharkiv_oblast_derzhprom": "Держпром",
+        "kharkiv_oblast_kharkiv": "Харків",
+        "kharkiv_oblast_khtz": "ХТЗ",
+        "kharkiv_oblast_kozacha_lopan": "Козача Лопань",
+        "kharkiv_oblast_kulynychi": "Кулиничі",
+        "kharkiv_oblast_kupiansk": "Купʼянськ",
+        "kharkiv_oblast_piatykhatky": "Пʼятихатки",
+        "kharkiv_oblast_saltivka": "Салтівка",
         "kyiv_akademmistechko": "Академмістечко",
         "kyiv_antonov": "Антонов",
         "kyiv_berezniaky": "Березняки",
@@ -183,7 +201,21 @@
         "kyiv_oblast_vyshhorod": "Вишгород",
         "kyiv_oblast_vyshneve": "Вишневе",
         "kyiv_oblast_zazyma": "Зазим'я",
-        "kyiv_oblast_zhk_sofiia": "ЖК Софія"
+        "kyiv_oblast_zhk_sofiia": "ЖК Софія",
+        "odesa_oblast_arkadiia": "Аркадія",
+        "odesa_oblast_bilhorod_dnistrovskyi": "Білгород-Дністровський",
+        "odesa_oblast_chornomorsk": "Чорноморськ",
+        "odesa_oblast_karolino_buhaz": "Кароліно-Бугаз",
+        "odesa_oblast_khadzhybeiskyi_raion": "Хаджибейський район",
+        "odesa_oblast_odesa": "Одеса",
+        "odesa_oblast_odesa_port": "Одеський порт",
+        "odesa_oblast_ovidiopol": "Овідіополь",
+        "odesa_oblast_peresyp": "Пересип",
+        "odesa_oblast_zatoka": "Затока",
+        "zaporizhzhia_oblast_komyshuvakha": "Комишуваха",
+        "zaporizhzhia_oblast_orikhiv": "Оріхів",
+        "zaporizhzhia_oblast_vilniansk": "Вільнянськ",
+        "zaporizhzhia_oblast_zaporizhzhia": "Запоріжжя"
       }
     }
   },
