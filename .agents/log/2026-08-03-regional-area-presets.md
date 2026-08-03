@@ -3,9 +3,12 @@ title: Regional area presets
 date: 2026-08-03
 status: wip
 related_paths:
+  - contributing.md
+  - custom_components/aerial_danger/config_flow.py
   - custom_components/aerial_danger/danger/presets.py
   - custom_components/aerial_danger/translations/
   - tests/danger/test_presets.py
+  - tests/test_config_flow.py
   - mlrs-guided-bomb-area-research.md
 ---
 
@@ -35,6 +38,9 @@ places already observed in live alert wording.
   `Одеський порт` / `Одеса Порт`. Keep forecasts, analysis, and aftermath out.
 - Match the researched Zaporizhzhia alias as `зп` so lowercased source text works.
 - Keep preset and English/Ukrainian selector order aligned.
+- Define regions as administrative oblasts and localities as named places such
+  as settlements, landmarks, and neighborhoods. Link custom-pattern fields to
+  the contribution guide in the repository.
 
 ## Verification
 
@@ -78,3 +84,9 @@ inflections, or alternate punctuation, with tuples supporting multiple forms;
 special Saltivka, port, and Zaporizhzhia detector tests were removed. Focused
 preset tests passed 8 tests; the full suite passed 107 tests; `scripts/lint` and
 `git diff --check` passed.
+
+2026-08-03: Added contributor guidance defining regions as administrative
+oblasts and localities as settlements, landmarks, neighborhoods, and similar
+named places. Custom region/locality pattern fields now link to the anchored
+guide in setup and options flows. Config-flow tests passed 15 tests;
+the full suite passed 107 tests; `scripts/lint` passed.

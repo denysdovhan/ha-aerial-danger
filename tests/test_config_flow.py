@@ -125,9 +125,14 @@ async def test_description_placeholders(hass: HomeAssistant) -> None:
             CONF_SOURCES: ["sensor.alerts"],
         },
     )
-    assert result["description_placeholders"] == {
-        "regex_url": "https://docs.python.org/3/library/re.html"
+    regex_placeholders = {
+        "regex_url": "https://docs.python.org/3/library/re.html",
+        "preset_contribution_url": (
+            "https://github.com/denysdovhan/ha-aerial-danger/blob/main/"
+            "contributing.md#submit-region-and-locality-regular-expressions"
+        ),
     }
+    assert result["description_placeholders"] == regex_placeholders
 
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"],
@@ -136,9 +141,7 @@ async def test_description_placeholders(hass: HomeAssistant) -> None:
             CONF_REGION_PATTERNS: [],
         },
     )
-    assert result["description_placeholders"] == {
-        "regex_url": "https://docs.python.org/3/library/re.html"
-    }
+    assert result["description_placeholders"] == regex_placeholders
 
     entry = _entry(
         {
@@ -149,9 +152,7 @@ async def test_description_placeholders(hass: HomeAssistant) -> None:
     )
     entry.add_to_hass(hass)
     result = await _options_regions(hass, entry)
-    assert result["description_placeholders"] == {
-        "regex_url": "https://docs.python.org/3/library/re.html"
-    }
+    assert result["description_placeholders"] == regex_placeholders
 
     result = await hass.config_entries.options.async_configure(
         result["flow_id"],
@@ -160,9 +161,7 @@ async def test_description_placeholders(hass: HomeAssistant) -> None:
             CONF_REGION_PATTERNS: [],
         },
     )
-    assert result["description_placeholders"] == {
-        "regex_url": "https://docs.python.org/3/library/re.html"
-    }
+    assert result["description_placeholders"] == regex_placeholders
 
 
 async def test_config_preset_only_and_selector_shape(hass: HomeAssistant) -> None:
