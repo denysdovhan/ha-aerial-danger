@@ -26,9 +26,12 @@ ignore = [
   "D203", # no-blank-line-before-class (incompatible with formatter)
   "D212", # multi-line-summary-first-line (incompatible with formatter)
   "COM812", # incompatible with formatter
+  "CPY001", # Project files do not require copyright headers
   "ISC001", # incompatible with formatter
+  "ISC004", # Allow readable multiline strings in collections
   "FIX002", # Line contains TODO, consider resolving an issue
   "TD003", # Missing issue link on the line following this TODO
+  "UP042", # Preserve existing Enum string behavior
   "RUF001", # Cyrillic text intentionally used
 ]
 
