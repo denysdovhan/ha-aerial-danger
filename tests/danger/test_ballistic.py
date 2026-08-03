@@ -47,13 +47,22 @@ ZIRCON_CASES: list[str] = [
     "Циркон на Сумщині!",
 ]
 
+COMET_BALLISTIC_CASES: list[str] = [
+    "☄Київ Балістика!",
+    "☄ Київ!",
+    "☄️ Київ!",
+    "☄ Повторні на Київ",
+    "☄️ Повторні на Київ",
+]
+
 BALLISTIC_CASES: list[str] = [
     "Київ швидкісна!",
     "Київ спуск! Одна за другою!",
     "❗️ Балістика у напрямку Києва",
     "❗️Повторний вихід з Брянська у напрямку Києва",
+    "❗️Повторний вихід з Курська у напрямку Києва",
     "🔴🚀 «Кинджал» Київ!",
-    "☄Київ Балістика!",
+    *COMET_BALLISTIC_CASES,
     "КИЇВ ШВИДКІСНА",
     "🚀Швидкісна ціль на Київ!",
     "Ще балістика на Київ!",
@@ -69,9 +78,11 @@ BALLISTIC_CASES: list[str] = [
     "Кинджал у бік Києва/Житомира.",
     "🚀 Повторні запуски балістики у бік Києва!",
     "Балістика ➡️ на Київ!",
+    "🔴❗️ Ще балістика на Київ!",
     "Швидкісна ціль ➡️ на Київ!",
     "🔴❗️ Ще 2х балістики на Київ!",
     "☄ Виходи на Київ БР",
+    "☄ Вихід на Київ",
     "‼️Київ — спуск балістики!",
     "‼️Київ — спуск балістики! Друга",
     "🚀 Дві балістики на Київ!",
@@ -100,6 +111,16 @@ def test_ballistic_only() -> None:
         assert detection.danger is True, text
         assert detection.type == DangerType.BALLISTIC, text
         assert detector.danger(text).type == DangerType.BALLISTIC, text
+
+
+def test_comet_messages_do_not_match_generic() -> None:
+    """Comet-marked messages should be reserved for ballistic danger."""
+    detector = DangerDetector(REGION_PATTERNS, LOCALITY_PATTERNS)
+    for text in COMET_BALLISTIC_CASES:
+        detection = detector.generic_danger(text)
+
+        assert detection.danger is False, text
+        assert detection.type is None, text
 
 
 def test_zircon_is_ballistic() -> None:

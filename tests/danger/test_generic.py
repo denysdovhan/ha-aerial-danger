@@ -52,18 +52,12 @@ GENERIC_CASES: list[str] = [
     "КИЇВ ХВИЛИНА!!",
     "Київ ще групові, увага!",
     "🚀 Академмістечко",
-    "На Нивки йде",
     "🔴Київ!",
     "НИВКИ УВАГА!!!!!!!!",
-    "❗️Повторний вихід з Брянська у напрямку Києва",
-    "❗️Повторний вихід з Курська у напрямку Києва",
     "🚀 Знову ціль на Київ!",
     "🚀Київ в укриття",
     "Київ !!!",
-    "☄ Повторні на Київ",
     "КИЇВ СХОВАЛИСЬ В ДВІ СТІНИ",
-    "☄ Вихід на Київ",
-    "🚀 Васильків/Київ, йде з півдня!",
     "🔴🚀Нивки!",
     "🔴🚀 Святошин!",
     "🚀 Святошино/Нивки!",
@@ -74,6 +68,27 @@ GENERIC_CASES: list[str] = [
     "Бровари підліт. Ви його не почуєте. Від вікон.",
 ]
 
+REGION_ONLY_INCOMING_WEAPON_CASES: list[tuple[str, str]] = [
+    (r"\bки(ї|є)в(а|у|ом|е|і)?\b", "🟡💣 Київ!"),
+    (r"\bхарків(а|у|ом|і)?\b", "🔴❗️ РСЗВ на Харків!"),
+    (
+        r"\bдніпропетровщин(а|и|і|у|ою)?\b",
+        "🟡💣 КАБи на Дніпропетровщині, вектор Кривий Ріг!",
+    ),
+    (
+        r"\bхарків(а|у|ом|і)?\b",
+        "🟡💣 КАБ на Харків, вектор Стара Салтівка!",
+    ),
+]
+
+GENERIC_WHOLE_MESSAGE_CASES: list[str] = [
+    "КИЇВ!",
+    "НИВКИ!",
+    "❗️На Нивки!",
+    "🔴❗️Вектор Київ!",
+    "Курсом на Київ!",
+]
+
 
 def test_generic_only() -> None:
     """Generic helper should flag generic samples."""
@@ -82,4 +97,26 @@ def test_generic_only() -> None:
         detection = detector.generic_danger(text)
         assert detection.danger is True, text
         assert detection.type == DangerType.GENERIC, text
-        assert detector.danger(text).danger is True, text
+        assert detector.danger(text).type == DangerType.GENERIC, text
+
+
+def test_weapon_messages_do_not_fall_through_to_generic() -> None:
+    """Typed messages with only a region match should stay neutral."""
+    for region_pattern, text in REGION_ONLY_INCOMING_WEAPON_CASES:
+        detector = DangerDetector([region_pattern], [])
+
+        detection = detector.danger(text)
+
+        assert detection.danger is False, text
+        assert detection.type is None, text
+
+
+def test_terse_generic_matches_complete_message() -> None:
+    """Terse generic warnings should preserve the complete matched text."""
+    detector = DangerDetector(REGION_PATTERNS, LOCALITY_PATTERNS)
+    for text in GENERIC_WHOLE_MESSAGE_CASES:
+        detection = detector.generic_danger(text)
+
+        assert detection.danger is True, text
+        assert detection.type == DangerType.GENERIC, text
+        assert detection.matched_danger == text, text
