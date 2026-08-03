@@ -20,17 +20,11 @@
 > [!NOTE]
 > A [Home Assistant][home-assistant] integration for detecting aerial danger affecting configured Ukrainian regions and localities.
 
-**Aerial Danger** analyzes text from selected Home Assistant entities and exposes safety sensors, events, and automation triggers.
-
-It detects IRBM[^1], MLRS[^2], GAB[^3], ballistic missile, cruise missile, drone, and unclassified aerial threats.
-
-The interface and this practical guide are available in English and Ukrainian.
-
----
-
 ## About the integration
 
 **Aerial Danger** analyzes aerial-threat messages and determines whether they affect selected regions or localities.
+
+It detects IRBM[^1], MLRS[^2], GAB[^3], ballistic missile, cruise missile, drone, and unclassified aerial threats.
 
 Aerial Danger does not fetch messages itself. The integration analyzes the text state of selected Home Assistant entities. For example, you can create these entities from public Telegram channels with the [Scrape][scrape-url] integration.
 
@@ -186,8 +180,8 @@ Add an **Aerial Danger** integration entry:
 You can combine preset regions and localities with custom [Python regular expressions][python-regex-url] in a YAML list:
 
 ```yaml
-- (to|towards) us
-- our (region|oblast)
+- (до|на) нас
+- наш(у|ої) област(ь|і)?
 ```
 
 > [!IMPORTANT]
