@@ -70,3 +70,13 @@ def test_zircon_is_cruise() -> None:
         detection = detector.cruise_missile_danger(text)
         assert detection.danger is True, text
         assert detection.type == DangerType.CRUISE, text
+
+
+def test_emoji_prefixed_rockets_are_cruise() -> None:
+    """Rocket wording should stay specific when prefixed by alert emojis."""
+    detector = DangerDetector([r"\bхарків(а|у|ом|і)?\b"], [])
+
+    detection = detector.danger("🔴🚀2х ракети на Харків!")
+
+    assert detection.danger is True
+    assert detection.type == DangerType.CRUISE

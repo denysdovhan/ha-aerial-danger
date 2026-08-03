@@ -33,6 +33,27 @@ DRONE_MESSAGE_CASES: list[str] = [
     "🛵 Нивки – шахед.",
     "🟡🛵Академмістечко!",
     "🟡🛵 Шахед на Біличі/Берестейський проспект!",
+    "На Нивки йде",
+]
+
+REPORTED_DRONE_LOCALITY_CASES: list[tuple[str, str]] = [
+    (
+        r"\bбровар(и|ів|ах)?\b",
+        "‼️🛵Залітають через Бровари на Київ.@operinform",
+    ),
+    (r"\bбровар(и|ів|ах)?\b", "Бровари на Київ БПЛА"),
+    (
+        r"\bостер\b",
+        "🛵Реактивний Шахед через Остер на Київ!",
+    ),
+]
+
+REGION_ONLY_DRONE_CASES: list[str] = [
+    "🛵 БпЛА ➡️ курсом на Київ з північного сходу!",
+    "‼️🛵Залітають через Бровари на Київ.@operinform",
+    "Бровари на Київ БПЛА",
+    "🛵Реактивний Шахед через Остер на Київ!",
+    "🛵 Київ!",
 ]
 
 REACTIVE_DRONE_CASES: list[tuple[str, str, str]] = [
@@ -144,6 +165,27 @@ def test_drone_messages() -> None:
         assert detection.danger is True, text
         assert detection.type == DangerType.DRONE, text
         assert detector.danger(text).type == DangerType.DRONE, text
+
+
+def test_reported_drone_messages_match_configured_locality() -> None:
+    """Reported drone messages should use an explicitly configured locality."""
+    for locality_pattern, text in REPORTED_DRONE_LOCALITY_CASES:
+        detector = DangerDetector([], [locality_pattern])
+
+        detection = detector.danger(text)
+
+        assert detection.danger is True, text
+        assert detection.type == DangerType.DRONE, text
+
+
+def test_reported_drone_messages_do_not_match_region() -> None:
+    """Reported drone messages should not fall through to a region match."""
+    detector = DangerDetector([r"\bки(ї|є)в(а|у|ом|е|і)?\b"], [])
+    for text in REGION_ONLY_DRONE_CASES:
+        detection = detector.danger(text)
+
+        assert detection.danger is False, text
+        assert detection.type is None, text
 
 
 def test_reactive_drone_danger() -> None:
