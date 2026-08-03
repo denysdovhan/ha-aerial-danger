@@ -22,18 +22,28 @@ areas captured during
 
 ## Problem
 
-Built-in presets cover only Kyiv city and Kyiv Oblast. Users in Kharkiv,
-Dnipropetrovsk, Zaporizhzhia, and Odesa oblasts must maintain custom regexes for
-places already observed in live alert wording.
+Built-in presets do not cover every Ukrainian oblast. Users in uncovered
+oblasts must maintain custom regexes for region names already observed in live
+alert wording.
 
 ## Decision
 
-- Add four oblast presets under stable, alphabetized IDs.
+- Cover all 24 Ukrainian oblasts under stable, alphabetized IDs; keep Kyiv city
+  as a separate region preset.
 - Nest cities and other localities under their owning oblast; include
   Zaporizhzhia city with the other requested oblast centers.
 - Use official Ukrainian oblast names and Ukrainian canonical locality names.
 - Match researched grammatical forms conservatively; include explicitly
   requested Kharkiv and Odesa city landmarks and districts as localities.
+- For the 19 additional oblasts, match official oblast-name inflections plus
+  live-alert regional aliases confirmed in Telegram. Include researched
+  `Буковина` and `Франківщина`; include `Чернівеччина` by explicit request
+  despite aftermath-only evidence. Exclude unobserved `Закарпаття`,
+  `Прикарпаття`, and `Кропивниччина`.
+- Add the administrative center as a locality for every oblast except Kyiv
+  Oblast, whose center is already the separate Kyiv region. Use conservative
+  canonical forms for Donetsk and Luhansk because research found no city-target
+  alert wording, and avoid city forms that overlap their oblast names.
 - Accept bare `Пʼятихатки` and `Салтівка`; constrain the port preset to
   `Одеський порт` / `Одеса Порт`. Keep forecasts, analysis, and aftermath out.
 - Match the researched Zaporizhzhia alias as `зп` so lowercased source text works.
@@ -90,3 +100,21 @@ oblasts and localities as settlements, landmarks, neighborhoods, and similar
 named places. Custom region/locality pattern fields now link to the anchored
 guide in setup and options flows. Config-flow tests passed 15 tests;
 the full suite passed 107 tests; `scripts/lint` passed.
+
+2026-08-03: Added the remaining 19 Ukrainian oblasts, bringing the registry to
+all 24 oblasts plus Kyiv city. Parallel research across `operinform`,
+`war_monitor`, `AerisRimor`, and `kpszsu` confirmed live-alert regional aliases
+for 17 oblasts; Chernivtsi and Zakarpattia initially used official oblast forms
+only. Focused preset tests passed 8 tests; the full suite passed 107 tests;
+`scripts/lint` and `git diff --check` passed.
+
+2026-08-03: Follow-up research added the 19 missing oblast centers as
+localities, plus active-alert `Буковина` and `Франківщина` region aliases.
+`Прикарпаття` had no active-alert evidence and was excluded. `Чернівеччина` was
+added by explicit request despite only aftermath evidence. Donetsk and Luhansk
+use conservative canonical city patterns because no city-targeted alerts were
+found; their genitive forms are excluded to avoid matching full oblast names.
+Every region now owns at least one locality, with Kyiv kept as a separate region
+instead of being duplicated under Kyiv Oblast. Focused preset tests passed 8
+tests; the full suite passed 107 tests; `scripts/lint` and `git diff --check`
+passed.

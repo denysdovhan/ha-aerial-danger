@@ -22,6 +22,43 @@ class RegionPreset:
 
 
 PRESETS: Final = {
+    "cherkasy_oblast": RegionPreset(
+        name="Черкаська область",
+        patterns=(
+            r"\bчеркащин(а|и|і|у|ою)\b",
+            r"\bчеркаськ(а|ої|ій|у|ою) област(ь|і|ю)\b",
+        ),
+        localities={
+            "cherkasy_oblast_cherkasy": LocalityPreset(
+                name="Черкаси", patterns=(r"\bчеркас(и|ам|ами|ах)?\b",)
+            ),
+        },
+    ),
+    "chernihiv_oblast": RegionPreset(
+        name="Чернігівська область",
+        patterns=(
+            r"\bчернігівщин(а|и|і|у|ою)\b",
+            r"\bчернігівськ(а|ої|ій|у|ою) област(ь|і|ю)\b",
+        ),
+        localities={
+            "chernihiv_oblast_chernihiv": LocalityPreset(
+                name="Чернігів", patterns=(r"\bчерніг(ів|ова|ову|овом|ові)\b",)
+            ),
+        },
+    ),
+    "chernivtsi_oblast": RegionPreset(
+        name="Чернівецька область",
+        patterns=(
+            r"\bбуковин(а|и|і|у|ою)\b",
+            r"\bчернівеччин(а|и|і|у|ою)\b",
+            r"\bчернівецьк(а|ої|ій|у|ою) област(ь|і|ю)\b",
+        ),
+        localities={
+            "chernivtsi_oblast_chernivtsi": LocalityPreset(
+                name="Чернівці", patterns=(r"\bчернівц(і|ів|ям|ями|ях)\b",)
+            ),
+        },
+    ),
     "dnipropetrovsk_oblast": RegionPreset(
         name="Дніпропетровська область",
         patterns=(
@@ -42,6 +79,33 @@ PRESETS: Final = {
             ),
             "dnipropetrovsk_oblast_pavlohrad": LocalityPreset(
                 name="Павлоград", patterns=(r"\bпавлоград(а|у|і|ом)?\b",)
+            ),
+        },
+    ),
+    "donetsk_oblast": RegionPreset(
+        name="Донецька область",
+        patterns=(
+            r"\bдонеччин(а|и|і|у|ою)\b",
+            r"\bдонецьк(а|ої|ій|у|ою) област(ь|і|ю)\b",
+        ),
+        localities={
+            "donetsk_oblast_donetsk": LocalityPreset(
+                name="Донецьк",
+                patterns=(r"\bдонецьк(у|ом|і)?\b",),
+            ),
+        },
+    ),
+    "ivano_frankivsk_oblast": RegionPreset(
+        name="Івано-Франківська область",
+        patterns=(
+            r"\bфранківщин(а|и|і|у|ою)\b",
+            r"\bівано-франківщин(а|и|і|у|ою)\b",
+            r"\bівано-франківськ(а|ої|ій|у|ою) област(ь|і|ю)\b",
+        ),
+        localities={
+            "ivano_frankivsk_oblast_ivano_frankivsk": LocalityPreset(
+                name="Івано-Франківськ",
+                patterns=(r"\bівано-франківськ(у|ом|і)?\b",),
             ),
         },
     ),
@@ -83,6 +147,44 @@ PRESETS: Final = {
             "kharkiv_oblast_saltivka": LocalityPreset(
                 name="Салтівка",
                 patterns=(r"\bсалтівк(а|и|і|у|ою|о)\b",),
+            ),
+        },
+    ),
+    "kherson_oblast": RegionPreset(
+        name="Херсонська область",
+        patterns=(
+            r"\bхерсонщин(а|и|і|у|ою)\b",
+            r"\bхерсонськ(а|ої|ій|у|ою) област(ь|і|ю)\b",
+        ),
+        localities={
+            "kherson_oblast_kherson": LocalityPreset(
+                name="Херсон", patterns=(r"\bхерсон(а|у|ом|і)?\b",)
+            ),
+        },
+    ),
+    "khmelnytskyi_oblast": RegionPreset(
+        name="Хмельницька область",
+        patterns=(
+            r"\bхмельниччин(а|и|і|у|ою)\b",
+            r"\bхмельницьк(а|ої|ій|у|ою) област(ь|і|ю)\b",
+        ),
+        localities={
+            "khmelnytskyi_oblast_khmelnytskyi": LocalityPreset(
+                name="Хмельницький",
+                patterns=(r"\bхмельницьк(ий|ого|ому|им|ім)\b",),
+            ),
+        },
+    ),
+    "kirovohrad_oblast": RegionPreset(
+        name="Кіровоградська область",
+        patterns=(
+            r"\bкіровоградщин(а|и|і|у|ою)\b",
+            r"\bкіровоградськ(а|ої|ій|у|ою) област(ь|і|ю)\b",
+        ),
+        localities={
+            "kirovohrad_oblast_kropyvnytskyi": LocalityPreset(
+                name="Кропивницький",
+                patterns=(r"\bкропивницьк(ий|ого|ому|им|ім)\b",),
             ),
         },
     ),
@@ -431,6 +533,44 @@ PRESETS: Final = {
             ),
         },
     ),
+    "luhansk_oblast": RegionPreset(
+        name="Луганська область",
+        patterns=(
+            r"\bлуганщин(а|и|і|у|ою)\b",
+            r"\bлуганськ(а|ої|ій|у|ою) област(ь|і|ю)\b",
+        ),
+        localities={
+            "luhansk_oblast_luhansk": LocalityPreset(
+                name="Луганськ",
+                patterns=(r"\bлуганськ(у|ом|і)?\b",),
+            ),
+        },
+    ),
+    "lviv_oblast": RegionPreset(
+        name="Львівська область",
+        patterns=(
+            r"\bльвівщин(а|и|і|у|ою)\b",
+            r"\bльвівськ(а|ої|ій|у|ою) област(ь|і|ю)\b",
+        ),
+        localities={
+            "lviv_oblast_lviv": LocalityPreset(
+                name="Львів", patterns=(r"\bльв(ів|ова|ову|овом|ові)\b",)
+            ),
+        },
+    ),
+    "mykolaiv_oblast": RegionPreset(
+        name="Миколаївська область",
+        patterns=(
+            r"\bмиколаївщин(а|и|і|у|ою)\b",
+            r"\bмиколаївськ(а|ої|ій|у|ою) област(ь|і|ю)\b",
+        ),
+        localities={
+            "mykolaiv_oblast_mykolaiv": LocalityPreset(
+                name="Миколаїв",
+                patterns=(r"\bмикола(їв|єва|єві|єву|євом)\b",),
+            ),
+        },
+    ),
     "odesa_oblast": RegionPreset(
         name="Одеська область",
         patterns=(
@@ -477,6 +617,88 @@ PRESETS: Final = {
             ),
         },
     ),
+    "poltava_oblast": RegionPreset(
+        name="Полтавська область",
+        patterns=(
+            r"\bполтавщин(а|и|і|у|ою)\b",
+            r"\bполтавськ(а|ої|ій|у|ою) област(ь|і|ю)\b",
+        ),
+        localities={
+            "poltava_oblast_poltava": LocalityPreset(
+                name="Полтава", patterns=(r"\bполтав(а|и|і|у|ою)\b",)
+            ),
+        },
+    ),
+    "rivne_oblast": RegionPreset(
+        name="Рівненська область",
+        patterns=(
+            r"\bрівненщин(а|и|і|у|ою)\b",
+            r"\bрівненськ(а|ої|ій|у|ою) област(ь|і|ю)\b",
+        ),
+        localities={
+            "rivne_oblast_rivne": LocalityPreset(
+                name="Рівне", patterns=(r"\bрівне\b",)
+            ),
+        },
+    ),
+    "sumy_oblast": RegionPreset(
+        name="Сумська область",
+        patterns=(
+            r"\bсумщин(а|и|і|у|ою)\b",
+            r"\bсумськ(а|ої|ій|у|ою) област(ь|і|ю)\b",
+        ),
+        localities={
+            "sumy_oblast_sumy": LocalityPreset(
+                name="Суми", patterns=(r"\bсум(и|ах|ами)?\b",)
+            ),
+        },
+    ),
+    "ternopil_oblast": RegionPreset(
+        name="Тернопільська область",
+        patterns=(
+            r"\bтернопільщин(а|и|і|у|ою)\b",
+            r"\bтернопільськ(а|ої|ій|у|ою) област(ь|і|ю)\b",
+        ),
+        localities={
+            "ternopil_oblast_ternopil": LocalityPreset(
+                name="Тернопіль",
+                patterns=(r"\bтерноп(іль|оля|олю|олем|олі)\b",),
+            ),
+        },
+    ),
+    "vinnytsia_oblast": RegionPreset(
+        name="Вінницька область",
+        patterns=(
+            r"\bвінниччин(а|и|і|у|ою)\b",
+            r"\bвінницьк(а|ої|ій|у|ою) област(ь|і|ю)\b",
+        ),
+        localities={
+            "vinnytsia_oblast_vinnytsia": LocalityPreset(
+                name="Вінниця", patterns=(r"\bвінниц(я|і|ю|ею)\b",)
+            ),
+        },
+    ),
+    "volyn_oblast": RegionPreset(
+        name="Волинська область",
+        patterns=(
+            r"\bволин(ь|і|ню)\b",
+            r"\bволинськ(а|ої|ій|у|ою) област(ь|і|ю)\b",
+        ),
+        localities={
+            "volyn_oblast_lutsk": LocalityPreset(
+                name="Луцьк", patterns=(r"\bлуцьк(а|у|ом|ові)?\b",)
+            ),
+        },
+    ),
+    "zakarpattia_oblast": RegionPreset(
+        name="Закарпатська область",
+        patterns=(r"\bзакарпатськ(а|ої|ій|у|ою) област(ь|і|ю)\b",),
+        localities={
+            "zakarpattia_oblast_uzhhorod": LocalityPreset(
+                name="Ужгород", patterns=(r"\bужгород(а|у|ом|і)?\b",)
+            ),
+        },
+    ),
     "zaporizhzhia_oblast": RegionPreset(
         name="Запорізька область",
         patterns=(r"\bзапорізьк(а|ої|ій|у|ою) област(ь|і|ю)\b",),
@@ -496,6 +718,18 @@ PRESETS: Final = {
                     r"\bзапоріжж(я|і|ю|ям)\b",
                     r"\bзп\b",
                 ),
+            ),
+        },
+    ),
+    "zhytomyr_oblast": RegionPreset(
+        name="Житомирська область",
+        patterns=(
+            r"\bжитомирщин(а|и|і|у|ою)\b",
+            r"\bжитомирськ(а|ої|ій|у|ою) област(ь|і|ю)\b",
+        ),
+        localities={
+            "zhytomyr_oblast_zhytomyr": LocalityPreset(
+                name="Житомир", patterns=(r"\bжитомир(а|у|ом|і)?\b",)
             ),
         },
     ),
