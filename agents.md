@@ -134,6 +134,7 @@ Use these scripts for common development tasks. When you make changes and want t
 
 - Ask for clarification when requirements are ambiguous; surface 2–3 options when trade-offs matter.
 - Update documentation and related rules when introducing new patterns or services.
+- Keep `readme.md` (Ukrainian) and `readme.en.md` (English) synchronized whenever either file changes.
 - When unsure or need to make a significant decision ASK the user for guidance
 - Always run `scripts/lint` after making changes to ensure code quality.
 - Always run `scripts/test` when modifying library code.

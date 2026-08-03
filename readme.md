@@ -2,7 +2,7 @@
 
 <!-- markdownlint-disable no-inline-html -->
 <h1 align="center">
-  <img alt="HA Aerial Danger logo" src="./assets/logo.png" width="250px">
+  <img alt="Логотип HA Aerial Danger" src="./assets/logo.png" width="250px">
   <br />
   💥 HA Aerial Danger
 </h1>
@@ -15,14 +15,16 @@
 [![Buy Me A Coffee][buymeacoffee-image]][buymeacoffee-url]
 [![Twitter][twitter-image]][twitter-url]
 
+[**Українською**](./readme.md) | [English](./readme.en.md)
+
 > [!NOTE]
-> A [Home Assistant][home-assistant] integration for detecting aerial danger affecting configured Ukrainian regions and localities.
+> Інтеграція [Home Assistant][home-assistant] для виявлення повітряних загроз, що стосуються вибраних регіонів і місцевостей України.
 
-**Aerial Danger** analyzes text from selected Home Assistant entities and exposes safety sensors, events, and automation triggers.
+**Aerial Danger** аналізує текст із вибраних сутностей Home Assistant і створює сенсори безпеки, події та тригери автоматизацій.
 
-It detects IRBM[^1], MLRS[^2], GAB[^3], ballistic missile, cruise missile, drone, and unclassified aerial threats.
+Інтеграція виявляє БРСД[^1], РСЗВ[^2], КАБ[^3], балістичні й крилаті ракети, дрони та невстановлені повітряні загрози.
 
-The interface is available in English and Ukrainian. The practical guide below is in Ukrainian because the integration is intended primarily for people in Ukraine.
+Інтерфейс доступний українською та англійською. Практичний посібник нижче написаний українською, оскільки інтеграція призначена насамперед для людей в Україні.
 
 ---
 
@@ -307,11 +309,9 @@ max_exceeded: silent
 
 Хочете допомогти проєкту? Дякуємо! Перегляньте [настанови для учасників][contributing].
 
-## License / Ліцензія
+## Ліцензія
 
-**English:** [MIT License](./license.md) © [Denys Dovhan][denysdovhan].
-
-**Українською:** [Ліцензія MIT](./license.md) © [Денис Довгань][denysdovhan].
+[Ліцензія MIT](./license.md) © [Денис Довгань][denysdovhan].
 
 <!-- Footnotes -->
 
