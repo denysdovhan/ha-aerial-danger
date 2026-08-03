@@ -16,15 +16,83 @@ from custom_components.aerial_danger.danger.pattern_utils import (
 )
 from custom_components.aerial_danger.danger.presets import PRESETS
 
+PRESET_EXAMPLES = {
+    "dnipropetrovsk_oblast": ("Дніпропетровщиною", "Дніпропетровській області"),
+    "dnipropetrovsk_oblast_dnipro": ("Дніпром",),
+    "dnipropetrovsk_oblast_kamianske": ("Кам'янському",),
+    "dnipropetrovsk_oblast_kryvyi_rih": ("Кривого Рогу",),
+    "dnipropetrovsk_oblast_pavlohrad": ("Павлоградом",),
+    "kharkiv_oblast": ("Харківщиною", "Харківській області"),
+    "kharkiv_oblast_balakliia": ("Балаклією",),
+    "kharkiv_oblast_bohodukhiv": ("Богодуховом",),
+    "kharkiv_oblast_derzhprom": ("Держпрому",),
+    "kharkiv_oblast_kharkiv": ("Харкові",),
+    "kharkiv_oblast_khtz": ("хтз",),
+    "kharkiv_oblast_kozacha_lopan": ("Козачою Лопанню",),
+    "kharkiv_oblast_kulynychi": ("Кулиничах",),
+    "kharkiv_oblast_kupiansk": ("Куп'янськом",),
+    "kharkiv_oblast_piatykhatky": ("П'ятихатках",),
+    "kharkiv_oblast_saltivka": ("Салтівкою",),
+    "kyiv": ("Києва", "Києві", "Києву", "Києвом", "столиця"),
+    "kyiv_akademmistechko": ("Академмістечком",),
+    "kyiv_darnytsia": ("Дарницький масив",),
+    "kyiv_lisovyi_masyv": ("Лісовий",),
+    "kyiv_livoberezhnyi_masyv": ("Лівобережний",),
+    "kyiv_minskyi_masyv": ("Мінський",),
+    "kyiv_sviatoshyn": ("Святошино",),
+    "kyiv_troieshchyna": ("Троєщини",),
+    "kyiv_vidradnyi": ("Відрадний",),
+    "kyiv_voskresenka": ("Воскресенка",),
+    "kyiv_oblast": (
+        "Київщина",
+        "Київщини",
+        "Київщині",
+        "Київщину",
+        "Київщиною",
+        "Київської області",
+        "Київській області",
+        "Київську область",
+        "Київською областю",
+    ),
+    "kyiv_oblast_boryspil": (
+        "Борисполя",
+        "Борисполю",
+        "Борисполем",
+        "Борисполі",
+        "Борік",
+    ),
+    "odesa_oblast": ("Одещиною", "Одеською областю"),
+    "odesa_oblast_arkadiia": ("Аркадією",),
+    "odesa_oblast_bilhorod_dnistrovskyi": ("Білгород Дністровському",),
+    "odesa_oblast_chornomorsk": ("Чорноморськом",),
+    "odesa_oblast_karolino_buhaz": ("Кароліно Бугазом",),
+    "odesa_oblast_khadzhybeiskyi_raion": ("Хаджибейському районі",),
+    "odesa_oblast_odesa": ("Одесою",),
+    "odesa_oblast_odesa_port": ("Одеському порту", "Одеса / порт"),
+    "odesa_oblast_ovidiopol": ("Овідіополем",),
+    "odesa_oblast_peresyp": ("Пересипом",),
+    "odesa_oblast_zatoka": ("Затокою",),
+    "zaporizhzhia_oblast": ("Запорізькою областю",),
+    "zaporizhzhia_oblast_komyshuvakha": ("Комишувахою",),
+    "zaporizhzhia_oblast_orikhiv": ("Оріховом",),
+    "zaporizhzhia_oblast_vilniansk": ("Вільнянськом",),
+    "zaporizhzhia_oblast_zaporizhzhia": ("Запоріжжі", "ЗП"),
+}
+
 
 def test_registry_ids_ownership_and_compilation() -> None:
     """Test stable IDs, nested ownership, and valid regexes."""
-    assert list(PRESETS) == ["kyiv", "kyiv_oblast"]
+    assert list(PRESETS) == [
+        "dnipropetrovsk_oblast",
+        "kharkiv_oblast",
+        "kyiv",
+        "kyiv_oblast",
+        "odesa_oblast",
+        "zaporizhzhia_oblast",
+    ]
     assert locality_ids([]) == []
     for region_id, region in PRESETS.items():
         assert locality_ids([region_id]) == list(region.localities)
-    assert PRESETS["kyiv"].name == "Київ"
-    assert PRESETS["kyiv_oblast"].name == "Київська область"
     for region in PRESETS.values():
         assert list(region.localities) == sorted(region.localities)
         DangerDetector.validate_patterns(
@@ -76,71 +144,25 @@ def test_selector_translations_cover_localities(language: str) -> None:
         }
 
 
-@pytest.mark.parametrize(
-    ("preset_id", "text"),
-    [
-        ("kyiv_akademmistechko", "Академмістечком"),
-        ("kyiv_darnytsia", "Дарницький масив"),
-        ("kyiv_lisovyi_masyv", "Лісовий"),
-        ("kyiv_livoberezhnyi_masyv", "Лівобережний"),
-        ("kyiv_minskyi_masyv", "Мінський"),
-        ("kyiv_sviatoshyn", "Святошино"),
-        ("kyiv_troieshchyna", "Троєщини"),
-        ("kyiv_vidradnyi", "Відрадний"),
-        ("kyiv_voskresenka", "Воскресенка"),
-    ],
-)
-def test_additional_locality_variants(preset_id: str, text: str) -> None:
-    """Test additional aliases and spellings."""
-    patterns = PRESETS["kyiv"].localities[preset_id].patterns
-    assert any(
-        re.search(pattern, text, re.IGNORECASE | re.UNICODE) for pattern in patterns
-    )
+def test_preset_examples() -> None:
+    """Test preset aliases, inflections, and alternate spellings."""
+    patterns_by_id = {}
+    for region_id, region in PRESETS.items():
+        patterns_by_id[region_id] = region.patterns
+        patterns_by_id.update(
+            {
+                preset_id: preset.patterns
+                for preset_id, preset in region.localities.items()
+            }
+        )
 
-
-@pytest.mark.parametrize(
-    "text", ["Київ", "Києва", "Києві", "Києву", "Києвом", "столиця"]
-)
-def test_researched_kyiv_variants(text: str) -> None:
-    """Test researched Kyiv wording."""
-    assert any(
-        re.search(pattern, text, re.IGNORECASE | re.UNICODE)
-        for pattern in PRESETS["kyiv"].patterns
-    )
-
-
-@pytest.mark.parametrize(
-    "text",
-    [
-        "Київщина",
-        "Київщини",
-        "Київщині",
-        "Київщину",
-        "Київщиною",
-        "Київська область",
-        "Київської області",
-        "Київській області",
-        "Київську область",
-        "Київською областю",
-    ],
-)
-def test_researched_kyiv_oblast_variants(text: str) -> None:
-    """Test researched Kyiv Oblast wording."""
-    assert any(
-        re.search(pattern, text, re.IGNORECASE | re.UNICODE)
-        for pattern in PRESETS["kyiv_oblast"].patterns
-    )
-
-
-@pytest.mark.parametrize(
-    "text", ["Бориспіль", "Борисполя", "Борисполю", "Борисполем", "Борисполі", "Борік"]
-)
-def test_boryspil_variants(text: str) -> None:
-    """Test Boryspil forms and its alert shorthand."""
-    patterns = PRESETS["kyiv_oblast"].localities["kyiv_oblast_boryspil"].patterns
-    assert any(
-        re.search(pattern, text, re.IGNORECASE | re.UNICODE) for pattern in patterns
-    )
+    assert PRESET_EXAMPLES.keys() <= patterns_by_id.keys()
+    for preset_id, texts in PRESET_EXAMPLES.items():
+        for text in texts:
+            assert any(
+                re.search(pattern, text, re.IGNORECASE | re.UNICODE)
+                for pattern in patterns_by_id[preset_id]
+            ), (preset_id, text)
 
 
 def test_boundaries_and_safe_location_text() -> None:

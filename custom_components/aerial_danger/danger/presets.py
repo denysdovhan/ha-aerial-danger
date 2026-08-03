@@ -22,6 +22,70 @@ class RegionPreset:
 
 
 PRESETS: Final = {
+    "dnipropetrovsk_oblast": RegionPreset(
+        name="Дніпропетровська область",
+        patterns=(
+            r"\bдніпропетровщин(а|и|і|у|ою)\b",
+            r"\bдніпропетровськ(а|ої|ій|у|ою) област(ь|і|ю)\b",
+        ),
+        localities={
+            "dnipropetrovsk_oblast_dnipro": LocalityPreset(
+                name="Дніпро", patterns=(r"\bдніпр(о|а|у|і|ом)\b",)
+            ),
+            "dnipropetrovsk_oblast_kamianske": LocalityPreset(
+                name="Камʼянське",
+                patterns=(r"\bкам['’ʼ]?янськ(е|ого|ому|им|ім)\b",),
+            ),
+            "dnipropetrovsk_oblast_kryvyi_rih": LocalityPreset(
+                name="Кривий Ріг",
+                patterns=(r"\bкрив(ий|ого|ому|им) р(іг|огу|озі|огом)\b",),
+            ),
+            "dnipropetrovsk_oblast_pavlohrad": LocalityPreset(
+                name="Павлоград", patterns=(r"\bпавлоград(а|у|і|ом)?\b",)
+            ),
+        },
+    ),
+    "kharkiv_oblast": RegionPreset(
+        name="Харківська область",
+        patterns=(
+            r"\bхарківщин(а|и|і|у|ою)\b",
+            r"\bхарківськ(а|ої|ій|у|ою) област(ь|і|ю)\b",
+        ),
+        localities={
+            "kharkiv_oblast_balakliia": LocalityPreset(
+                name="Балаклія", patterns=(r"\bбалаклі(я|ї|ю|єю)\b",)
+            ),
+            "kharkiv_oblast_bohodukhiv": LocalityPreset(
+                name="Богодухів", patterns=(r"\bбогодух(ів|ова|ову|овом|ові)\b",)
+            ),
+            "kharkiv_oblast_derzhprom": LocalityPreset(
+                name="Держпром", patterns=(r"\bдержпром(у|і|ом|а)?\b",)
+            ),
+            "kharkiv_oblast_kharkiv": LocalityPreset(
+                name="Харків", patterns=(r"\bхарк(ів|ова|ову|овом|ові)\b",)
+            ),
+            "kharkiv_oblast_khtz": LocalityPreset(name="ХТЗ", patterns=(r"\bхтз\b",)),
+            "kharkiv_oblast_kozacha_lopan": LocalityPreset(
+                name="Козача Лопань",
+                patterns=(r"\bкозач(а|у|ою) лопан(ь|і|ню|ью)\b",),
+            ),
+            "kharkiv_oblast_kulynychi": LocalityPreset(
+                name="Кулиничі", patterns=(r"\bкулинич(і|ів|ам|ами|ах)\b",)
+            ),
+            "kharkiv_oblast_kupiansk": LocalityPreset(
+                name="Купʼянськ",
+                patterns=(r"\bкуп['’ʼ]?янськ(а|у|ом|і)?\b",),
+            ),
+            "kharkiv_oblast_piatykhatky": LocalityPreset(
+                name="Пʼятихатки",
+                patterns=(r"\bп['’ʼ]?ятихатк(и|ах|ам|ами)\b",),
+            ),
+            "kharkiv_oblast_saltivka": LocalityPreset(
+                name="Салтівка",
+                patterns=(r"\bсалтівк(а|и|і|у|ою|о)\b",),
+            ),
+        },
+    ),
     "kyiv": RegionPreset(
         name="Київ",
         patterns=(
@@ -364,6 +428,74 @@ PRESETS: Final = {
             ),
             "kyiv_oblast_zhk_sofiia": LocalityPreset(
                 name="ЖК Софія", patterns=(r"\bжк[. ]+[«\"]?софі(я|ї|ю|єю)\b",)
+            ),
+        },
+    ),
+    "odesa_oblast": RegionPreset(
+        name="Одеська область",
+        patterns=(
+            r"\bодещин(а|и|і|у|ою)\b",
+            r"\bодеськ(а|ої|ій|у|ою) област(ь|і|ю)\b",
+        ),
+        localities={
+            "odesa_oblast_arkadiia": LocalityPreset(
+                name="Аркадія", patterns=(r"\bаркаді(я|ї|ю|єю)\b",)
+            ),
+            "odesa_oblast_bilhorod_dnistrovskyi": LocalityPreset(
+                name="Білгород-Дністровський",
+                patterns=(r"\bбілгород[ -]дністровськ(ий|ого|ому|им|ім)\b",),
+            ),
+            "odesa_oblast_chornomorsk": LocalityPreset(
+                name="Чорноморськ", patterns=(r"\bчорноморськ(а|у|ом|і)?\b",)
+            ),
+            "odesa_oblast_karolino_buhaz": LocalityPreset(
+                name="Кароліно-Бугаз",
+                patterns=(r"\bкароліно[ -]бугаз(у|і|ом|а)?\b",),
+            ),
+            "odesa_oblast_khadzhybeiskyi_raion": LocalityPreset(
+                name="Хаджибейський район",
+                patterns=(r"\bхаджибейськ(ий|ого|ому|им|ім) район(у|і|ом)?\b",),
+            ),
+            "odesa_oblast_odesa": LocalityPreset(
+                name="Одеса", patterns=(r"\bодес(а|и|і|у|ою)\b",)
+            ),
+            "odesa_oblast_odesa_port": LocalityPreset(
+                name="Одеський порт",
+                patterns=(
+                    r"\bодеськ(ий|ого|ому|им|ім) порт(у|і|ом|а)?\b",
+                    r"\bодес(а|и|і|у|ою)\s*[ /-]\s*порт(у|і|ом|а)?\b",
+                ),
+            ),
+            "odesa_oblast_ovidiopol": LocalityPreset(
+                name="Овідіополь", patterns=(r"\bовідіопол(ь|я|і|ю|ем)\b",)
+            ),
+            "odesa_oblast_peresyp": LocalityPreset(
+                name="Пересип", patterns=(r"\bпересип(у|ом|і)?\b",)
+            ),
+            "odesa_oblast_zatoka": LocalityPreset(
+                name="Затока", patterns=(r"\bзаток(а|и|у|ою|ці)\b",)
+            ),
+        },
+    ),
+    "zaporizhzhia_oblast": RegionPreset(
+        name="Запорізька область",
+        patterns=(r"\bзапорізьк(а|ої|ій|у|ою) област(ь|і|ю)\b",),
+        localities={
+            "zaporizhzhia_oblast_komyshuvakha": LocalityPreset(
+                name="Комишуваха", patterns=(r"\bкомишувах(а|и|і|у|ою)\b",)
+            ),
+            "zaporizhzhia_oblast_orikhiv": LocalityPreset(
+                name="Оріхів", patterns=(r"\bоріх(ів|ова|ову|ові|овом)\b",)
+            ),
+            "zaporizhzhia_oblast_vilniansk": LocalityPreset(
+                name="Вільнянськ", patterns=(r"\bвільнянськ(а|у|і|ом)?\b",)
+            ),
+            "zaporizhzhia_oblast_zaporizhzhia": LocalityPreset(
+                name="Запоріжжя",
+                patterns=(
+                    r"\bзапоріжж(я|і|ю|ям)\b",
+                    r"\bзп\b",
+                ),
             ),
         },
     ),
