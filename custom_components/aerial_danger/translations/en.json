@@ -27,7 +27,7 @@
       },
       "localities": {
         "title": "Localities",
-        "description": "Choose localities within the selected regions. Locality matches are required for drones and can also match every other threat type.\n\nSelect built-in localities, enter custom patterns, or use both.",
+        "description": "Choose localities within the selected regions. Locality matches are required for multiple launch rocket system (MLRS), guided aerial bomb (GAB), and drone alerts, and can also match every other threat type.\n\nSelect built-in localities, enter custom patterns, or use both.",
         "data": {
           "locality_presets": "Built-in localities",
           "locality_patterns": "Custom locality patterns (YAML list)"
@@ -71,7 +71,7 @@
       },
       "localities": {
         "title": "Localities",
-        "description": "Choose localities within the selected regions. Locality matches are required for drones and can also match every other threat type.\n\nSelect built-in localities, enter custom patterns, or use both.",
+        "description": "Choose localities within the selected regions. Locality matches are required for multiple launch rocket system (MLRS), guided aerial bomb (GAB), and drone alerts, and can also match every other threat type.\n\nSelect built-in localities, enter custom patterns, or use both.",
         "data": {
           "locality_presets": "Built-in localities",
           "locality_patterns": "Custom locality patterns (YAML list)"
@@ -193,16 +193,16 @@
       "description": "Triggers when the integration detects any danger type."
     },
     "irbm": {
-      "name": "Intermediate-range ballistic missile danger detected",
-      "description": "Triggers when the integration detects an intermediate-range ballistic missile threat."
+      "name": "IRBM danger detected",
+      "description": "Triggers when the integration detects an intermediate-range ballistic missile (IRBM) threat."
     },
     "mlrs": {
       "name": "MLRS danger detected",
-      "description": "Triggers when the integration detects an MLRS attack affecting the monitored area."
+      "description": "Triggers when the integration detects a multiple launch rocket system (MLRS) attack affecting a monitored locality."
     },
     "guided_bomb": {
-      "name": "Guided bomb danger detected",
-      "description": "Triggers when the integration detects guided bombs approaching the monitored area."
+      "name": "GAB danger detected",
+      "description": "Triggers when the integration detects a guided aerial bomb (GAB) approaching a monitored locality."
     },
     "ballistic": {
       "name": "Ballistic danger detected",
@@ -244,9 +244,9 @@
           "event_type": {
             "name": "Event type",
             "state": {
-              "irbm": "Intermediate-range ballistic missile danger",
+              "irbm": "IRBM danger",
               "mlrs": "MLRS danger",
-              "guided_bomb": "Guided bomb danger",
+              "guided_bomb": "GAB danger",
               "ballistic": "Ballistic danger",
               "cruise": "Cruise missile danger",
               "drone": "Drone danger",
@@ -258,7 +258,7 @@
     },
     "binary_sensor": {
       "irbm": {
-        "name": "Intermediate-range ballistic missile danger",
+        "name": "IRBM danger",
         "state_attributes": {
           "matched_message": {
             "name": "Matched message"
@@ -292,7 +292,7 @@
         }
       },
       "guided_bomb": {
-        "name": "Guided bomb danger",
+        "name": "GAB danger",
         "state_attributes": {
           "matched_message": {
             "name": "Matched message"

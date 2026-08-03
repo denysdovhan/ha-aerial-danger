@@ -138,9 +138,15 @@ MLRS_DANGER = [
 
 # Guided bomb phrases.
 GUIDED_BOMB_DANGER = [
+    r"^\s*🟡💣\s*{area}\s*[!.]*$",
     (
         rf"^\W*(?:(?:ще й|\d+х)\s+)?\b{_GUIDED_BOMB}\b[^\n]{{0,24}}"
         rf"\b(?:на|у напрямку)\s+{{area}}"
+    ),
+    rf"^\W*\b{_GUIDED_BOMB}\b[^\n]{{0,24}}\bповз\s+{{area}}",
+    (
+        rf"^\W*\b{_GUIDED_BOMB}\b[^\n]{{0,64}}"
+        rf"\bвектор(?: руху)?\W*(?:на\W+)?{{area}}"
     ),
     (
         rf"^\W*\b{_GUIDED_BOMB}\b[^\n]{{0,24}}\bна\s+"
