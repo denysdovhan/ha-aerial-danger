@@ -186,6 +186,8 @@ When authoring area presets, research the relevant listed Telegram histories. Us
 - Prefer multiple simple one-line regexes for different word orders. Join only equivalent spellings, inflections, or terms with `(|)`.
 - Use the smallest observed bounded gap, such as `.{0,48}`, instead of `.*`; do not cross lines unless an observed alert requires it.
 - Keep weapon wording in its domain list, target/vector wording in `GENERIC_DANGER`, and resolved or retrospective wording in `SAFETY`. Do not infer a weapon type from an area or target count alone.
+- Anchor bare-area, direct-target, and direction-only generic alerts to the complete message; weapon-specific posts must not match generic danger from an area substring or suffix.
+- Treat `☄`/`☄️` as ballistic and `🛵` as drone; do not allow these markers through generic alert prefixes.
 - Add exact strings to the matching domain test, use shared region/locality patterns from `tests/danger/common.py`, deduplicate cases that differ only by area, and add aftermath or forecast examples as safety negatives.
 
 ## Commit messages
