@@ -39,7 +39,11 @@ SOURCE_DESCRIPTION_PLACEHOLDERS = {
     "war_monitor_url": "https://telegram.me/s/war_monitor",
 }
 REGEX_DESCRIPTION_PLACEHOLDERS = {
-    "regex_url": "https://docs.python.org/3/library/re.html"
+    "regex_url": "https://docs.python.org/3/library/re.html",
+    "preset_contribution_url": (
+        "https://github.com/denysdovhan/ha-aerial-danger/blob/main/"
+        "contributing.md#submit-region-and-locality-regular-expressions"
+    ),
 }
 
 

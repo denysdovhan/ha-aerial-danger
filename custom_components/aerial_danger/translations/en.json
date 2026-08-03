@@ -22,7 +22,7 @@
         },
         "data_description": {
           "region_presets": "Optional: select one or more built-in regions.",
-          "region_patterns": "Optional: enter a YAML list with one [regular expression]({regex_url}) per item.\n\nExample:\n\n```yaml\n- \\bки(їв|єва|єві|єву|євом)\\b\n- \\bстолиц(я|і|ю|ею)\\b\n```"
+          "region_patterns": "Optional: enter a YAML list with one [regular expression]({regex_url}) per item.\n\nExample:\n\n```yaml\n- \\bки(їв|єва|єві|єву|євом)\\b\n- \\bстолиц(я|і|ю|ею)\\b\n```\n\nFound a useful expression for your locality? Share it with other users by [adding it to the integration]({preset_contribution_url})."
         }
       },
       "localities": {
@@ -34,7 +34,7 @@
         },
         "data_description": {
           "locality_presets": "Optional: select one or more built-in localities.\n\n**Tip:** Select your locality and nearby localities to receive notifications about approaching targets.",
-          "locality_patterns": "Optional: enter a YAML list with one [regular expression]({regex_url}) per item.\n\nExample:\n\n```yaml\n- \\bнив(ки|ках|ками|ок)\\b\n- \\bвиноградар(а|і|ем)?\\b\n```"
+          "locality_patterns": "Optional: enter a YAML list with one [regular expression]({regex_url}) per item.\n\nExample:\n\n```yaml\n- \\bнив(ки|ках|ками|ок)\\b\n- \\bвиноградар(а|і|ем)?\\b\n```\n\nFound a useful expression for your locality? Share it with other users by [adding it to the integration]({preset_contribution_url})."
         }
       }
     },
@@ -66,7 +66,7 @@
         },
         "data_description": {
           "region_presets": "Optional: select one or more built-in regions.",
-          "region_patterns": "Optional: enter a YAML list with one [regular expression]({regex_url}) per item.\n\nExample:\n\n```yaml\n- \\bки(їв|єва|єві|єву|євом)\\b\n- \\bстолиц(я|і|ю|ею)\\b\n```"
+          "region_patterns": "Optional: enter a YAML list with one [regular expression]({regex_url}) per item.\n\nExample:\n\n```yaml\n- \\bки(їв|єва|єві|єву|євом)\\b\n- \\bстолиц(я|і|ю|ею)\\b\n```\n\nFound a useful expression for your locality? Share it with other users by [adding it to the integration]({preset_contribution_url})."
         }
       },
       "localities": {
@@ -78,7 +78,7 @@
         },
         "data_description": {
           "locality_presets": "Optional: select one or more built-in localities.\n\n**Tip:** Select your locality and nearby localities to receive notifications about approaching targets.",
-          "locality_patterns": "Optional: enter a YAML list with one [regular expression]({regex_url}) per item.\n\nExample:\n\n```yaml\n- \\bнив(ки|ках|ками|ок)\\b\n- \\bвиноградар(а|і|ем)?\\b\n```"
+          "locality_patterns": "Optional: enter a YAML list with one [regular expression]({regex_url}) per item.\n\nExample:\n\n```yaml\n- \\bнив(ки|ках|ками|ок)\\b\n- \\bвиноградар(а|і|ем)?\\b\n```\n\nFound a useful expression for your locality? Share it with other users by [adding it to the integration]({preset_contribution_url})."
         }
       }
     },
