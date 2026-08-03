@@ -47,9 +47,9 @@ This repository implements the Home Assistant custom integration **Aerial Danger
 - `config_flow.py` — multi-entry config flow with user-defined entry titles and options for area regex patterns and text-state source entities; requires patterns and sources and rejects invalid regex patterns.
 - `const.py` — grouped configuration, attribute, state, event, logger, and integration constants.
 - `entity.py` — shared runtime and device setup for integration entities.
-- `binary_sensor.py` — safety binary sensors for IRBM, ballistic, cruise, drone, unknown, and aggregate danger; all expose stable matched-message, area, danger, and source attributes.
+- `binary_sensor.py` — safety binary sensors for IRBM, MLRS, guided bomb, ballistic, cruise, drone, unknown, and aggregate danger; all expose stable matched-message, area, danger, and source attributes.
 - `sensor.py` — diagnostic sensors mirroring the aggregate matched message, area, danger, and friendly source name; inactive sensors show clear and IRBM area shows nationwide.
-- `event.py` — native Home Assistant event entity for IRBM, ballistic, cruise, drone, and unknown detections.
+- `event.py` — native Home Assistant event entity for IRBM, MLRS, guided bomb, ballistic, cruise, drone, and unknown detections.
 - `trigger.py` — target-based automation triggers for aggregate danger and each native danger event type.
 - `triggers.yaml` — target definitions for automation triggers.
 - `diagnostics.py` — provides redacted config-entry diagnostics and privacy-safe runtime state details.
@@ -60,8 +60,8 @@ This repository implements the Home Assistant custom integration **Aerial Danger
 ### How it works
 
 - Each config entry builds a detector from configured region and locality regex patterns and subscribes to selected Home Assistant source entities.
-- Changed source text is checked in order: IRBM, ballistic, cruise, drone, then generic danger. First match wins.
-- Runtime tracks active detections per source, so a safe message clears only that source. Binary sensors aggregate remaining detections, and the event entity records each new detection.
+- Changed source text is checked in order: IRBM, MLRS, guided bomb, ballistic, cruise, drone, then generic danger. First match wins.
+- Runtime tracks active detections per source. Posts outside active-alert patterns leave source state unchanged; only `SAFETY` matches clear that source. Binary sensors aggregate remaining detections, and the event entity records each new detection.
 - Diagnostic sensors mirror the latest active aggregate detection and return to clear when no danger remains.
 - Target-based triggers fire for aggregate danger or filter event-entity updates by danger type, including repeated detections.
 - Source data collection stays outside this integration. The `danger/` library stays Home Assistant agnostic and logger-free.
@@ -86,6 +86,20 @@ Here are a few notes on parsing data from external sources. Here are words that 
   - `рс-26`
   - `рубіж`
 - IRBM alerts are nationwide and do not require an area match.
+- Multiple launch rocket systems are usually refered as:
+  - `рсзв`
+- Guided bombs are usually refered as:
+  - `каб`
+  - `керована авіабомба`
+  - `керовані авіабомби`
+  - `керовані авіаційні бомби`
+  - `🟡💣` followed by a locality
+- Use `IRBM`, `MLRS`, and `GAB` in short English UI names, and `БРСД`, `РСЗВ`,
+  and `КАБ` in short Ukrainian UI names. In longer descriptions, introduce the
+  full name followed by its abbreviation in parentheses. Add README footnotes
+  for these abbreviations.
+- MLRS and guided-bomb alerts require a configured locality match, like drones;
+  configured region patterns alone do not activate these danger types.
 - Cruise missile are usually refered as:
   - `кр`
   - `крупа кр`
@@ -182,13 +196,14 @@ When authoring area presets, research the relevant listed Telegram histories. Us
 
 ### Danger matcher authoring
 
-- Start from observed live messages. Require `{area}` except for explicit nationwide IRBM alerts; channel context alone must not bypass area gating.
+- Start from observed live messages. Require a configured locality for MLRS, guided bombs, and drones; require `{area}` for other non-IRBM alerts. Channel context alone must not bypass area gating.
 - Prefer multiple simple one-line regexes for different word orders. Join only equivalent spellings, inflections, or terms with `(|)`.
 - Use the smallest observed bounded gap, such as `.{0,48}`, instead of `.*`; do not cross lines unless an observed alert requires it.
 - Keep weapon wording in its domain list, target/vector wording in `GENERIC_DANGER`, and resolved or retrospective wording in `SAFETY`. Do not infer a weapon type from an area or target count alone.
+- Use strict positive MLRS and guided-bomb regexes; do not add their forecast, analysis, or aftermath wording to `SAFETY`. These non-matching posts must stay neutral.
 - Anchor bare-area, direct-target, and direction-only generic alerts to the complete message; weapon-specific posts must not match generic danger from an area substring or suffix.
 - Treat `☄`/`☄️` as ballistic and `🛵` as drone; do not allow these markers through generic alert prefixes.
-- Add exact strings to the matching domain test, use shared region/locality patterns from `tests/danger/common.py`, deduplicate cases that differ only by area, and add aftermath or forecast examples as safety negatives.
+- Add exact strings to the matching domain test, use shared region/locality patterns from `tests/danger/common.py`, and deduplicate cases that differ only by area. Add safety negatives for general domains; for MLRS and guided bombs, verify non-matching posts do not clear active danger.
 
 ## Commit messages
 

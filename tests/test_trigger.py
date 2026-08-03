@@ -42,7 +42,7 @@ async def _setup_entry(hass: HomeAssistant) -> str:
         title="Kyiv alerts",
         data={
             CONF_REGION_PATTERNS: [r"\bкиїв\b"],
-            CONF_LOCALITY_PATTERNS: [r"\bнивки\b"],
+            CONF_LOCALITY_PATTERNS: [r"\bнивки\b", r"\bхарків\b"],
             CONF_SOURCES: ["sensor.alerts"],
         },
     )
@@ -132,6 +132,8 @@ async def test_trigger_fires_for_selected_danger(
     "message",
     [
         pytest.param("Загроза БРСД.", id="irbm"),
+        pytest.param("🔴❗️ РСЗВ на Харків!", id="mlrs"),
+        pytest.param("💣 КАБ у напрямку Харків.", id="guided_bomb"),
         pytest.param("Київ швидкісна!", id="ballistic"),
         pytest.param("Київ увага КР!!", id="cruise"),
         pytest.param("Нивки над вами БПЛА!", id="drone"),

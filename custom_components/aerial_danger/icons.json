@@ -19,6 +19,12 @@
       "irbm": {
         "default": "mdi:rocket"
       },
+      "mlrs": {
+        "default": "mdi:fire-truck"
+      },
+      "guided_bomb": {
+        "default": "mdi:bomb"
+      },
       "cruise": {
         "default": "mdi:airplane-landing"
       },
@@ -50,6 +56,12 @@
     },
     "irbm": {
       "trigger": "mdi:rocket"
+    },
+    "mlrs": {
+      "trigger": "mdi:fire-truck"
+    },
+    "guided_bomb": {
+      "trigger": "mdi:bomb"
     },
     "ballistic": {
       "trigger": "mdi:rocket-launch"

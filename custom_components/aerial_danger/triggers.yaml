@@ -8,6 +8,16 @@ irbm:
     entity:
       integration: aerial_danger
       domain: event
+mlrs:
+  target:
+    entity:
+      integration: aerial_danger
+      domain: event
+guided_bomb:
+  target:
+    entity:
+      integration: aerial_danger
+      domain: event
 ballistic:
   target:
     entity:

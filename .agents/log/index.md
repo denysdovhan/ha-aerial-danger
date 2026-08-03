@@ -1,6 +1,7 @@
 | Date       | Name                                                                             | Status |
 | ---------- | -------------------------------------------------------------------------------- | ------ |
 | 2026-08-03 | [Generic danger precision](2026-08-03-generic-danger-precision.md)               | wip    |
+| 2026-07-31 | [MLRS and guided bomb detection](2026-07-31-mlrs-guided-bomb-detection.md)       | wip    |
 | 2026-07-30 | [User-facing copy](2026-07-30-user-facing-copy.md)                               | wip    |
 | 2026-07-30 | [Automation blueprints](2026-07-30-automation-blueprints.md)                     | wip    |
 | 2026-07-29 | [Text source selector](2026-07-29-text-source-selector.md)                       | wip    |

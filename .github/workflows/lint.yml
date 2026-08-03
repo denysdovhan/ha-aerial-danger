@@ -35,3 +35,6 @@ jobs:
 
       - name: ⚙️ Lint
         run: uv run pre-commit run --all-files
+
+      - name: 🧪 Run tests
+        run: uv run pytest tests

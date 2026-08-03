@@ -44,7 +44,9 @@ from custom_components.aerial_danger.const import (
     EVENT_TYPE_BALLISTIC,
     EVENT_TYPE_CRUISE,
     EVENT_TYPE_DRONE,
+    EVENT_TYPE_GUIDED_BOMB,
     EVENT_TYPE_IRBM,
+    EVENT_TYPE_MLRS,
     EVENT_TYPE_UNKNOWN,
     MATCHED_AREA,
     MATCHED_DANGER,
@@ -55,7 +57,7 @@ from custom_components.aerial_danger.const import (
 )
 
 pytestmark = pytest.mark.usefixtures("enable_custom_integrations")
-EXPECTED_ENTITY_COUNT = 10
+EXPECTED_ENTITY_COUNT = 12
 DETECTION_ATTRIBUTE_KEYS = (
     ATTR_MATCHED_MESSAGE,
     ATTR_MATCHED_AREA,
@@ -217,7 +219,7 @@ async def test_setup_seeds_first_match_from_each_source(
 
     for key in ("ballistic", "drone", "danger"):
         assert hass.states.get(_entity_id(hass, entry, key)).state == STATE_ON
-    for key in ("irbm", "cruise", "unknown"):
+    for key in ("irbm", "mlrs", "guided_bomb", "cruise", "unknown"):
         assert hass.states.get(_entity_id(hass, entry, key)).state == STATE_OFF
     assert hass.states.get(_event_entity_id(hass, entry)).state == STATE_UNKNOWN
 
@@ -271,7 +273,16 @@ async def test_source_state_updates_binary_sensors(
     assert hass.states.get("binary_sensor.aerial_danger_ballistic_danger").state == (
         STATE_OFF
     )
-    for key in ("irbm", "ballistic", "cruise", "drone", "unknown", "danger"):
+    for key in (
+        "irbm",
+        "mlrs",
+        "guided_bomb",
+        "ballistic",
+        "cruise",
+        "drone",
+        "unknown",
+        "danger",
+    ):
         state = hass.states.get(_entity_id(hass, entry, key))
         assert all(state.attributes[attr] is None for attr in DETECTION_ATTRIBUTE_KEYS)
 
@@ -288,6 +299,117 @@ async def test_source_state_updates_binary_sensors(
 
     assert hass.states.get(_entity_id(hass, entry, "irbm")).state == STATE_ON
     assert hass.states.get(_entity_id(hass, entry, "ballistic")).state == STATE_OFF
+
+
+@pytest.mark.parametrize(
+    ("message", "sensor_key"),
+    [
+        ("🔴❗️ РСЗВ на Харків!", "mlrs"),
+        ("💣 КАБ у напрямку Харків.", "guided_bomb"),
+    ],
+)
+async def test_new_danger_types_update_binary_sensors(
+    hass: HomeAssistant,
+    message: str,
+    sensor_key: str,
+) -> None:
+    """Test MLRS and guided bomb messages update their binary sensors."""
+    entry = _entry(
+        {
+            CONF_REGION_PATTERNS: [],
+            CONF_LOCALITY_PATTERNS: [r"\bхарків\b"],
+            CONF_SOURCES: ["sensor.alerts"],
+        }
+    )
+    entry.add_to_hass(hass)
+
+    assert await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    hass.states.async_set("sensor.alerts", message)
+    await hass.async_block_till_done()
+
+    state = hass.states.get(_entity_id(hass, entry, sensor_key))
+    assert state.state == STATE_ON
+    assert state.attributes[ATTR_MATCHED_MESSAGE] == message
+    assert state.attributes[ATTR_MATCHED_AREA] == "Харків"
+    assert state.attributes[ATTR_SOURCE_ENTITY_ID] == "sensor.alerts"
+
+
+@pytest.mark.parametrize(
+    ("message", "sensor_key"),
+    [
+        ("🔴❗️ РСЗВ на Харків!", "mlrs"),
+        ("💣 КАБ у напрямку Харків.", "guided_bomb"),
+    ],
+)
+async def test_new_danger_types_ignore_region_patterns(
+    hass: HomeAssistant,
+    message: str,
+    sensor_key: str,
+) -> None:
+    """Test MLRS and guided bomb sensors require locality patterns."""
+    entry = _entry(
+        {
+            CONF_REGION_PATTERNS: [r"\bхарків\b"],
+            CONF_LOCALITY_PATTERNS: [],
+            CONF_SOURCES: ["sensor.alerts"],
+        }
+    )
+    entry.add_to_hass(hass)
+
+    assert await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    hass.states.async_set("sensor.alerts", message)
+    await hass.async_block_till_done()
+
+    assert hass.states.get(_entity_id(hass, entry, sensor_key)).state == STATE_OFF
+
+
+async def test_non_matching_source_message_preserves_detection(
+    hass: HomeAssistant,
+) -> None:
+    """Test non-matching messages neither replace nor clear active danger."""
+    entry = _entry(
+        {
+            CONF_REGION_PATTERNS: [],
+            CONF_LOCALITY_PATTERNS: [r"\bхарків\b"],
+            CONF_SOURCES: ["sensor.alerts"],
+        }
+    )
+    entry.add_to_hass(hass)
+
+    assert await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+
+    guided_bomb_id = _entity_id(hass, entry, "guided_bomb")
+    alert = "💣 КАБ у напрямку Харків."
+    hass.states.async_set("sensor.alerts", alert)
+    await hass.async_block_till_done()
+
+    hass.states.async_set(
+        "sensor.alerts",
+        "Аналітика: дальність КАБ до Харкова.",
+    )
+    await hass.async_block_till_done()
+
+    state = hass.states.get(guided_bomb_id)
+    assert state.state == STATE_ON
+    assert state.attributes[ATTR_MATCHED_MESSAGE] == alert
+
+    hass.states.async_set(
+        "sensor.alerts",
+        "Су-34 може йти на пуски КАБ в бік Харкова.",
+    )
+    await hass.async_block_till_done()
+
+    state = hass.states.get(guided_bomb_id)
+    assert state.state == STATE_ON
+    assert state.attributes[ATTR_MATCHED_MESSAGE] == alert
+
+    hass.states.async_set("sensor.alerts", "Відбій.")
+    await hass.async_block_till_done()
+
+    assert hass.states.get(guided_bomb_id).state == STATE_OFF
 
 
 async def test_diagnostic_sensors_mirror_aggregate_detection(
@@ -608,6 +730,8 @@ async def test_same_type_detection_refreshes_attributes(
     ("message", "event_type"),
     [
         ("Загроза БРСД.", EVENT_TYPE_IRBM),
+        ("🔴❗️ РСЗВ на Харків!", EVENT_TYPE_MLRS),
+        ("💣 КАБ у напрямку Харків.", EVENT_TYPE_GUIDED_BOMB),
         ("Київ швидкісна!", EVENT_TYPE_BALLISTIC),
         ("Київ увага КР!!", EVENT_TYPE_CRUISE),
         ("Нивки над вами БПЛА!", EVENT_TYPE_DRONE),
@@ -623,7 +747,7 @@ async def test_event_entity_maps_danger_types(
     entry = _entry(
         {
             CONF_REGION_PATTERNS: [r"\bкиїв\b"],
-            CONF_LOCALITY_PATTERNS: [r"\bнивки\b"],
+            CONF_LOCALITY_PATTERNS: [r"\bнивки\b", r"\bхарків\b"],
             CONF_SOURCES: ["sensor.alerts"],
         }
     )
@@ -639,10 +763,10 @@ async def test_event_entity_maps_danger_types(
     assert state.attributes[ATTR_MATCHED_MESSAGE] == message
 
 
-async def test_cleared_detection_resets_attributes(
+async def test_safe_detection_resets_attributes(
     hass: HomeAssistant,
 ) -> None:
-    """Test non-matching messages reset detection attributes to None."""
+    """Test safe messages reset detection attributes to None."""
     entry = _entry(
         {
             CONF_REGION_PATTERNS: [r"\bкиїв\b"],
