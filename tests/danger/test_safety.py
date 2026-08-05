@@ -16,6 +16,17 @@ SAFETY_CASES: list[str] = [
     "КИЇВ УВАГА!\n\nЦІЛІ ЗНИКЛИ.",
     "КИЇВ УВАГА!\nЦІЛІ ЗНИКЛИ",
     "Все тихо",
+    "💥 Одещина вибухи, дорозвідка.",
+    "балістика відбій",
+    "⚪️ Відбій загрози балістики.",
+    "🟢 ВІДБІЙ ТРИВОГИ | Київ10:00",
+    "🟡Чисто на цю мить.",
+    "Цілей поки немає.",
+    "По балістичних цілях — чисто.",
+    "По «реактивних » також чисто.",
+    "Область візуально чисто",
+    "❕ Локаційно область чиста",
+    "❕Припинила існування.",
     (
         "Уточнена інформація щодо ракетного удару по Києву: "
         "зафіксовано влучання балістичної ракети."
@@ -46,3 +57,20 @@ def test_safety_does_not_match(text: str) -> None:
     assert detection.danger is False, text
     assert detection.type is None, text
     assert detector.is_safe(text) is True, text
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "Буде відбій згодом.",
+        (
+            "По ракетам чисто наразі, відбулись масовані пуски реактивних "
+            "дронів. Близько 10 реактивних летять на Київщину."
+        ),
+    ],
+)
+def test_future_or_partial_clear_is_not_safe(text: str) -> None:
+    """Future or weapon-specific clear wording should not veto current danger."""
+    detector = DangerDetector(REGION_PATTERNS, [])
+
+    assert detector.is_safe(text) is False, text
