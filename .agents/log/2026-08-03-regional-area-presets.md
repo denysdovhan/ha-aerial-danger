@@ -1,7 +1,7 @@
 ---
 title: Regional area presets
 date: 2026-08-03
-status: wip
+status: done
 related_paths:
   - contributing.md
   - custom_components/aerial_danger/config_flow.py

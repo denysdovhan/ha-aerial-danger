@@ -1,13 +1,15 @@
 ---
 title: Default region patterns
 date: 2026-07-28
-status: wip
+status: done
 related_paths:
   - custom_components/aerial_danger/config_flow.py
   - custom_components/aerial_danger/const.py
   - custom_components/aerial_danger/translations/
   - tests/test_config_flow.py
 ---
+
+# Default region patterns
 
 ## Background
 

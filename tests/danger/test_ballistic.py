@@ -102,6 +102,15 @@ BALLISTIC_CASES: list[str] = [
     "🔴🚛Ракета Київ!",
 ]
 
+BALLISTIC_NO_MATCH_CASES: list[str] = [
+    (
+        "☠️ СБ України затримала агента фсб, який коригував удари російської "
+        "балістики та ударних БпЛА по Києву.За даними слідства, завербований "
+        "фсб мешканець Києва збирав інформацію про логістичні центри, "
+        "складські комплекси, місця дислокації Сил оборони,"
+    ),
+]
+
 
 def test_ballistic_only() -> None:
     """Ballistic-specific helper should flag ballistic samples."""
@@ -121,6 +130,17 @@ def test_comet_messages_do_not_match_generic() -> None:
 
         assert detection.danger is False, text
         assert detection.type is None, text
+
+
+def test_ballistic_does_not_match() -> None:
+    """Non-alert ballistic messages should not raise danger flags."""
+    detector = DangerDetector(REGION_PATTERNS, LOCALITY_PATTERNS)
+    for text in BALLISTIC_NO_MATCH_CASES:
+        detection = detector.danger(text)
+
+        assert detection.danger is False, text
+        assert detection.type is None, text
+        assert detector.is_safe(text) is False, text
 
 
 def test_zircon_is_ballistic() -> None:

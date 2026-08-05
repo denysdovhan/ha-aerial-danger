@@ -1,7 +1,7 @@
 ---
 title: Text source selector
 date: 2026-07-29
-status: wip
+status: done
 related_paths:
   - custom_components/aerial_danger/config_flow.py
   - tests/test_config_flow.py

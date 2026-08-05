@@ -1,17 +1,17 @@
 | Date       | Name                                                                             | Status |
 | ---------- | -------------------------------------------------------------------------------- | ------ |
-| 2026-08-05 | [Source reset on non-danger messages](2026-08-05-source-reset-on-non-danger.md)  | wip    |
-| 2026-08-03 | [Regional area presets](2026-08-03-regional-area-presets.md)                     | wip    |
-| 2026-08-03 | [Generic danger precision](2026-08-03-generic-danger-precision.md)               | wip    |
-| 2026-07-31 | [MLRS and guided bomb detection](2026-07-31-mlrs-guided-bomb-detection.md)       | wip    |
-| 2026-07-30 | [User-facing copy](2026-07-30-user-facing-copy.md)                               | wip    |
-| 2026-07-30 | [Automation blueprints](2026-07-30-automation-blueprints.md)                     | wip    |
-| 2026-07-29 | [Text source selector](2026-07-29-text-source-selector.md)                       | wip    |
-| 2026-07-28 | [Default region patterns](2026-07-28-default-region-patterns.md)                 | wip    |
-| 2026-07-28 | [Danger phrase precision](2026-07-28-danger-phrase-precision.md)                 | wip    |
+| 2026-08-05 | [Source reset on non-danger messages](2026-08-05-source-reset-on-non-danger.md)  | done   |
+| 2026-08-03 | [Regional area presets](2026-08-03-regional-area-presets.md)                     | done   |
+| 2026-08-03 | [Generic danger precision](2026-08-03-generic-danger-precision.md)               | done   |
+| 2026-07-31 | [MLRS and guided bomb detection](2026-07-31-mlrs-guided-bomb-detection.md)       | done   |
+| 2026-07-30 | [User-facing copy](2026-07-30-user-facing-copy.md)                               | done   |
+| 2026-07-30 | [Automation blueprints](2026-07-30-automation-blueprints.md)                     | done   |
+| 2026-07-29 | [Text source selector](2026-07-29-text-source-selector.md)                       | done   |
+| 2026-07-28 | [Default region patterns](2026-07-28-default-region-patterns.md)                 | done   |
+| 2026-07-28 | [Danger phrase precision](2026-07-28-danger-phrase-precision.md)                 | done   |
 | 2026-07-27 | [Diagnostic match sensors](2026-07-27-diagnostic-match-sensors.md)               | done   |
 | 2026-07-23 | [Target-based danger triggers](2026-07-23-target-danger-triggers.md)             | done   |
-| 2026-07-22 | [Kyiv locality research](2026-07-22-kyiv-locality-research.md)                   | wip    |
+| 2026-07-22 | [Kyiv locality research](2026-07-22-kyiv-locality-research.md)                   | done   |
 | 2026-07-21 | [Kyiv area presets](2026-07-21-area-presets.md)                                  | done   |
 | 2026-07-21 | [IRBM danger detection](2026-07-21-irbm-danger-detection.md)                     | done   |
 | 2026-07-20 | [Reactive drone detection](2026-07-20-reactive-drone-detection.md)               | done   |

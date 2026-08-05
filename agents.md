@@ -35,6 +35,7 @@ At the end of each plan, give me a list of unresolved questions to answer, if an
 - Treat `done` entries as binding and `wip` entries as current direction. Newer decisions win. Surface conflicts before proceeding.
 - Cite relevant entries when explaining existing behavior or past decisions.
 - Never edit `done` entries. Keep matching `wip` entries and the index current for significant work; skip routine chores.
+- Treat matcher fixes as continued detector maintenance: update an existing matching `wip` entry; never create a per-fix entry. If none exists, skip agent-log for routine matcher fixes.
 
 ## Project Overview
 

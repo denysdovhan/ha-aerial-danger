@@ -1,7 +1,7 @@
 ---
 title: Generic danger precision
 date: 2026-08-03
-status: wip
+status: done
 related_paths:
   - custom_components/aerial_danger/danger/keywords.py
   - tests/danger/
