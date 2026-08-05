@@ -58,4 +58,4 @@ its latest message and the requested contract makes that state authoritative.
 
 2026-08-05 — Reproduced the stale source from Home Assistant history, changed
 runtime to remove a source on every non-danger message, and added exact safety
-fixtures from the export. `scripts/test` passed 121 tests; `scripts/lint` passed.
+fixtures from the export. `scripts/test` passed 120 tests; `scripts/lint` passed.
