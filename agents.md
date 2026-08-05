@@ -106,6 +106,7 @@ Here are a few notes on parsing data from external sources. Here are words that 
   - `крилаті ракети`
   - `х-101`
   - `калібр`
+  - `онікс`
 - Drones are usually refered as:
   - `бплa`
   - `безпілотник`
