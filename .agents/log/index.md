@@ -1,5 +1,6 @@
 | Date       | Name                                                                             | Status |
 | ---------- | -------------------------------------------------------------------------------- | ------ |
+| 2026-08-05 | [Source reset on non-danger messages](2026-08-05-source-reset-on-non-danger.md)  | wip    |
 | 2026-08-03 | [Regional area presets](2026-08-03-regional-area-presets.md)                     | wip    |
 | 2026-08-03 | [Generic danger precision](2026-08-03-generic-danger-precision.md)               | wip    |
 | 2026-07-31 | [MLRS and guided bomb detection](2026-07-31-mlrs-guided-bomb-detection.md)       | wip    |

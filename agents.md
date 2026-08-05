@@ -61,7 +61,7 @@ This repository implements the Home Assistant custom integration **Aerial Danger
 
 - Each config entry builds a detector from configured region and locality regex patterns and subscribes to selected Home Assistant source entities.
 - Changed source text is checked in order: IRBM, MLRS, guided bomb, ballistic, cruise, drone, then generic danger. First match wins.
-- Runtime tracks active detections per source. Posts outside active-alert patterns leave source state unchanged; only `SAFETY` matches clear that source. Binary sensors aggregate remaining detections, and the event entity records each new detection.
+- Runtime tracks active detections per source. Every usable changed source state is authoritative: danger stores a detection and any non-danger message clears that source. Binary sensors aggregate remaining detections, and the event entity records each new detection.
 - Diagnostic sensors mirror the latest active aggregate detection and return to clear when no danger remains.
 - Target-based triggers fire for aggregate danger or filter event-entity updates by danger type, including repeated detections.
 - Source data collection stays outside this integration. The `danger/` library stays Home Assistant agnostic and logger-free.
@@ -201,10 +201,10 @@ When authoring area presets, research the relevant listed Telegram histories. Us
 - Prefer multiple simple one-line regexes for different word orders. Join only equivalent spellings, inflections, or terms with `(|)`.
 - Use the smallest observed bounded gap, such as `.{0,48}`, instead of `.*`; do not cross lines unless an observed alert requires it.
 - Keep weapon wording in its domain list, target/vector wording in `GENERIC_DANGER`, and resolved or retrospective wording in `SAFETY`. Do not infer a weapon type from an area or target count alone.
-- Use strict positive MLRS and guided-bomb regexes; do not add their forecast, analysis, or aftermath wording to `SAFETY`. These non-matching posts must stay neutral.
+- Use strict positive MLRS and guided-bomb regexes; do not add their forecast, analysis, or aftermath wording to `SAFETY`. These posts stay detector-neutral and clear their source under latest-message runtime semantics.
 - Anchor bare-area, direct-target, and direction-only generic alerts to the complete message; weapon-specific posts must not match generic danger from an area substring or suffix.
 - Treat `☄`/`☄️` as ballistic and `🛵` as drone; do not allow these markers through generic alert prefixes.
-- Add exact strings to the matching domain test, use shared region/locality patterns from `tests/danger/common.py`, and deduplicate cases that differ only by area. Add safety negatives for general domains; for MLRS and guided bombs, verify non-matching posts do not clear active danger.
+- Add exact strings to the matching domain test, use shared region/locality patterns from `tests/danger/common.py`, and deduplicate cases that differ only by area. Add safety negatives for general domains; verify any non-matching source message clears only that source's active danger.
 
 ## Commit messages
 

@@ -365,10 +365,10 @@ async def test_new_danger_types_ignore_region_patterns(
     assert hass.states.get(_entity_id(hass, entry, sensor_key)).state == STATE_OFF
 
 
-async def test_non_matching_source_message_preserves_detection(
+async def test_non_matching_source_message_clears_detection(
     hass: HomeAssistant,
 ) -> None:
-    """Test non-matching messages neither replace nor clear active danger."""
+    """Test each non-matching message clears its source's active danger."""
     entry = _entry(
         {
             CONF_REGION_PATTERNS: [],
@@ -382,34 +382,27 @@ async def test_non_matching_source_message_preserves_detection(
     await hass.async_block_till_done()
 
     guided_bomb_id = _entity_id(hass, entry, "guided_bomb")
+    danger_id = _entity_id(hass, entry, "danger")
     alert = "💣 КАБ у напрямку Харків."
-    hass.states.async_set("sensor.alerts", alert)
-    await hass.async_block_till_done()
-
-    hass.states.async_set(
-        "sensor.alerts",
+    for non_danger in (
         "Аналітика: дальність КАБ до Харкова.",
-    )
-    await hass.async_block_till_done()
-
-    state = hass.states.get(guided_bomb_id)
-    assert state.state == STATE_ON
-    assert state.attributes[ATTR_MATCHED_MESSAGE] == alert
-
-    hass.states.async_set(
-        "sensor.alerts",
         "Су-34 може йти на пуски КАБ в бік Харкова.",
-    )
-    await hass.async_block_till_done()
+        "По реактивним БПЛА.",
+    ):
+        hass.states.async_set("sensor.alerts", alert)
+        await hass.async_block_till_done()
 
-    state = hass.states.get(guided_bomb_id)
-    assert state.state == STATE_ON
-    assert state.attributes[ATTR_MATCHED_MESSAGE] == alert
+        state = hass.states.get(guided_bomb_id)
+        assert state.state == STATE_ON
+        assert state.attributes[ATTR_MATCHED_MESSAGE] == alert
 
-    hass.states.async_set("sensor.alerts", "Відбій.")
-    await hass.async_block_till_done()
+        hass.states.async_set("sensor.alerts", non_danger)
+        await hass.async_block_till_done()
 
-    assert hass.states.get(guided_bomb_id).state == STATE_OFF
+        state = hass.states.get(guided_bomb_id)
+        assert state.state == STATE_OFF
+        assert state.attributes[ATTR_MATCHED_MESSAGE] is None
+        assert hass.states.get(danger_id).state == STATE_OFF
 
 
 async def test_diagnostic_sensors_mirror_aggregate_detection(
@@ -551,7 +544,7 @@ async def test_multiple_sources_keep_aggregate_danger_on(
     assert hass.states.get(unknown_id).state == STATE_OFF
     assert hass.states.get(danger_id).state == STATE_ON
 
-    hass.states.async_set("sensor.channel_a", "Все тихо")
+    hass.states.async_set("sensor.channel_a", "Огляд ситуації")
     await hass.async_block_till_done()
 
     assert hass.states.get(ballistic_id).state == STATE_OFF
@@ -560,7 +553,7 @@ async def test_multiple_sources_keep_aggregate_danger_on(
     assert hass.states.get(unknown_id).state == STATE_OFF
     assert hass.states.get(danger_id).state == STATE_ON
 
-    hass.states.async_set("sensor.channel_b", "Все тихо")
+    hass.states.async_set("sensor.channel_b", "Інше повідомлення")
     await hass.async_block_till_done()
 
     assert hass.states.get(drone_id).state == STATE_OFF

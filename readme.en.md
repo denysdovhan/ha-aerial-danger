@@ -263,7 +263,7 @@ To create your own automation, add a trigger, select the **Aerial Danger** devic
    2. MLRS[^2], GAB[^3], and drones require a locality name.
    3. All other threat types require either a region or locality.
 4. The state remains active until a new message without a threat arrives from the same source.
-5. Sources are processed independently: a safe message clears only its own source state.
+5. Sources are processed independently: a non-danger message clears only its own source state.
 6. Every new detection, including a repeated message of the same type, updates the event entity and diagnostic sensors.
 
 ## Frequently asked questions

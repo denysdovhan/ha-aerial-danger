@@ -153,7 +153,7 @@ async def async_setup_entry(
                 runtime.event_entity.async_trigger_detection(
                     runtime.active_detections[new_state.entity_id]
                 )
-        elif detector.is_safe(message):
+        else:
             runtime.active_detections.pop(new_state.entity_id, None)
 
         new_states, new_last_detection, new_latest_detection = derive_danger_state(
