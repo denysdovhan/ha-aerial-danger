@@ -1,7 +1,7 @@
 ---
 title: Source reset on non-danger messages
 date: 2026-08-05
-status: wip
+status: done
 related_paths:
   - custom_components/aerial_danger/__init__.py
   - custom_components/aerial_danger/danger/keywords.py

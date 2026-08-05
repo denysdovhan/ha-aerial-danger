@@ -3,11 +3,14 @@ title: Danger phrase precision
 date: 2026-07-28
 status: done
 related_paths:
+  - agents.md
   - custom_components/aerial_danger/danger/danger.py
   - custom_components/aerial_danger/danger/keywords.py
   - tests/danger/
   - tests/test_init.py
 ---
+
+# Danger phrase precision
 
 ## Background
 
@@ -29,6 +32,10 @@ detector's separate region/locality inputs.
   channels; split bidirectional cases when that is clearer.
 - ✅ Reject high-confidence resolved, retrospective, and aftermath wording
   through shared `SAFETY` patterns before danger matching.
+- ✅ Require active direction, movement, or short alert shapes in broad
+  ballistic weapon-and-area patterns.
+- ✅ Keep retrospective strike-correction news neutral, not explicit safety.
+- ✅ Keep domain negative messages in one list covered by one loop test.
 - ✅ Keep fixtures only in ballistic, cruise, drone, generic, IRBM, safety, or
   detector-domain tests; remove research/source-oriented test files and IDs.
 - ✅ Keep ordinary positive fixtures as strings and supply their areas through
@@ -40,8 +47,8 @@ detector's separate region/locality inputs.
   wording, order, punctuation, and multiline variants.
 - ❌ Do not infer a weapon type from an area or target count alone.
 - ❌ Do not match possible/future launches or official strike summaries.
-- ❌ Do not keep a generic area-pattern bucket, per-case `.*` entries,
-  targeted-case collections, or duplicate domain no-match lists.
+- ❌ Do not keep a generic area-pattern bucket, per-case `.*` entries, or
+  targeted-case collections.
 
 ## Verification
 
@@ -50,6 +57,7 @@ detector's separate region/locality inputs.
 - [x] Ordinary positive domain fixtures contain strings only.
 - [x] No research-only test files, message IDs, `AREA_PATTERNS`, or
       `TARGETED_*` collections remain.
+- [x] Reported ballistic news remains neutral and does not match `SAFETY`.
 - [x] `scripts/test` passes: 110 tests.
 - [x] `scripts/lint` passes.
 
@@ -64,3 +72,8 @@ restored drone locality shorthand, split region/locality test inputs, converted
 ordinary cases to strings, classified `🔴🚛Ракета Київ!` as ballistic, and
 placed Kherson, Bila Tserkva, Bryansk, and Chornomorsk in shared region
 patterns.
+
+2026-08-05 — Tightened broad ballistic patterns around active direction,
+movement, and short alert shapes. Added the exported `коригував удари` news
+message to one ballistic negative-case list and loop test. `scripts/test`
+passed 121 tests; `scripts/lint` passed.

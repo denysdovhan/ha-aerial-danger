@@ -1,7 +1,7 @@
 ---
 title: User-facing copy
 date: 2026-07-30
-status: wip
+status: done
 related_paths:
   - readme.md
   - custom_components/aerial_danger/translations/
@@ -42,7 +42,7 @@ or do not explain how to fix invalid input.
 - [x] JSON, Markdown, links, and YAML examples validate
 - [x] `scripts/lint`
 - [x] `scripts/test`
-- [ ] Hassfest accepts translated external-link placeholders
+- [x] Hassfest recheck waived by explicit finalization request
 
 ## Implementation Notes
 
@@ -63,3 +63,6 @@ Replaced them with config and options flow description placeholders while
 keeping the links in both supported locales. Added flow-result regression
 coverage; lint passed and all 112 tests passed. Exact Hassfest recheck remains
 pending because the local Docker daemon is unavailable.
+
+2026-08-05: User requested finalization of all agent-log entries and waived the
+remaining local Hassfest recheck.

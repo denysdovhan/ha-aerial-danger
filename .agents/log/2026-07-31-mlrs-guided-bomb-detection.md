@@ -1,7 +1,7 @@
 ---
 title: MLRS and guided bomb detection
 date: 2026-07-31
-status: wip
+status: done
 related_paths:
   - custom_components/aerial_danger/__init__.py
   - custom_components/aerial_danger/danger/

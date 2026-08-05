@@ -1,7 +1,7 @@
 ---
 title: Automation blueprints
 date: 2026-07-30
-status: wip
+status: done
 related_paths:
   - .pre-commit-config.yaml
   - blueprints/aerial_danger_critical_notification.yaml

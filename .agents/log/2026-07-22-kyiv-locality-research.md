@@ -1,13 +1,15 @@
 ---
 title: Kyiv locality research
 date: 2026-07-22
-status: wip
+status: done
 related_paths:
   - custom_components/aerial_danger/danger/presets.py
   - custom_components/aerial_danger/translations/
   - tests/danger/test_presets.py
   - kyiv-neighborhood-implement.md
 ---
+
+# Kyiv locality research
 
 ## Background
 
