@@ -1,7 +1,7 @@
 ---
 title: Planned-launch safety wording
 date: 2026-08-10
-status: wip
+status: done
 related_paths:
   - custom_components/aerial_danger/danger/keywords.py
   - tests/danger/test_safety.py
