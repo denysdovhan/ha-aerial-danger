@@ -4,7 +4,7 @@
 <h1 align="center">
   <img alt="Логотип HA Aerial Danger" src="./assets/logo.png" width="250px">
   <br />
-  💥 Aerial Danger for Home Assistant
+  💥 Aerial Danger для Home Assistant
 </h1>
 <!-- markdownlint-enable no-inline-html -->
 
