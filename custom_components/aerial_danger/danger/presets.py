@@ -450,6 +450,13 @@ PRESETS: Final = {
             r"\bкиївськ(а|ої|ій|у|ою|і|их|им|ими) област(ь|і|ю|ей|ям|ями|ях)\b",
         ),
         localities={
+            "kyiv_oblast_bila_tserkva": LocalityPreset(
+                name="Біла Церква",
+                patterns=(
+                    r"\bбіл(а|ої|ій|у|ою) церкв(а|и|і|у|ою)\b",
+                    r"\bбц\b",
+                ),
+            ),
             "kyiv_oblast_boryspil": LocalityPreset(
                 name="Бориспіль",
                 patterns=(
