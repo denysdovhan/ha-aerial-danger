@@ -89,6 +89,14 @@ GENERIC_WHOLE_MESSAGE_CASES: list[str] = [
     "Курсом на Київ!",
 ]
 
+GENERIC_NO_MATCH_CASES: list[str] = [
+    (
+        "🟣 **Загроза балістики з Курська. Увага.**\n\n"
+        "Імовірний пуск ракет системи  «Іскандер», \n"
+        "або робота ворожої ППО С-300/С-400."
+    ),
+]
+
 
 def test_generic_only() -> None:
     """Generic helper should flag generic samples."""
@@ -120,3 +128,14 @@ def test_terse_generic_matches_complete_message() -> None:
         assert detection.danger is True, text
         assert detection.type == DangerType.GENERIC, text
         assert detection.matched_danger == text, text
+
+
+def test_generic_does_not_match() -> None:
+    """Non-alert explanations should not raise danger flags."""
+    detector = DangerDetector([r"\bкурськ\w*\b"], [])
+    for text in GENERIC_NO_MATCH_CASES:
+        detection = detector.danger(text)
+
+        assert detection.danger is False, text
+        assert detection.type is None, text
+        assert detector.is_safe(text) is False, text
