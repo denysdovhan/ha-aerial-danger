@@ -108,6 +108,7 @@ Here are a few notes on parsing data from external sources. Here are words that 
   - `х-101`
   - `калібр`
   - `онікс`
+  - `бандероль`
 - Drones are usually refered as:
   - `бплa`
   - `безпілотник`
