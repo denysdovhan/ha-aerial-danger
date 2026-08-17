@@ -303,6 +303,13 @@ max_exceeded: silent
 
 Хочете допомогти проєкту? Дякуємо! Перегляньте [настанови для учасників][contributing].
 
+## Інші інтеграції
+
+- [Check Weather](https://github.com/denysdovhan/ha-check-weather) — створює бінарний сенсор на основі прогнозу погоди на кілька наступних годин.
+- [ЛУН Місто Air](https://github.com/denysdovhan/ha-lun-misto-air) — надає дані про якість повітря та довкілля зі станцій моніторингу ЛУН Місто.
+- [Український гідрометеорологічний центр](https://github.com/denysdovhan/ha-ukr-hmc) — надає погодні, радіаційні й гідрологічні дані з meteo.gov.ua.
+- [Yasno Outages](https://github.com/denysdovhan/ha-yasno-outages) — надає графіки планових відключень електроенергії, сенсори та календарі від Yasno.
+
 ## Ліцензія
 
 [Ліцензія MIT](./license.md) © [Денис Довгань][denysdovhan].
