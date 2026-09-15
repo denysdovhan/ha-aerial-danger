@@ -32,6 +32,9 @@ GENERIC_CASES: list[str] = [
     "🚀 Вектор на столицю!",
     "ЦІЛЬ КИЇВЩИНА!",
     "Київ в укриття!",
+    "Київ в укриття",
+    "Київ до укриття",
+    "Київ — в укриття",
     "Нивки зреагувати!",
     "Київ ваш вектор!",
     "Далі на Київ йде 2 цілі!!",
@@ -90,6 +93,17 @@ GENERIC_WHOLE_MESSAGE_CASES: list[str] = [
 ]
 
 GENERIC_NO_MATCH_CASES: list[str] = [
+    "Якщо піде до нас — маємо ще близько ~25 хвилин.",
+    (
+        "У столиці з 15 вересня на хвилину мовчання світлофори поступово "
+        "переходитимуть у режим повної зупинки руху 🔴"
+    ),
+    "Столиця, маєте ще хвилин ~20 хв перекуру 🚬",
+    "Київ-Пасажирський!",
+    (
+        "🟡 УВАГА! У Києві оголошена дронова небезпека!"
+        "Просимо всіх терміново прослідувати в укриття цивільного захисту!"
+    ),
     (
         "🟣 **Загроза балістики з Курська. Увага.**\n\n"
         "Імовірний пуск ракет системи  «Іскандер», \n"
@@ -132,7 +146,7 @@ def test_terse_generic_matches_complete_message() -> None:
 
 def test_generic_does_not_match() -> None:
     """Non-alert explanations should not raise danger flags."""
-    detector = DangerDetector([r"\bкурськ\w*\b"], [])
+    detector = DangerDetector([*REGION_PATTERNS, r"\bкурськ\w*\b"], LOCALITY_PATTERNS)
     for text in GENERIC_NO_MATCH_CASES:
         detection = detector.danger(text)
 

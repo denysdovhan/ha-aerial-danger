@@ -37,6 +37,7 @@ DRONE_MESSAGE_CASES: list[str] = [
 ]
 
 REPORTED_DRONE_LOCALITY_CASES: list[tuple[str, str]] = [
+    (r"\bлісовий\b", "Область чистоНад Києвом 1, на Лісовий йде"),
     (
         r"\bбровар(и|ів|ах)?\b",
         "‼️🛵Залітають через Бровари на Київ.@operinform",
@@ -49,6 +50,9 @@ REPORTED_DRONE_LOCALITY_CASES: list[tuple[str, str]] = [
 ]
 
 REGION_ONLY_DRONE_CASES: list[str] = [
+    "Область чистоНад Києвом 1, на Лісовий йде",
+    "Над Києвом 1, на Лісовий йде",
+    "Область чисто\nНад Києвом 1, на Лісовий йде",
     "🛵 БпЛА ➡️ курсом на Київ з північного сходу!",
     "‼️🛵Залітають через Бровари на Київ.@operinform",
     "Бровари на Київ БПЛА",
@@ -186,6 +190,18 @@ def test_reported_drone_messages_do_not_match_region() -> None:
 
         assert detection.danger is False, text
         assert detection.type is None, text
+
+
+def test_drone_route_requires_selected_locality() -> None:
+    """A city mention must not trigger for a different selected neighborhood."""
+    detector = DangerDetector(REGION_PATTERNS, LOCALITY_PATTERNS)
+    text = "Область чистоНад Києвом 1, на Лісовий йде"
+
+    detection = detector.danger(text)
+
+    assert detection.danger is False
+    assert detection.type is None
+    assert detector.is_safe(text) is False
 
 
 def test_reactive_drone_danger() -> None:

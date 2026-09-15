@@ -511,13 +511,26 @@ async def test_aggregate_attributes_use_latest_active_detection(
     assert state.attributes[ATTR_SOURCE_ENTITY_ID] == "sensor.channel_a"
 
 
+@pytest.mark.parametrize(
+    "non_danger",
+    [
+        "Огляд ситуації",
+        "Область чистоНад Києвом 1, на Лісовий йде",
+        "Київ-Пасажирський!",
+        (
+            "🟡 УВАГА! У Києві оголошена дронова небезпека!"
+            "Просимо всіх терміново прослідувати в укриття цивільного захисту!"
+        ),
+    ],
+)
 async def test_multiple_sources_keep_aggregate_danger_on(
     hass: HomeAssistant,
+    non_danger: str,
 ) -> None:
     """Test first matches from every source keep aggregate danger on."""
     entry = _entry(
         {
-            CONF_REGION_PATTERNS: [r"\bкиїв\b"],
+            CONF_REGION_PATTERNS: [r"\bки(ї|є)в(а|у|ом|е|і)?\b"],
             CONF_LOCALITY_PATTERNS: [r"\bнивки\b"],
             CONF_SOURCES: ["sensor.channel_a", "sensor.channel_b"],
         }
@@ -544,7 +557,7 @@ async def test_multiple_sources_keep_aggregate_danger_on(
     assert hass.states.get(unknown_id).state == STATE_OFF
     assert hass.states.get(danger_id).state == STATE_ON
 
-    hass.states.async_set("sensor.channel_a", "Огляд ситуації")
+    hass.states.async_set("sensor.channel_a", non_danger)
     await hass.async_block_till_done()
 
     assert hass.states.get(ballistic_id).state == STATE_OFF
