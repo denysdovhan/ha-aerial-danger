@@ -513,7 +513,14 @@ async def test_aggregate_attributes_use_latest_active_detection(
 
 @pytest.mark.parametrize(
     "non_danger",
-    ["Огляд ситуації", "Область чистоНад Києвом 1, на Лісовий йде"],
+    [
+        "Огляд ситуації",
+        "Область чистоНад Києвом 1, на Лісовий йде",
+        (
+            "🟡 УВАГА! У Києві оголошена дронова небезпека!"
+            "Просимо всіх терміново прослідувати в укриття цивільного захисту!"
+        ),
+    ],
 )
 async def test_multiple_sources_keep_aggregate_danger_on(
     hass: HomeAssistant,

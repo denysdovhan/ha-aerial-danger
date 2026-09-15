@@ -51,7 +51,7 @@ SAFETY = [
 # Generic danger phrases that refine specific danger types.
 GENERIC_DANGER = [
     r"\b(?:буде|може бути|бути) гучно\b",
-    r"\b(?:в|до) укритт[яі]\b",
+    r"^[🔴🟡🚀❗‼️ \t]*{area}[^\w\n]+(?:в|до) укритт[яі][!.]*$",
     r"\bперебува(?:йте|ємо) в укритт[яі]\b",
     r"\bбудьте обережними\b",
     r"\b(?:дві|2) стіни\b",
