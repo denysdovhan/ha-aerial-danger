@@ -2,15 +2,7 @@ name: Lint
 
 on:
   push:
-    paths:
-      - "**.py"
-      - pyproject.toml
-      - uv.lock
   pull_request:
-    paths:
-      - "**.py"
-      - pyproject.toml
-      - uv.lock
 
 jobs:
   python:
