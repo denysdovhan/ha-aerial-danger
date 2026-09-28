@@ -1,6 +1,6 @@
 | Date       | Name                                                                             | Status |
 | ---------- | -------------------------------------------------------------------------------- | ------ |
-| 2026-09-18 | [Standalone danger matching library](2026-09-18-extract-danger-library.md)       | wip    |
+| 2026-09-18 | [Standalone danger matching library](2026-09-18-extract-danger-library.md)       | done   |
 | 2026-08-10 | [Planned-launch safety wording](2026-08-10-planned-launch-safety.md)             | done   |
 | 2026-08-05 | [Source reset on non-danger messages](2026-08-05-source-reset-on-non-danger.md)  | done   |
 | 2026-08-03 | [Regional area presets](2026-08-03-regional-area-presets.md)                     | done   |

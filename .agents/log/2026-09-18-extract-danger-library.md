@@ -1,7 +1,7 @@
 ---
 title: Standalone danger matching library
 date: 2026-09-18
-status: wip
+status: done
 related_paths:
   - custom_components/aerial_danger/
   - tests/
@@ -112,3 +112,8 @@ PR checkouts plus stefanzweifel/git-auto-commit-action. The script remains
 base-owned; Python isolated mode prevents PR-local imports, and resolved-path
 checks reject data files escaping the PR checkout. The action uses a normal
 push, preserving rejection of concurrent branch changes. No GitHub run yet.
+
+2026-09-28: Finalized at the user's request. Migration committed as d263257
+and opened in PR #41. All 66 integration tests, lint, lockfile validation,
+and pre-commit checks passed. Live Dependabot synchronization remains unverified
+until the workflow reaches main; no live HA deployment performed.
