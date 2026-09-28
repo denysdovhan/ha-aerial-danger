@@ -241,14 +241,18 @@ async def test_entry_title_rename_updates_device_name(hass: HomeAssistant) -> No
     await hass.async_block_till_done()
 
     device_registry = dr.async_get(hass)
-    device = device_registry.async_get_device(identifiers={(DOMAIN, entry.entry_id)})
+    device = device_registry.async_get_device_by_identifier(
+        (DOMAIN, entry.entry_id), entry.entry_id
+    )
     assert device is not None
     assert device.name == "Kyiv alerts"
 
     hass.config_entries.async_update_entry(entry, title="Renamed alerts")
     await hass.async_block_till_done()
 
-    device = device_registry.async_get_device(identifiers={(DOMAIN, entry.entry_id)})
+    device = device_registry.async_get_device_by_identifier(
+        (DOMAIN, entry.entry_id), entry.entry_id
+    )
     assert device is not None
     assert entry.title == "Renamed alerts"
     assert device.name == "Renamed alerts"
