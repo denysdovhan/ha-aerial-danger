@@ -11,6 +11,8 @@ from homeassistant.components.binary_sensor import (
     BinarySensorEntityDescription,
 )
 
+from aerial_danger import DangerType, Detection
+
 from .const import (
     ATTR_MATCHED_AREA,
     ATTR_MATCHED_DANGER,
@@ -25,7 +27,6 @@ from .const import (
     STATE_MLRS,
     STATE_UNKNOWN_DANGER,
 )
-from .danger import DangerType, Detection
 from .entity import AerialDangerEntity
 
 if TYPE_CHECKING:

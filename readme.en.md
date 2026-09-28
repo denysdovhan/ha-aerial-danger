@@ -303,6 +303,9 @@ The integration entry and its entities are removed together. Remove Scrape senso
 
 Want to help the project? Thank you! Read the [contribution guidelines][contributing].
 
+Danger matching lives in [python-aerial-danger](https://github.com/denysdovhan/python-aerial-danger).
+See [local matcher development](contributing.md#develop-the-matcher-locally) to test changes with this integration.
+
 ## Other integrations
 
 - ☁️ [Check Weather](https://github.com/denysdovhan/ha-check-weather) — creates a binary sensor based on forecast conditions for the next few hours.
@@ -354,4 +357,4 @@ Want to help the project? Thank you! Read the [contribution guidelines][contribu
 [critical-notification-blueprint-install-url]: https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fdenysdovhan%2Fha-aerial-danger%2Fblob%2Fmain%2Fblueprints%2Faerial_danger_critical_notification.yaml
 [python-regex-url]: https://docs.python.org/3/library/re.html
 [contributing]: ./contributing.md
-[presets]: https://github.com/denysdovhan/ha-aerial-danger/blob/main/custom_components/aerial_danger/danger/presets.py
+[presets]: https://github.com/denysdovhan/python-aerial-danger/blob/main/src/aerial_danger/location_presets.py

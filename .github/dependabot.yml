@@ -10,7 +10,7 @@ updates:
   - package-ecosystem: uv
     directory: /
     schedule:
-      interval: monthly
+      interval: weekly
 
   # Update Dev Container definitions
   - package-ecosystem: "devcontainers"

@@ -8,6 +8,8 @@ from typing import TYPE_CHECKING
 from homeassistant.components.sensor import SensorEntity, SensorEntityDescription
 from homeassistant.const import EntityCategory
 
+from aerial_danger import DangerType
+
 from .const import (
     MATCHED_AREA,
     MATCHED_DANGER,
@@ -16,7 +18,6 @@ from .const import (
     STATE_CLEAR,
     STATE_NATIONWIDE,
 )
-from .danger import DangerType
 from .entity import AerialDangerEntity
 
 if TYPE_CHECKING:

@@ -10,6 +10,12 @@ from homeassistant.core import Event, HomeAssistant, State, callback
 from homeassistant.exceptions import ConfigEntryError
 from homeassistant.helpers.event import async_track_state_change_event
 
+from aerial_danger import DangerDetector
+from aerial_danger.pattern_utils import (
+    resolve_locality_patterns,
+    resolve_region_patterns,
+)
+
 from .const import (
     CONF_LOCALITY_PATTERNS,
     CONF_LOCALITY_PRESETS,
@@ -24,8 +30,6 @@ from .const import (
     LOGGER,
     PLATFORMS,
 )
-from .danger import DangerDetector
-from .danger.pattern_utils import resolve_locality_patterns, resolve_region_patterns
 from .runtime import RuntimeData, SourceDetection, derive_danger_state
 
 type AerialDangerConfigEntry = ConfigEntry[RuntimeData]

@@ -1,4 +1,18 @@
 repos:
+  - repo: local
+    hooks:
+      - id: sync-library-requirement
+        name: Sync library requirement
+        entry: uv run python scripts/sync_library
+        language: system
+        files: |
+          (?x)^(
+            pyproject\.toml|
+            custom_components/aerial_danger/manifest\.json|
+            scripts/sync_library
+          )$
+        pass_filenames: false
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
@@ -22,7 +36,7 @@ repos:
       - id: trailing-whitespace
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.16.0
+    rev: v0.16.5
     hooks:
       - id: ruff
         args: [--fix]

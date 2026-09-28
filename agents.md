@@ -54,18 +54,18 @@ This repository implements the Home Assistant custom integration **Aerial Danger
 - `trigger.py` — target-based automation triggers for aggregate danger and each native danger event type.
 - `triggers.yaml` — target definitions for automation triggers.
 - `diagnostics.py` — provides redacted config-entry diagnostics and privacy-safe runtime state details.
-- `danger/` — logger-free, Home Assistant agnostic danger detection library, keyword templates, and data models; detections preserve exact matched text and regex patterns.
 - `translations/` — English and Ukrainian strings for configuration, entities, and triggers.
 - `manifest.json` — Home Assistant manifest pointing to this repo.
 
 ### How it works
 
+- Matching uses the external, Home Assistant agnostic `aerial_danger` library from `python-aerial-danger`; detections preserve exact matched text and regex patterns.
 - Each config entry builds a detector from configured region and locality regex patterns and subscribes to selected Home Assistant source entities.
 - Changed source text is checked in order: IRBM, MLRS, guided bomb, ballistic, cruise, drone, then generic danger. First match wins.
 - Runtime tracks active detections per source. Every usable changed source state is authoritative: danger stores a detection and any non-danger message clears that source. Binary sensors aggregate remaining detections, and the event entity records each new detection.
 - Diagnostic sensors mirror the latest active aggregate detection and return to clear when no danger remains.
 - Target-based triggers fire for aggregate danger or filter event-entity updates by danger type, including repeated detections.
-- Source data collection stays outside this integration. The `danger/` library stays Home Assistant agnostic and logger-free.
+- Source data collection stays outside this integration. The `aerial_danger` library stays Home Assistant agnostic.
 
 ### Parsing data
 
@@ -132,6 +132,8 @@ Use these scripts for common development tasks. When you make changes and want t
 - `scripts/develop` - starts a development Home Assistant server instance on port 8123. Use this script for checking changes in the browser.
 - `scripts/lint` - runs linter/formatter. Always use this script for checking for errors and formatting.
 - `scripts/setup` - installs dependencies and installs pre-commit.
+- For local matcher development, run `git clone https://github.com/denysdovhan/python-aerial-danger.git ../python-aerial-danger` from this repository, then `uv add --editable ../python-aerial-danger`. Skip cloning if the checkout already exists. Do not commit the local source override or its lockfile changes.
+- `uv run python scripts/sync_library` - copies the `aerial-danger` pin from `pyproject.toml` to the HA manifest. Pre-commit runs it when either file changes.
 
 ### Development Process
 
@@ -140,7 +142,7 @@ Use these scripts for common development tasks. When you make changes and want t
 - Keep `readme.md` (Ukrainian) and `readme.en.md` (English) synchronized whenever either file changes.
 - When unsure or need to make a significant decision ASK the user for guidance
 - Always run `scripts/lint` after making changes to ensure code quality.
-- Always run `scripts/test` when modifying library code.
+- Run `uv run pytest` in `python-aerial-danger` when modifying library code, then `scripts/test` here with the local link.
 - Commit only when directly asked to do so. Write descriptive commit messages.
 
 ## Code Style
@@ -207,7 +209,7 @@ When authoring area presets, research the relevant listed Telegram histories. Us
 - Use strict positive MLRS and guided-bomb regexes; do not add their forecast, analysis, or aftermath wording to `SAFETY`. These posts stay detector-neutral and clear their source under latest-message runtime semantics.
 - Anchor bare-area, direct-target, and direction-only generic alerts to the complete message; weapon-specific posts must not match generic danger from an area substring or suffix.
 - Treat `☄`/`☄️` as ballistic and `🛵` as drone; do not allow these markers through generic alert prefixes.
-- Add exact strings to the matching domain test, use shared region/locality patterns from `tests/danger/common.py`, and deduplicate cases that differ only by area. Add safety negatives for general domains; verify any non-matching source message clears only that source's active danger.
+- Add exact strings to the matching domain test in `python-aerial-danger`, use shared region/locality patterns from its `tests/common.py`, and deduplicate cases that differ only by area. Add safety negatives for general domains; verify any non-matching source message clears only that source's active danger.
 
 ## Commit messages
 

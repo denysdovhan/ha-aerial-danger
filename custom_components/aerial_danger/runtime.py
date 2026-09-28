@@ -5,6 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from aerial_danger import DangerDetector, DangerType, Detection
+
 from .const import (
     STATE_BALLISTIC,
     STATE_CRUISE,
@@ -15,7 +17,6 @@ from .const import (
     STATE_MLRS,
     STATE_UNKNOWN_DANGER,
 )
-from .danger import DangerDetector, DangerType, Detection
 
 if TYPE_CHECKING:
     from collections.abc import Callable

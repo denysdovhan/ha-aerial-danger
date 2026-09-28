@@ -7,6 +7,8 @@ from typing import TYPE_CHECKING
 from homeassistant.components.event import EventEntity
 from homeassistant.core import callback
 
+from aerial_danger import DangerType
+
 from .const import (
     ATTR_MATCHED_AREA,
     ATTR_MATCHED_DANGER,
@@ -22,7 +24,6 @@ from .const import (
     EVENT_TYPE_UNKNOWN,
     EVENT_TYPES,
 )
-from .danger import DangerType
 from .entity import AerialDangerEntity
 
 if TYPE_CHECKING:

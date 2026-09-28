@@ -1,0 +1,31 @@
+#!/usr/bin/env python3
+"""Copy the aerial-danger requirement from pyproject.toml to the HA manifest."""
+
+import json
+import tomllib
+from pathlib import Path
+
+
+def main(root: Path) -> None:
+    """Sync the library pin without changing other requirements."""
+    project = tomllib.loads((root / "pyproject.toml").read_text())
+    requirement = next(
+        item
+        for item in project["project"]["dependencies"]
+        if item.startswith("aerial-danger==")
+    )
+    path = root / "custom_components/aerial_danger/manifest.json"
+    manifest = json.loads(path.read_text())
+    requirements = [
+        item
+        for item in manifest["requirements"]
+        if item.partition("==")[0] != "aerial-danger"
+    ]
+    requirements.append(requirement)
+    if requirements != manifest["requirements"]:
+        manifest["requirements"] = requirements
+        path.write_text(json.dumps(manifest, indent=2) + "\n")
+
+
+if __name__ == "__main__":
+    main(Path(__file__).resolve().parents[1])

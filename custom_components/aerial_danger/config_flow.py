@@ -11,6 +11,14 @@ from homeassistant.const import CONF_NAME
 from homeassistant.core import callback
 from homeassistant.helpers import selector
 
+from aerial_danger import DangerDetector
+from aerial_danger.location_presets import LOCATION_PRESETS
+from aerial_danger.pattern_utils import (
+    locality_ids,
+    resolve_locality_patterns,
+    resolve_region_patterns,
+)
+
 from .const import (
     CONF_LOCALITY_PATTERNS,
     CONF_LOCALITY_PRESETS,
@@ -21,13 +29,6 @@ from .const import (
     DEFAULT_REGION_PATTERNS,
     DOMAIN,
 )
-from .danger import DangerDetector
-from .danger.pattern_utils import (
-    locality_ids,
-    resolve_locality_patterns,
-    resolve_region_patterns,
-)
-from .danger.presets import PRESETS
 
 if TYPE_CHECKING:
     from homeassistant.data_entry_flow import FlowResult
@@ -97,7 +98,7 @@ def build_regions_schema(
         {
             vol.Optional(
                 CONF_REGION_PRESETS, default=selected_presets
-            ): build_preset_selector(list(PRESETS), "region_presets"),
+            ): build_preset_selector(list(LOCATION_PRESETS), "region_presets"),
             vol.Optional(
                 CONF_REGION_PATTERNS, default=patterns
             ): selector.ObjectSelector(),

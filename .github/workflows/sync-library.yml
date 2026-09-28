@@ -1,0 +1,64 @@
+name: Sync library requirement
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+    paths:
+      - pyproject.toml
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: >-
+      github.actor == 'dependabot[bot]' &&
+      github.event.pull_request.user.login == 'dependabot[bot]' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout trusted base
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: trusted
+          persist-credentials: false
+
+      - name: ⬇️ Checkout PR data
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: pr
+          sparse-checkout: |
+            /pyproject.toml
+            /custom_components/aerial_danger/manifest.json
+          sparse-checkout-cone-mode: false
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+
+      - name: 🔄 Sync manifest with trusted script
+        run: |
+          python -I - <<'PY'
+          import runpy
+          from pathlib import Path
+
+          root = Path("pr").resolve()
+          for name in ("pyproject.toml", "custom_components/aerial_danger/manifest.json"):
+              if not (root / name).resolve().is_relative_to(root):
+                  raise ValueError(f"PR file escapes checkout: {name}")
+          runpy.run_path("trusted/scripts/sync_library")["main"](root)
+          PY
+
+      - name: 📤 Commit manifest to PR
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          repository: pr
+          branch: ${{ github.event.pull_request.head.ref }}
+          file_pattern: custom_components/aerial_danger/manifest.json
+          commit_message: "chore(deps): sync aerial-danger manifest"
+          skip_fetch: true
+          skip_checkout: true

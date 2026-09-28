@@ -303,6 +303,9 @@ max_exceeded: silent
 
 Хочете допомогти проєкту? Дякуємо! Перегляньте [настанови для учасників][contributing].
 
+Логіка розпізнавання небезпек міститься в [python-aerial-danger](https://github.com/denysdovhan/python-aerial-danger).
+Щоб перевірити зміни разом з інтеграцією, дивіться [локальну розробку бібліотеки](contributing.md#develop-the-matcher-locally).
+
 ## Інші інтеграції
 
 - ☁️ [Check Weather](https://github.com/denysdovhan/ha-check-weather) — створює бінарний сенсор на основі прогнозу погоди на кілька наступних годин.
@@ -354,4 +357,4 @@ max_exceeded: silent
 [critical-notification-blueprint-install-url]: https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fdenysdovhan%2Fha-aerial-danger%2Fblob%2Fmain%2Fblueprints%2Faerial_danger_critical_notification.yaml
 [python-regex-url]: https://docs.python.org/3/library/re.html
 [contributing]: ./contributing.md
-[presets]: https://github.com/denysdovhan/ha-aerial-danger/blob/main/custom_components/aerial_danger/danger/presets.py
+[presets]: https://github.com/denysdovhan/python-aerial-danger/blob/main/src/aerial_danger/location_presets.py
