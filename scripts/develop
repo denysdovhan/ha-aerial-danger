@@ -14,7 +14,8 @@ fi
 ## This let's us have the structure we want <root>/custom_components/integration_blueprint
 ## while at the same time have Home Assistant configuration inside <root>/config
 ## without resulting to symlinks.
-export PYTHONPATH="${PYTHONPATH}:${PWD}/custom_components"
+# Expose the namespace's parent, not the integration as top-level aerial_danger.
+export PYTHONPATH="${PYTHONPATH}:${PWD}"
 
 # Start Home Assistant
 uv run hass --config "${PWD}/config" --debug "$@"
