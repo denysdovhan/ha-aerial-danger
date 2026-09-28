@@ -6,6 +6,6 @@
   "documentation": "https://github.com/denysdovhan/ha-aerial-danger",
   "iot_class": "calculated",
   "issue_tracker": "https://github.com/denysdovhan/ha-aerial-danger",
-  "requirements": ["aerial-danger==0.1.0"],
+  "requirements": ["aerial-danger==0.2.0"],
   "version": "0.0.0-unreleased"
 }

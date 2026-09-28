@@ -20,11 +20,11 @@ wheels = [
 
 [[package]]
 name = "aerial-danger"
-version = "0.1.0"
+version = "0.2.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/09/8d/f75b425ad48b1869955111ed7000cbc2da214e07b847ab59867d6f7e976a/aerial_danger-0.1.0.tar.gz", hash = "sha256:eef45e90d7abb877fc2569fc0d56a30af779b8a697fd605ed298e68bfa10a1d8", size = 14534, upload-time = "2026-09-24T15:17:24.713Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/55/ed/c5d3cd373de84ad760d274cd2332ee405f4c72614131935e03d59e19c9bb/aerial_danger-0.2.0.tar.gz", hash = "sha256:5feab5f66708ad9eabf76df2c9491b26293a54f9b319c068d91fde263a697b7d", size = 15546, upload-time = "2026-09-28T18:14:18.405Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/23/7a/44675ad7756f30156abc8bda6e31ecf9846b7943f3ef27043d8462188a5a/aerial_danger-0.1.0-py3-none-any.whl", hash = "sha256:71a73d752f5320911143cad17445fe949903c04fe94167c066cba8fc2f66d869", size = 16330, upload-time = "2026-09-24T15:17:23.922Z" },
+    { url = "https://files.pythonhosted.org/packages/6a/e1/8234f1cbc654aa632b9be6da480d017dbad51be5fc666414c7299981f45b/aerial_danger-0.2.0-py3-none-any.whl", hash = "sha256:9d23b94dc62e88dc7108cf7df83ba459241c0cb3ce488f31cda21d8d4f157d7f", size = 17313, upload-time = "2026-09-28T18:14:17.403Z" },
 ]
 
 [[package]]
@@ -962,7 +962,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "aerial-danger", specifier = "==0.1.0" },
+    { name = "aerial-danger", specifier = "==0.2.0" },
     { name = "homeassistant", specifier = "==2026.8.3" },
 ]
 

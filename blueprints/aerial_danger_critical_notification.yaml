@@ -52,6 +52,7 @@ actions:
     data:
       push:
         interruption-level: critical
+      tag: aerial_danger
       ttl: 0
       priority: high
       channel: alarm_stream
