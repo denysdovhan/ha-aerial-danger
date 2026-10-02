@@ -1,6 +1,7 @@
 {
   "name": "Aerial Danger",
   "homeassistant": "2024.6.0",
+  "country": "UA",
   "render_readme": true,
   "zip_release": true,
   "filename": "aerial-danger.zip"
