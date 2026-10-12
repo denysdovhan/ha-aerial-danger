@@ -22,6 +22,9 @@ def test_selector_translations_cover_regions(language: str) -> None:
     translations = json.loads(translations_path.read_text())
     options = translations["selector"]["region_presets"]["options"]
     assert list(options) == list(LOCATION_PRESETS)
+    assert options == {
+        region.id: region.names[language] for region in LOCATION_PRESETS.values()
+    }
     assert all(isinstance(label, str) and label for label in options.values())
 
 
@@ -43,4 +46,7 @@ def test_selector_translations_cover_localities(language: str) -> None:
         for preset_id, preset in region.localities.items()
     }
     assert list(options) == list(localities)
+    assert options == {
+        locality.id: locality.names[language] for locality in localities.values()
+    }
     assert all(isinstance(label, str) and label for label in options.values())

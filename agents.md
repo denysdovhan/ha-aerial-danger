@@ -55,6 +55,7 @@ This repository implements the Home Assistant custom integration **Aerial Danger
 - `triggers.yaml` — target definitions for automation triggers.
 - `diagnostics.py` — provides redacted config-entry diagnostics and privacy-safe runtime state details.
 - `translations/` — English and Ukrainian strings for configuration, entities, and triggers.
+- Location selector labels are generated from the library with `uv run python scripts/sync_location_names`; edit location names in the library, and other UI text here. Regenerate labels after library updates; translation tests reject drift.
 - `manifest.json` — Home Assistant manifest pointing to this repo.
 
 ### How it works

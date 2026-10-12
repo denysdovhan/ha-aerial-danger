@@ -10,10 +10,16 @@ Only native speaker can translate to specific language. Use this tool for transl
 
 Translation files live in `custom_components/aerial_danger/translations/` (e.g., `en.json`, `uk.json`).
 
+Region and locality selector labels are generated from the library's `names.uk`
+and `names.en` fields. Edit those names in `python-aerial-danger`, then run
+`uv run python scripts/sync_location_names` here. Other UI translations remain
+maintained in this repository. `uv run python scripts/sync_location_names --check`
+checks for drift without changing files; translation tests also verify parity.
+
 ## Submit region and locality regular expressions
 
 Built-in region and locality patterns live in
-[`python-aerial-danger/src/aerial_danger/location_presets.py`](https://github.com/denysdovhan/python-aerial-danger/blob/main/src/aerial_danger/location_presets.py).
+[`python-aerial-danger/src/aerial_danger/locations/`](https://github.com/denysdovhan/python-aerial-danger/tree/main/src/aerial_danger/locations).
 
 - A **region** is an administrative oblast. Cities, raions, and other places are
   not regions.
@@ -22,12 +28,12 @@ Built-in region and locality patterns live in
 
 First [clone and link the library](#develop-the-matcher-locally). Then submit new patterns:
 
-1. Add the region to `LOCATION_PRESETS`, or add the locality under its owning region.
+1. Edit the region's JSON file, or add the locality under its owning region.
 2. Include patterns for observed spellings and grammatical forms used in active
    danger messages. Keep patterns bounded and exclude forecasts, analysis,
    aftermath, and all-clear wording.
-3. Add English and Ukrainian labels in
-   `custom_components/aerial_danger/translations/`.
+3. Add English and Ukrainian `names` in the library, then run
+   `uv run python scripts/sync_location_names` here.
 4. Add aliases, inflections, or alternate spellings to `PRESET_EXAMPLES` in
    `python-aerial-danger/tests/test_location_presets.py`. Do not add a separate test for each preset.
 5. Run the library's tests, then `scripts/lint` and `scripts/test` here. Open pull requests in both repositories with examples
@@ -91,3 +97,5 @@ uv run python scripts/sync_library
 
 For manual dependency updates, commit the manifest with the dependency update.
 The requirement test rejects mismatched pins.
+After updating the library, regenerate location labels with
+`uv run python scripts/sync_location_names` and commit the generated translations.
