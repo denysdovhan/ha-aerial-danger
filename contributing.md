@@ -10,11 +10,9 @@ Only native speaker can translate to specific language. Use this tool for transl
 
 Translation files live in `custom_components/aerial_danger/translations/` (e.g., `en.json`, `uk.json`).
 
-Region and locality selector labels are generated from the library's `names.uk`
-and `names.en` fields. Edit those names in `python-aerial-danger`, then run
-`uv run python scripts/sync_location_names` here. Other UI translations remain
-maintained in this repository. `uv run python scripts/sync_location_names --check`
-checks for drift without changing files; translation tests also verify parity.
+Region and locality selectors read names directly from the library using Home
+Assistant's system language, with English fallback. Edit location names in
+`python-aerial-danger`; other UI translations remain in this repository.
 
 ## Submit region and locality regular expressions
 
@@ -32,8 +30,7 @@ First [clone and link the library](#develop-the-matcher-locally). Then submit ne
 2. Include patterns for observed spellings and grammatical forms used in active
    danger messages. Keep patterns bounded and exclude forecasts, analysis,
    aftermath, and all-clear wording.
-3. Add English and Ukrainian `names` in the library, then run
-   `uv run python scripts/sync_location_names` here.
+3. Add English and Ukrainian `names` in the library.
 4. Add aliases, inflections, or alternate spellings to `PRESET_EXAMPLES` in
    `python-aerial-danger/tests/test_location_presets.py`. Do not add a separate test for each preset.
 5. Run the library's tests, then `scripts/lint` and `scripts/test` here. Open pull requests in both repositories with examples
@@ -97,5 +94,3 @@ uv run python scripts/sync_library
 
 For manual dependency updates, commit the manifest with the dependency update.
 The requirement test rejects mismatched pins.
-After updating the library, regenerate location labels with
-`uv run python scripts/sync_location_names` and commit the generated translations.

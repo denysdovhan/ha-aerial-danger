@@ -3,6 +3,7 @@
 # ruff: noqa: S101
 
 import pytest
+from aerial_danger.location_presets import LOCATION_PRESETS
 from homeassistant.config_entries import SOURCE_USER
 from homeassistant.const import CONF_NAME
 from homeassistant.core import HomeAssistant
@@ -67,6 +68,62 @@ async def _options_regions(hass: HomeAssistant, entry: MockConfigEntry) -> FlowR
     return await hass.config_entries.options.async_configure(
         result["flow_id"], {CONF_SOURCES: ["sensor.updated"]}
     )
+
+
+@pytest.mark.parametrize(
+    ("language", "expected_language"), [("uk", "uk"), ("en", "en"), ("de", "en")]
+)
+@pytest.mark.parametrize("options_flow", [False, True])
+async def test_preset_labels_use_system_language(
+    hass: HomeAssistant, language: str, expected_language: str, *, options_flow: bool
+) -> None:
+    """Read labels from the library while storing stable IDs in both flows."""
+    hass.config.language = language
+    if options_flow:
+        entry = _entry(
+            {
+                CONF_REGION_PRESETS: ["kyiv"],
+                CONF_LOCALITY_PRESETS: ["kyiv_nyvky"],
+                CONF_REGION_PATTERNS: [],
+                CONF_LOCALITY_PATTERNS: [],
+                CONF_SOURCES: ["sensor.alerts"],
+            }
+        )
+        entry.add_to_hass(hass)
+        regions = await _options_regions(hass, entry)
+        manager = hass.config_entries.options
+    else:
+        regions = await _config_regions(hass)
+        manager = hass.config_entries.flow
+    region_selector = regions["data_schema"].schema[CONF_REGION_PRESETS]
+    assert region_selector.config["options"] == [
+        {"value": region.id, "label": region.names[expected_language]}
+        for region in LOCATION_PRESETS.values()
+    ]
+    assert "translation_key" not in region_selector.config
+    localities = await manager.async_configure(
+        regions["flow_id"],
+        {
+            CONF_REGION_PRESETS: ["kyiv"],
+            CONF_REGION_PATTERNS: [],
+        },
+    )
+    locality_selector = localities["data_schema"].schema[CONF_LOCALITY_PRESETS]
+    assert locality_selector.config["options"] == [
+        {"value": locality.id, "label": locality.names[expected_language]}
+        for locality in LOCATION_PRESETS["kyiv"].localities.values()
+    ]
+    assert "translation_key" not in locality_selector.config
+    result = await manager.async_configure(
+        localities["flow_id"],
+        {
+            CONF_LOCALITY_PRESETS: ["kyiv_nyvky"],
+            CONF_LOCALITY_PATTERNS: [],
+        },
+    )
+    assert result["type"] == FlowResultType.CREATE_ENTRY
+    assert result["data"][CONF_REGION_PRESETS] == ["kyiv"]
+    assert result["data"][CONF_LOCALITY_PRESETS] == ["kyiv_nyvky"]
 
 
 async def test_config_name_defaults_to_home_name(hass: HomeAssistant) -> None:
