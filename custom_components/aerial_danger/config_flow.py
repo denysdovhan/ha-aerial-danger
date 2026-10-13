@@ -31,7 +31,11 @@ from .const import (
 )
 
 if TYPE_CHECKING:
+    from collections.abc import Iterable
+
     from homeassistant.data_entry_flow import FlowResult
+
+    from aerial_danger.location_presets import LocalityPreset, RegionPreset
 
 SOURCE_ENTITY_DOMAINS = ["input_text", "sensor", "text"]
 SOURCE_DESCRIPTION_PLACEHOLDERS = {
@@ -67,15 +71,20 @@ def _patterns_are_valid(patterns: list[str]) -> bool:
 
 
 def build_preset_selector(
-    options: list[str], translation_key: str
+    presets: Iterable[RegionPreset | LocalityPreset], language: str
 ) -> selector.SelectSelector:
-    """Create a searchable translated preset selector."""
+    """Create a searchable preset selector using library names."""
     return selector.SelectSelector(
         selector.SelectSelectorConfig(
-            options=options,
+            options=[
+                {
+                    "value": preset.id,
+                    "label": preset.names.get(language, preset.names["en"]),
+                }
+                for preset in presets
+            ],
             multiple=True,
             mode=selector.SelectSelectorMode.DROPDOWN,
-            translation_key=translation_key,
         )
     )
 
@@ -91,14 +100,14 @@ def build_source_selector() -> selector.EntitySelector:
 
 
 def build_regions_schema(
-    selected_presets: list[str], patterns: list[str]
+    selected_presets: list[str], patterns: list[str], language: str
 ) -> vol.Schema:
     """Return the region step schema."""
     return vol.Schema(
         {
             vol.Optional(
                 CONF_REGION_PRESETS, default=selected_presets
-            ): build_preset_selector(list(LOCATION_PRESETS), "region_presets"),
+            ): build_preset_selector(LOCATION_PRESETS.values(), language),
             vol.Optional(
                 CONF_REGION_PATTERNS, default=patterns
             ): selector.ObjectSelector(),
@@ -110,13 +119,19 @@ def build_localities_schema(
     region_presets: list[str],
     selected_presets: list[str],
     patterns: list[str],
+    language: str,
 ) -> vol.Schema:
     """Return the locality step schema for selected regions."""
     fields: dict[vol.Marker, object] = {}
-    available_localities = locality_ids(region_presets)
+    available_localities = [
+        locality
+        for region_id in dict.fromkeys(region_presets)
+        if region_id in LOCATION_PRESETS
+        for locality in LOCATION_PRESETS[region_id].localities.values()
+    ]
     if available_localities:
         fields[vol.Optional(CONF_LOCALITY_PRESETS, default=selected_presets)] = (
-            build_preset_selector(available_localities, "locality_presets")
+            build_preset_selector(available_localities, language)
         )
     fields[vol.Optional(CONF_LOCALITY_PATTERNS, default=patterns)] = (
         selector.ObjectSelector()
@@ -193,7 +208,7 @@ class AerialDangerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="regions",
             data_schema=build_regions_schema(
-                self._region_presets, self._region_patterns
+                self._region_presets, self._region_patterns, self.hass.config.language
             ),
             errors=errors,
             description_placeholders=REGEX_DESCRIPTION_PLACEHOLDERS,
@@ -248,7 +263,10 @@ class AerialDangerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="localities",
             data_schema=build_localities_schema(
-                self._region_presets, selected_localities, locality_patterns
+                self._region_presets,
+                selected_localities,
+                locality_patterns,
+                self.hass.config.language,
             ),
             errors=errors,
             description_placeholders=REGEX_DESCRIPTION_PLACEHOLDERS,
@@ -313,7 +331,9 @@ class AerialDangerOptionsFlow(config_entries.OptionsFlow):
 
         return self.async_show_form(
             step_id="regions",
-            data_schema=build_regions_schema(current_presets, current_patterns),
+            data_schema=build_regions_schema(
+                current_presets, current_patterns, self.hass.config.language
+            ),
             errors=errors,
             description_placeholders=REGEX_DESCRIPTION_PLACEHOLDERS,
         )
@@ -370,7 +390,10 @@ class AerialDangerOptionsFlow(config_entries.OptionsFlow):
         return self.async_show_form(
             step_id="localities",
             data_schema=build_localities_schema(
-                self._region_presets, current_presets, current_patterns
+                self._region_presets,
+                current_presets,
+                current_patterns,
+                self.hass.config.language,
             ),
             errors=errors,
             description_placeholders=REGEX_DESCRIPTION_PLACEHOLDERS,
