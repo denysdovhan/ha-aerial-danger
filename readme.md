@@ -238,6 +238,29 @@ max_exceeded: silent
 
 Шаблон надсилає критичні сповіщення на iOS та сповіщення з високим пріоритетом на Android. Текст містить виявлену територію та повне повідомлення про загрозу.
 
+### Live Activity
+
+Імпортуйте готовий шаблон, щоб стежити за повітряною тривогою на екрані блокування та в Dynamic Island:
+
+[![Імпортувати шаблон Live Activity][blueprint-install-image]][live-activity-blueprint-install-url]
+
+Під час створення автоматизації:
+
+1. Оберіть сенсор **Air** (повітряна тривога) свого регіону з інтеграції [Ukraine Alarm][ukraine-alarm-url].
+2. Оберіть пристрій **Повітряної загрози**.
+3. За бажанням оберіть джерела повідомлень, наприклад Scrape-сенсори Telegram-каналів.
+4. Оберіть один або кілька мобільних пристроїв із застосунком Home Assistant.
+5. За бажанням вкажіть сторінку, яка відкриється після натискання, та змініть тексти.
+
+Для кількох регіонів створіть окрему автоматизацію для кожного сенсора — кожна показує власну Live Activity.
+
+Live Activity з’являється після оголошення тривоги, а нові повідомлення джерел оновлюють її без звуку. Доки Повітряна загроза показує небезпеку, Live Activity червона, зокрема якщо небезпеку виявлено ще до оголошення тривоги. Після відбою Live Activity стає зеленою та зникає за 30 секунд. iOS обмежує частоту оновлень Live Activity, тому звичайні повідомлення з’являються не частіше ніж раз на 10–15 секунд: найновіше з тих, що надійшли за цей час. Оновлення, надіслані одне за одним, iOS може пропустити.
+
+Потрібні Home Assistant 2026.7 або новіший та iOS 17.2 або новіший із дозволом на Live Activities для застосунку Home Assistant. За документацією застосунку, на Android 16 або новішому показується Live Update.
+
+> [!TIP]
+> Щоб нові повідомлення з’являлися швидше, оновлюйте Scrape-сенсори частіше за допомогою шаблону з розділу **Оновлюйте дані створених сенсорів частіше**.
+
 ### Вбудовані тригери
 
 Щоб створити власну автоматизацію, додайте тригер, оберіть пристрій **Aerial Danger**, а потім потрібний тип виявлення:
@@ -355,6 +378,7 @@ max_exceeded: silent
 [blueprint-install-image]: https://my.home-assistant.io/badges/blueprint_import.svg
 [telegram-scrape-blueprint-install-url]: https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fdenysdovhan%2Fha-aerial-danger%2Fblob%2Fmain%2Fblueprints%2Ftelegram_scrape_refresh.yaml
 [critical-notification-blueprint-install-url]: https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fdenysdovhan%2Fha-aerial-danger%2Fblob%2Fmain%2Fblueprints%2Faerial_danger_critical_notification.yaml
+[live-activity-blueprint-install-url]: https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fdenysdovhan%2Fha-aerial-danger%2Fblob%2Fmain%2Fblueprints%2Faerial_danger_live_activity.yaml
 [python-regex-url]: https://docs.python.org/3/library/re.html
 [contributing]: ./contributing.md
 [presets]: https://github.com/denysdovhan/python-aerial-danger/blob/main/src/aerial_danger/location_presets.py
