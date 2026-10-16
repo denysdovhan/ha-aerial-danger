@@ -238,6 +238,29 @@ When creating the automation:
 
 The blueprint sends critical notifications on iOS and high-priority notifications on Android. The text includes the detected area and the full threat message.
 
+### Live Activity
+
+Import the ready-made blueprint to follow an air raid alert on the Lock Screen and in the Dynamic Island:
+
+[![Import the Live Activity blueprint][blueprint-install-image]][live-activity-blueprint-install-url]
+
+When creating the automation:
+
+1. Select your region's **Air** sensor from the [Ukraine Alarm][ukraine-alarm-url] integration.
+2. Select the **Aerial Danger** device.
+3. Optionally, select message sources, such as Scrape sensors for Telegram channels.
+4. Select one or more mobile devices with the Home Assistant app.
+5. Optionally, set the page to open on tap and change the texts.
+
+For several regions, create one automation per sensor; each shows its own Live Activity.
+
+The Live Activity appears when an alert is announced, and new source messages update it silently. While Aerial Danger reports a danger, the Live Activity is red, including when the danger was detected before the alert. After the all-clear, the Live Activity turns green and disappears after 30 seconds. iOS limits how often a Live Activity can update, so routine messages appear at most once every 10–15 seconds: the newest of those received in the meantime. iOS may skip updates sent in quick succession.
+
+Requires Home Assistant 2026.7 or newer and iOS 17.2 or newer with Live Activities allowed for the Home Assistant app. According to the app documentation, Android 16 or newer shows a Live Update.
+
+> [!TIP]
+> To see new messages sooner, update the Scrape sensors more frequently with the blueprint from **Update the created sensors more frequently**.
+
 ### Built-in triggers
 
 To create your own automation, add a trigger, select the **Aerial Danger** device, and then select the required detection type:
@@ -355,6 +378,7 @@ See [local matcher development](contributing.md#develop-the-matcher-locally) to 
 [blueprint-install-image]: https://my.home-assistant.io/badges/blueprint_import.svg
 [telegram-scrape-blueprint-install-url]: https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fdenysdovhan%2Fha-aerial-danger%2Fblob%2Fmain%2Fblueprints%2Ftelegram_scrape_refresh.yaml
 [critical-notification-blueprint-install-url]: https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fdenysdovhan%2Fha-aerial-danger%2Fblob%2Fmain%2Fblueprints%2Faerial_danger_critical_notification.yaml
+[live-activity-blueprint-install-url]: https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fdenysdovhan%2Fha-aerial-danger%2Fblob%2Fmain%2Fblueprints%2Faerial_danger_live_activity.yaml
 [python-regex-url]: https://docs.python.org/3/library/re.html
 [contributing]: ./contributing.md
 [presets]: https://github.com/denysdovhan/python-aerial-danger/blob/main/src/aerial_danger/location_presets.py
