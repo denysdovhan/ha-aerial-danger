@@ -309,6 +309,7 @@ max_exceeded: silent
 ## Інші інтеграції
 
 - ☁️ [Check Weather](https://github.com/denysdovhan/ha-check-weather) — створює бінарний сенсор на основі прогнозу погоди на кілька наступних годин.
+- ☀️ [Файна СЕС](https://github.com/denysdovhan/ha-fayna-ses) — надає дані про заряд батарей, потоки потужності та енергію станцій Файна СЕС.
 - 💨 [ЛУН Місто Air](https://github.com/denysdovhan/ha-lun-misto-air) — надає дані про якість повітря та довкілля зі станцій моніторингу ЛУН Місто.
 - 🌦️ [Український гідрометеорологічний центр](https://github.com/denysdovhan/ha-ukr-hmc) — надає погодні, радіаційні й гідрологічні дані з meteo.gov.ua.
 - ⚡️ [Yasno Outages](https://github.com/denysdovhan/ha-yasno-outages) — надає графіки планових відключень електроенергії, сенсори та календарі від Yasno.
