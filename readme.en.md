@@ -313,6 +313,7 @@ See [local matcher development](contributing.md#develop-the-matcher-locally) to 
 - 💨 [LUN Misto Air](https://github.com/denysdovhan/ha-lun-misto-air) — provides air quality and environmental data from LUN Misto monitoring stations.
 - 🌦️ [Ukrainian Hydrometeorological Center](https://github.com/denysdovhan/ha-ukr-hmc) — provides weather, radiation, and hydrology data from meteo.gov.ua.
 - ⚡️ [Yasno Outages](https://github.com/denysdovhan/ha-yasno-outages) — provides planned electricity outage schedules, sensors, and calendars from Yasno.
+- 💧 [Kyiv Vodokanal](https://github.com/denysdovhan/ha-kyiv-vodokanal) — water meter readings, bills, payments, and tariffs.
 
 ## License
 
