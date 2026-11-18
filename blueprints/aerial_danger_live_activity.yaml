@@ -1,0 +1,388 @@
+# No official public HA blueprint schema exists; SchemaStore selects Torque.
+# yaml-language-server: $schema=none
+
+blueprint:
+  name: Live Activity про повітряну тривогу
+  description: >-
+    Показує повітряну тривогу як одну Live Activity на iOS або Live Update на
+    Android: від оголошення через нові повідомлення джерел і виявлені небезпеки
+    до відбою. На iOS потрібен дозвіл на Live Activities для застосунку Home
+    Assistant.
+  domain: automation
+  author: Denys Dovhan
+  source_url: >-
+    https://github.com/denysdovhan/ha-aerial-danger/blob/main/blueprints/aerial_danger_live_activity.yaml
+  homeassistant:
+    min_version: "2026.7.0"
+  input:
+    air_alert_entity:
+      name: Сенсор повітряної тривоги
+      description: >-
+        Сенсор «Air» (повітряна тривога) з інтеграції Ukraine Alarm для вашого
+        регіону. Увімкнення сенсора починає Live Activity, вимкнення —
+        завершує її.
+      selector:
+        entity:
+          filter:
+            - integration: ukraine_alarm
+              domain: binary_sensor
+              device_class: safety
+    aerial_danger_device:
+      name: Пристрій Повітряної загрози
+      description: >-
+        Доки пристрій показує небезпеку, Live Activity червона, зокрема якщо
+        небезпеку виявлено ще до оголошення тривоги.
+      selector:
+        device:
+          filter:
+            - integration: aerial_danger
+    source_entities:
+      name: Джерела повідомлень
+      description: >-
+        Необов’язково. Сутності з текстом повідомлень, наприклад ті самі
+        Scrape-сенсори, що й у Повітряній загрозі. Під час тривоги кожне нове
+        повідомлення тихо оновлює Live Activity.
+      default: []
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - domain:
+                - sensor
+                - text
+                - input_text
+    mobile_devices:
+      name: Пристрої для сповіщення
+      description: >-
+        Виберіть один або кілька пристроїв із застосунком Home Assistant. Кожен
+        пристрій має мати власну назву в налаштуваннях застосунку.
+      selector:
+        device:
+          multiple: true
+          filter:
+            - integration: mobile_app
+    dashboard_path:
+      name: Шлях після натискання
+      description: >-
+        Необов’язково. Сторінка Home Assistant, яка відкривається після
+        натискання на Live Activity, наприклад `/lovelace/0`.
+      default: ""
+      selector:
+        text: {}
+    texts:
+      name: Тексти
+      icon: mdi:text
+      collapsed: true
+      input:
+        start_title:
+          name: Заголовок тривоги
+          default: Тривога
+          selector:
+            text: {}
+        start_message:
+          name: Повідомлення про тривогу
+          default: Оголошено повітряну тривогу
+          selector:
+            text: {}
+        danger_title:
+          name: Заголовок небезпеки
+          default: Небезпека
+          selector:
+            text: {}
+        end_title:
+          name: Заголовок відбою
+          default: Відбій
+          selector:
+            text: {}
+        end_message:
+          name: Повідомлення про відбій
+          default: Відбій повітряної тривоги
+          selector:
+            text: {}
+
+variables:
+  air_alert_entity: !input air_alert_entity
+  aerial_danger_device: !input aerial_danger_device
+  source_entities: !input source_entities
+  mobile_devices: !input mobile_devices
+  dashboard_path: !input dashboard_path
+  start_title: !input start_title
+  start_message: !input start_message
+  danger_title: !input danger_title
+  end_title: !input end_title
+  end_message: !input end_message
+  # Hold after each update to stay within iOS Live Activity update throttling.
+  stages:
+    start:
+      icon: mdi:alert
+      color: "#eeee00"
+      background_color: "#333300"
+      hold: 10
+    danger:
+      icon: mdi:alert-octagram
+      color: "#ee0000"
+      background_color: "#330000"
+      hold: 15
+    end:
+      icon: mdi:emoticon-happy
+      color: "#00ee00"
+      background_color: "#003300"
+      hold: 30
+  # One activity per alert sensor, so automations for several regions on the
+  # same phone do not end each other's activity. Tags are limited to 64
+  # characters and must differ from the critical-notification tag.
+  tag: >-
+    {{ ('aerial_danger_live_activity_' ~ air_alert_entity.split('.')[-1])[:64] }}
+  # The danger binary sensors decide the stage: red while Aerial Danger reports
+  # any active danger, as the integration does.
+  danger_sensors: >-
+    {{ device_entities(aerial_danger_device)
+       | select('match', 'binary_sensor[.]') | list }}
+  # Legacy notify actions carry Live Activity data; notify.send_message cannot.
+  # Only push-capable devices have an available mobile_app notify entity, and
+  # an action that does not exist would stop the run for the remaining devices.
+  # Devices with the same registered name share one action; send it once.
+  notify_actions: >-
+    {%- set ns = namespace(actions=[]) %}
+    {%- for device in mobile_devices %}
+      {%- set name = device_attr(device, 'name') %}
+      {%- set notify = device_entities(device)
+            | select('match', 'notify[.]')
+            | reject('is_state', 'unavailable')
+            | list %}
+      {%- if name and notify %}
+        {%- set ns.actions = ns.actions + ['notify.' ~ ('mobile_app_' ~ name) | slugify] %}
+      {%- endif %}
+    {%- endfor %}
+    {{ ns.actions | unique | list }}
+
+triggers:
+  - trigger: state
+    entity_id: !input source_entities
+    to: ~
+    id: monitoring
+  - trigger: state
+    entity_id: !input air_alert_entity
+    to: "on"
+    id: alarm_start
+  - trigger: state
+    entity_id: !input air_alert_entity
+    from: "on"
+    to: "off"
+    id: alarm_end
+  # The alert may have ended while Ukraine Alarm was unavailable.
+  - trigger: state
+    entity_id: !input air_alert_entity
+    from:
+      - unavailable
+      - unknown
+    to: "off"
+    id: alarm_end_unconfirmed
+  - trigger: aerial_danger.danger
+    target:
+      device_id: !input aerial_danger_device
+    id: danger
+
+# Alarm start and end always run and restart a waiting run. Dangers do so only
+# during an alarm, so a late detection cannot cancel the all-clear cleanup.
+# Routine messages run only when idle; a running update shows them after its
+# hold.
+conditions:
+  - condition: or
+    conditions:
+      - condition: trigger
+        id:
+          - alarm_start
+          - alarm_end
+      # iOS ends activities after 8 hours; skip pushes when none can be shown.
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: alarm_end_unconfirmed
+          - >-
+            {{ this.attributes.last_triggered is not none
+               and now() - this.attributes.last_triggered < timedelta(hours=8) }}
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: danger
+          - condition: state
+            entity_id: !input air_alert_entity
+            state: "on"
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: monitoring
+          - condition: state
+            entity_id: !input air_alert_entity
+            state: "on"
+          - "{{ this.attributes.current | default(0) == 0 }}"
+          - >-
+            {{ trigger.to_state.state | trim
+               not in ['', 'unknown', 'unavailable'] }}
+
+actions:
+  - variables:
+      started: "{{ now().isoformat() }}"
+      visible: true
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: alarm_start
+        sequence:
+          # Telegram sources often report a danger before Ukraine Alarm, which
+          # polls every 10 seconds: start red if one is already active.
+          - variables:
+              active: &active_dangers >-
+                {{ expand(danger_sensors) | selectattr('state', 'eq', 'on')
+                   | sort(attribute='last_updated', reverse=true)
+                   | map(attribute='entity_id') | list }}
+          - variables:
+              stage: "{{ 'danger' if active else 'start' }}"
+              title: "{{ danger_title if active else start_title }}"
+              message: >-
+                {{ state_attr(active[0], 'matched_message').split() | join(' ')
+                   if active else start_message }}
+              # Back from unavailable: refresh quietly instead of alerting again.
+              silent: >-
+                {{ trigger.from_state is not none
+                   and trigger.from_state.state in ['unavailable', 'unknown'] }}
+      - conditions:
+          - condition: trigger
+            id: monitoring
+        sequence:
+          # A message Aerial Danger detects as danger restarts this run, so
+          # one update shows the danger instead of two competing updates.
+          - delay:
+              seconds: 1
+          # The activity stays red while a danger is active.
+          - variables:
+              active: *active_dangers
+          - if: "{{ active | count > 0 }}"
+            then:
+              - stop: Active danger is shown
+          - variables:
+              stage: start
+              title: "{{ start_title }}"
+              # iOS shows two lines: the post only, line breaks as spaces.
+              message: "{{ trigger.to_state.state.split() | join(' ') }}"
+              silent: true
+      - conditions:
+          - condition: trigger
+            id: danger
+        sequence:
+          - variables:
+              stage: danger
+              title: "{{ danger_title }}"
+              message: >-
+                {{ trigger.to_state.attributes.matched_message.split()
+                   | join(' ') }}
+              # Several channels report the same attack within seconds: alert
+              # once, update quietly to spare the iOS update budget.
+              silent: >-
+                {% set previous = as_datetime(trigger.from_state.state) %}
+                {{ previous is not none
+                   and now() - previous < timedelta(seconds=15) }}
+      - conditions:
+          - condition: trigger
+            id: alarm_end
+        sequence:
+          - variables:
+              stage: end
+              title: "{{ end_title }}"
+              message: "{{ end_message }}"
+              silent: false
+      - conditions:
+          - condition: trigger
+            id: alarm_end_unconfirmed
+        sequence:
+          # No visible all-clear without a known alert: only end an activity
+          # that may still be showing. Without one, nothing is displayed.
+          - variables:
+              stage: end
+              title: ""
+              message: ""
+              silent: true
+              visible: false
+  - repeat:
+      sequence:
+        # No critical_text: iOS shows it next to the title, duplicating the
+        # stage and truncating the title.
+        - variables:
+            style: "{{ stages[stage] }}"
+            payload: >-
+              {%- set payload = {
+                'tag': tag,
+                'live_update': true,
+                'notification_icon': style.icon,
+                'notification_icon_color': style.color,
+                'color': style.color,
+                'background_color': style.background_color,
+              } %}
+              {%- if silent %}
+                {%- set payload = dict(payload, silent=true, alert_once=true) %}
+              {%- endif %}
+              {%- if dashboard_path %}
+                {%- set payload = dict(payload, url=dashboard_path, clickAction=dashboard_path) %}
+              {%- endif %}
+              {{ payload }}
+        - if: "{{ visible }}"
+          then:
+            - repeat:
+                for_each: "{{ notify_actions }}"
+                sequence:
+                  - action: "{{ repeat.item }}"
+                    continue_on_error: true
+                    data:
+                      title: "{{ title }}"
+                      message: "{{ message }}"
+                      data: "{{ payload }}"
+            - delay:
+                seconds: "{{ style.hold }}"
+        # Catch up quietly after the hold: red with the latest active danger,
+        # otherwise yellow with the newest message skipped during the hold.
+        - variables:
+            active: *active_dangers
+            newest: >-
+              {%- set changed = expand(source_entities)
+                    | selectattr('last_changed', 'gt', as_datetime(started))
+                    | rejectattr('state', 'in', ['unknown', 'unavailable'])
+                    | sort(attribute='last_changed')
+                    | list %}
+              {{ (changed | last).state.split() | join(' ') if changed else '' }}
+            started: "{{ now().isoformat() }}"
+            next_stage: "{{ 'danger' if active else 'start' }}"
+            next_message: >-
+              {%- if active -%}
+                {{ state_attr(active[0], 'matched_message').split() | join(' ') }}
+              {%- elif newest -%}
+                {{ newest }}
+              {%- elif stage == 'start' -%}
+                {{ message }}
+              {%- else -%}
+                {{ start_message }}
+              {%- endif %}
+            more: >-
+              {{ stage != 'end' and is_state(air_alert_entity, 'on')
+                 and (next_stage != stage or next_message != message) }}
+        - if: "{{ more }}"
+          then:
+            - variables:
+                stage: "{{ next_stage }}"
+                title: "{{ danger_title if next_stage == 'danger' else start_title }}"
+                message: "{{ next_message }}"
+                silent: true
+      until: "{{ not more }}"
+  - if: "{{ stage == 'end' }}"
+    then:
+      - repeat:
+          for_each: "{{ notify_actions }}"
+          sequence:
+            - action: "{{ repeat.item }}"
+              continue_on_error: true
+              data:
+                message: clear_notification
+                data:
+                  tag: "{{ tag }}"
+
+mode: restart
